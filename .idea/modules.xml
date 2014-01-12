@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/4pda.Nitro.iml" filepath="$PROJECT_DIR$/4pda.Nitro.iml" />
-      <module fileurl="file://$PROJECT_DIR$/4pda.api/4pda.api.iml" filepath="$PROJECT_DIR$/4pda.api/4pda.api.iml" />
       <module fileurl="file://$PROJECT_DIR$/4pdaApi/4pdaApi.iml" filepath="$PROJECT_DIR$/4pdaApi/4pdaApi.iml" />
       <module fileurl="file://$PROJECT_DIR$/Application/Application.iml" filepath="$PROJECT_DIR$/Application/Application.iml" />
       <module fileurl="file://$PROJECT_DIR$/Common/Common.iml" filepath="$PROJECT_DIR$/Common/Common.iml" />

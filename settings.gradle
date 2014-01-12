@@ -1,1 +1,1 @@
-include ':Application', ':4pdaApi', ':Http' , ':Interfaces', ':Common'
+include ':4pdaApi',':Application',':Common',':Http',':Interfaces'
