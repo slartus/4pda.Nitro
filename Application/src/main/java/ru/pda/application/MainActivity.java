@@ -137,7 +137,9 @@ public class MainActivity extends Activity
 					}
 				}
 				catch (Exception e)
-				{}
+				{
+
+                }
 				return false;
 			}
 			

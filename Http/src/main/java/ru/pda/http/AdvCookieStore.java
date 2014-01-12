@@ -29,9 +29,7 @@ public class AdvCookieStore extends BasicCookieStore {
     }
 
     private static String getSystemCookiesPath(Context context) {
-        String defaultFile = context.getFilesDir() + "/4pda_cookies";
-        //  if (context.getFilesDir() == null)
-        defaultFile = Environment.getExternalStorageDirectory() + "/data/4pdaClient/4pda_cookies";
+        String defaultFile =  Environment.getExternalStorageDirectory() + "/data/4pdaClient/4pda_cookies";
         return defaultFile;
     }
 

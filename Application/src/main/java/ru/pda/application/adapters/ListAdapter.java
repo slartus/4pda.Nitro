@@ -2,6 +2,8 @@ package ru.pda.application.adapters;
 import android.widget.*;
 import android.view.*;
 import java.util.*;
+
+import ru.pda.application.R;
 import ru.pda.interfaces.forum.*;
 import ru.pda.api.*;
 import android.content.*;
