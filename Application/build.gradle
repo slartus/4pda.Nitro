@@ -32,6 +32,6 @@ android {
 
 dependencies {
     compile project(':4pdaApi')
-    compile project(':Interfaces')
     compile project(':Http')
+    compile project(':interfaces')
 }

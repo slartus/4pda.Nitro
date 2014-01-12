@@ -29,6 +29,6 @@ android {
 }
 
 dependencies {
-    compile project(':Interfaces')
     compile project(':Common')
+    compile project(':interfaces')
 }

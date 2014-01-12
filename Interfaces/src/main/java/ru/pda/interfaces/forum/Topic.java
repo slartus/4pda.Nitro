@@ -12,6 +12,7 @@ public class Topic implements IListItem {
     private CharSequence description;
     private Date lastPostDate;
     private CharSequence lastPostAuthor;
+    private CharSequence forumTitle;
 
     public Topic(CharSequence id, CharSequence title) {
         this.id = id;
@@ -94,5 +95,17 @@ public class Topic implements IListItem {
 
     public void setLastPostAuthor(CharSequence lastPostAuthor) {
         this.lastPostAuthor = lastPostAuthor;
+    }
+
+    /**
+     * Название форума, в котором лежит топик
+     * @return
+     */
+    public CharSequence getForumTitle() {
+        return forumTitle;
+    }
+
+    public void setForumTitle(CharSequence forumTitle) {
+        this.forumTitle = forumTitle;
     }
 }
