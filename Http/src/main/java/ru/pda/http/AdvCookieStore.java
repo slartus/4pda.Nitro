@@ -28,13 +28,26 @@ public class AdvCookieStore extends BasicCookieStore {
         super.addCookie(cookie);
     }
 
-    private static String getSystemCookiesPath(Context context) {
-        String defaultFile =  Environment.getExternalStorageDirectory() + "/data/4pdaClient/4pda_cookies";
+    private static String getSystemCookiesPath(Context context, Boolean readOnly) throws IOException {
+        checkExternalStorageState(readOnly);
+        String defaultFile =  Environment.getExternalStorageDirectory() + "/data/4pda.Nitro/4pda_cookies.cks";
         return defaultFile;
     }
 
+    private static void checkExternalStorageState(Boolean readOnly) throws IOException {
+        String state = Environment.getExternalStorageState();
+        if (Environment.MEDIA_MOUNTED.equals(state)) {
+           return;
+        } else if (Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
+            if(!readOnly)
+                throw new IOException("Нет доступа для записи в хранилище");
+        } else {
+            throw new IOException("Нет доступа в хранилище");
+        }
+    }
+
     public void readExternalCookies(Context context) throws IOException {
-        readExternalCookies(this, getSystemCookiesPath(context));
+        readExternalCookies(this, getSystemCookiesPath(context,true));
     }
 
     public static void readExternalCookies(org.apache.http.client.CookieStore cookieStore,
@@ -60,13 +73,13 @@ public class AdvCookieStore extends BasicCookieStore {
         }
     }
 
-    public void writeExternalCookies(Context context) throws Exception {
-        writeExternalCookies(getSystemCookiesPath(context));
+    public void writeExternalCookies(Context context) throws IOException {
+        writeExternalCookies(getSystemCookiesPath(context,false));
     }
 
-    public void writeExternalCookies(String cookiesFile) throws Exception {
+    public void writeExternalCookies(String cookiesFile) throws IOException {
         if (!FileExternals.mkDirs(cookiesFile))
-            throw new Exception("Не могу создать директорию '" + cookiesFile + "' для cookies");
+            throw new IOException("Не могу создать директорию '" + cookiesFile + "' для cookies");
 
         new File(cookiesFile).createNewFile();
         FileOutputStream fw = new FileOutputStream(cookiesFile, false);
