@@ -17,7 +17,33 @@ import android.widget.*;
  */
 public abstract class BaseListFragment extends Fragment {
     public LinearLayout linearProgress;
+	public LinearLayout linearError;
+	private boolean loading = false;
+	private boolean refresh = false;
+	
 	public ListView listView;
+
+	public void setRefresh(boolean refresh)
+	{
+		this.refresh = refresh;
+	}
+
+	public boolean isRefresh()
+	{
+		return refresh;
+	}
+
+	public void setLoading(boolean loading)
+	{
+		this.loading = loading;
+	}
+
+	public boolean isLoading()
+	{
+		return loading;
+	}
+
+	
 	
 	public abstract ArrayList<? extends IListItem> getList() throws ParseException, IOException;
 

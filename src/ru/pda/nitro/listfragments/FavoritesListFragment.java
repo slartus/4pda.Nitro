@@ -21,13 +21,16 @@ import android.util.*;
 import android.database.*;
 import android.content.*;
 import ru.pda.nitro.*;
+import android.view.View.*;
+import uk.co.senab.actionbarpulltorefresh.library.*;
 
 
 /**
  * Created by slartus on 12.01.14.
  */
 public class FavoritesListFragment extends TopicsListFragment {
-	
+	private Button buttonError;
+
 	@Override
     public ArrayList<Topic> getTopicsList() throws ParseException, IOException {
         return TopicsApi.getFavorites(new HttpHelper(App.getInstance()), new ListInfo());
@@ -47,6 +50,7 @@ public class FavoritesListFragment extends TopicsListFragment {
 		// TODO: Implement this method
 		View v = inflater.inflate(R.layout.list_topic, container, false);
 		listView = (ListView)v.findViewById(R.id.listViewTopic);
+		
 		return v;
 	}
 
@@ -56,11 +60,29 @@ public class FavoritesListFragment extends TopicsListFragment {
 		// TODO: Implement this method
 		super.onActivityCreated(savedInstanceState);
 		linearProgress = (LinearLayout)getActivity().findViewById(R.id.linearProgress);
+		linearError = (LinearLayout)getActivity().findViewById(R.id.linearError);
+		buttonError = (Button)getActivity().findViewById(R.id.buttonError);
+		buttonError.setOnClickListener(new OnClickListener(){
+
+				@Override
+				public void onClick(View p1)
+				{
+					getData();
+				}
+			});
 		
 		adapter = new TopicListAdapter(getActivity(), topics);
 		listView.setAdapter(adapter);
 		
 		getData();
+		
+		((IRefreshActivity) getActivity()).getPullToRefreshAttacher().setRefreshableView(listView, new PullToRefreshAttacher.OnRefreshListener() {
+				@Override
+				public void onRefreshStarted(View view) {
+					setRefresh(true);
+					getData();
+				}
+			});
 	}
 
 	@Override

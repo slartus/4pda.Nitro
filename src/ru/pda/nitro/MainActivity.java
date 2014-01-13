@@ -35,7 +35,7 @@ public class MainActivity extends BaseActivity
 	public static ArrayList<Topic> topics;
 	public static ArrayList<News> news;
 	public static ArrayList<Forum> forums;
-
+	
 	ActionBarDrawerToggle mDrawerToggle;
 	private DrawerLayout mDrawerLayout ;
 	private ListView mDrawerList ;

@@ -9,6 +9,8 @@ import ru.forpda.interfaces.forum.Topic;
 import android.os.*;
 import android.view.*;
 import ru.pda.nitro.adapters.*;
+import ru.forpda.interfaces.*;
+import ru.pda.nitro.*;
 
 
 /**
@@ -19,6 +21,9 @@ public abstract class TopicsListFragment extends BaseListFragment{
 	public ArrayList<Topic> topics = new ArrayList<Topic>();
 	public TopicListAdapter adapter;
 	public Task task;
+	public ListInfo listInfo;
+	
+	
 	
     @Override
     public ArrayList<? extends IListItem> getList() throws ParseException, IOException {
@@ -31,10 +36,32 @@ public abstract class TopicsListFragment extends BaseListFragment{
 
 		return false;
     }
+	
+	public void showError(boolean isError){
+		if(isError){
+			linearProgress.setVisibility(View.GONE);
+			linearError.setVisibility(View.VISIBLE);
+			}else{
+				if(!isRefresh())
+				linearProgress.setVisibility(View.VISIBLE);
+				linearError.setVisibility(View.GONE);
+				
+			}
+	}
+	
+	public void setProgress(boolean loading) {
+
+		((IRefreshActivity) getActivity()).getPullToRefreshAttacher().setRefreshing(loading);
+
+	}
+	
 	public void getData(){
+		if(!isLoading()){
 		
 		task = new Task();
 		task.execute();
+		}else
+		setProgress(false);
 		
 	}
 	
@@ -46,7 +73,9 @@ public abstract class TopicsListFragment extends BaseListFragment{
 		{
 			// TODO: Implement this method
 			super.onPreExecute();
-			linearProgress.setVisibility(View.VISIBLE);
+			setLoading(true);
+			showError(false);
+			setRefresh(false);
 		}
 
 		
@@ -72,7 +101,11 @@ public abstract class TopicsListFragment extends BaseListFragment{
 			adapter.setData(topics);
 			adapter.notifyDataSetChanged();
 			linearProgress.setVisibility(View.GONE);
-			}
+			}else
+			showError(true);
+			
+			setProgress(false);
+			setLoading(false);
 		}
 
 		
