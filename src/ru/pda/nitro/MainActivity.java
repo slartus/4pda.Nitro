@@ -28,9 +28,13 @@ import android.util.*;
 import ru.pda.nitro.bricks.BrickInfo;
 import ru.pda.nitro.bricks.BricksList;
 import ru.pda.nitro.listfragments.FavoritesListFragment;
+import ru.forpda.interfaces.forum.*;
 
 public class MainActivity extends BaseActivity
 {
+	public static ArrayList<Topic> topics;
+	public static ArrayList<News> news;
+	public static ArrayList<Forum> forums;
 
 	ActionBarDrawerToggle mDrawerToggle;
 	private DrawerLayout mDrawerLayout ;

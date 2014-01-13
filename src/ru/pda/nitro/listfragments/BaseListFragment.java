@@ -7,6 +7,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 
 import ru.forpda.interfaces.forum.IListItem;
+import android.widget.*;
 
 
 /**
@@ -15,7 +16,10 @@ import ru.forpda.interfaces.forum.IListItem;
  * Здесь общие свойства и методы для фрагментов списков
  */
 public abstract class BaseListFragment extends Fragment {
-    public abstract ArrayList<? extends IListItem> getList() throws ParseException, IOException;
+    public LinearLayout linearProgress;
+	public ListView listView;
+	
+	public abstract ArrayList<? extends IListItem> getList() throws ParseException, IOException;
 
     public abstract String getName();
 
