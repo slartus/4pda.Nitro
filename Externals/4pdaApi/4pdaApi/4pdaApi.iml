@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="JAVA_MODULE" version="4">
+  <component name="FacetManager">
+    <facet type="android" name="Android">
+      <configuration>
+        <option name="GEN_FOLDER_RELATIVE_PATH_APT" value="/../../4pdaApi/gen" />
+        <option name="GEN_FOLDER_RELATIVE_PATH_AIDL" value="/../../4pdaApi/gen" />
+        <option name="MANIFEST_FILE_RELATIVE_PATH" value="/../../4pdaApi/AndroidManifest.xml" />
+        <option name="RES_FOLDER_RELATIVE_PATH" value="/../../4pdaApi/res" />
+        <option name="ASSETS_FOLDER_RELATIVE_PATH" value="/../../4pdaApi/assets" />
+        <option name="LIBS_FOLDER_RELATIVE_PATH" value="/../../4pdaApi/libs" />
+        <option name="UPDATE_PROPERTY_FILES" value="true" />
+        <resOverlayFolders>
+          <path>/../../4pdaApi/res-overlay</path>
+        </resOverlayFolders>
+      </configuration>
+    </facet>
+  </component>
+  <component name="NewModuleRootManager" inherit-compiler-output="true">
+    <exclude-output />
+    <content url="file://$MODULE_DIR$/..">
+      <sourceFolder url="file://$MODULE_DIR$/../src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../gen" isTestSource="false" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module" module-name="Interfaces" />
+    <orderEntry type="module" module-name="Common" />
+  </component>
+</module>
+
