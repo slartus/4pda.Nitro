@@ -14,9 +14,27 @@ import ru.pda.application.listfragments.*;
 import android.os.*;
 import android.widget.*;
 import android.view.View.*;
+import android.support.v4.app.*;
+import android.support.v4.widget.*;
+import android.content.res.*;
+import android.view.*;
+import android.content.*;
+import java.util.*;
+import ru.pda.application.bricks.*;
+import android.preference.*;
+import android.util.*;
 
-public class MainActivity extends Activity
+public class MainActivity extends BaseActivity
 {
+
+	ActionBarDrawerToggle mDrawerToggle;
+	private DrawerLayout mDrawerLayout ;
+	private ListView mDrawerList ;
+	private FrameLayout frameDrawer;
+	private CharSequence mTitle ;
+	private MenuAdapter mAdapter;
+	private ArrayList<BrickInfo> menus;
+	private UserProfile profile;
 
 	
 
@@ -24,17 +42,196 @@ public class MainActivity extends Activity
     protected void onCreate(Bundle savedInstanceState)
 	{
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.content_frame_drawer);
 
+		profile = new UserProfile();
+		
+		ab.setDisplayHomeAsUpEnabled(true);
+		ab.setDisplayShowHomeEnabled(true);
 
-        if (savedInstanceState == null)
+		mTitle = getTitle();
+		mDrawerLayout = (DrawerLayout) findViewById(R .id. drawer_layout);
+		mDrawerList = (ListView) findViewById(R .id. left_drawer);
+		frameDrawer = (FrameLayout)findViewById(R.id.frameDraver);
+
+		menus = new ArrayList<BrickInfo>();
+		mAdapter = new MenuAdapter(this, R.layout.row, menus);
+		getMenu();
+		
+		mDrawerList.setAdapter(mAdapter);
+		mDrawerList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener(){
+
+				@Override
+				public boolean onItemLongClick(AdapterView<?> p1, View p2, int p3, long p4)
+				{
+					// TODO: Implement this metho
+					startDeleteMode();
+					return false;
+				}
+			});
+
+		mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
+
+		mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout ,
+												  R .drawable.ic_drawer_white , R.string.app_menu , R.string.app_name) {
+			public void onDrawerClosed(View view)
+			{
+				ab. setTitle(mTitle);
+				//	invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+				mAdapter.notifyDataSetChanged();
+
+			}
+
+			public void onDrawerOpened(View drawerView)
+			{
+				ab.setTitle(R.string.app_menu);
+				//	invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+			}
+		};
+		mDrawerLayout.setLongClickable(true);
+		mDrawerLayout.setDrawerListener(mDrawerToggle);
+		
+		if (savedInstanceState == null)
 		{
-            getFragmentManager().beginTransaction()
-				.add(R.id.container, new PlaceholderFragment())
-				.commit();
+			
+            setDefaultContent();
         }
-	
+		
+
     }
+
+	
+
+/*	@Override
+    public PullToRefreshAttacher getPullToRefreshAttacher() {
+        return mPullToRefreshAttacher;
+    }*/
+
+	@Override
+	protected void onPostCreate(Bundle savedInstanceState)
+	{
+		super.onPostCreate(savedInstanceState);
+// Sync the toggle state after onRestoreInstanceState has occurred.
+		mDrawerToggle . syncState();
+	}
+	@Override
+	public void onConfigurationChanged(Configuration newConfig)
+	{
+		super.onConfigurationChanged(newConfig);
+		mDrawerToggle.onConfigurationChanged(newConfig);
+	}
+
+	private void setDefaultContent(){
+	Fragment mContent;
+		if(profile.isLogined()){
+			setTitle(profile.getLogin());
+			mContent = menus.get(1).createFragment();
+		}else{
+			mContent = new PlaceholderFragment();
+		}
+		setContent(mContent);
+	}
+
+
+	private class DrawerItemClickListener implements ListView.OnItemClickListener
+	{
+
+		public void onItemClick(AdapterView <?> parent , View view , int position, long id)
+		{
+			BrickInfo item = mAdapter.getItem(position);
+
+			if (DeleteMode) {
+				//	item.setSelected(!item.isSelected());
+				//	mAdapter.notifyDataSetChanged();
+			} else {
+				if (mTitle.equals(item.getTitle()))
+				{
+					mDrawerLayout.closeDrawer(frameDrawer);
+					mDrawerList.setItemChecked(position, false);
+				}
+				else
+				{
+					selectItem(position, item);
+				}
+			}
+
+		}
+
+	}
+
+	ActionMode mMode;
+
+    public Boolean DeleteMode = false;
+
+    private void startDeleteMode() {
+
+        mMode = startActionMode(new AnActionModeOfEpicProportions());
+        DeleteMode = true;
+		getMenu();
+        mDrawerList.setSelection(AbsListView.CHOICE_MODE_MULTIPLE);
+        mAdapter.notifyDataSetChanged();
+    }
+
+    private void stopDeleteMode(Boolean finishActionMode) {
+        if (finishActionMode && mMode != null) {
+            mMode.finish();
+        }
+        DeleteMode = false;
+		getMenu();
+        mDrawerList.setSelection(AbsListView.CHOICE_MODE_NONE);
+        mAdapter.notifyDataSetChanged();
+    }
+
+	private final class AnActionModeOfEpicProportions implements ActionMode.Callback {
+        @Override
+        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+           
+            return true;
+        }
+
+        @Override
+        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+            return false;
+        }
+
+        @Override
+        public boolean onActionItemClicked(final ActionMode mode, MenuItem item) {
+			//     stopDeleteMode(true);
+            return true;
+        }
+
+        @Override
+        public void onDestroyActionMode(ActionMode mode) {
+            stopDeleteMode(false);
+        }
+    }
+
+
+	private void setContent(Fragment fragment){
+		
+		getFragmentManager().beginTransaction()
+			.replace(R.id.content_frame , fragment)
+			.commit();
+
+	}
+
+	private void selectItem(int position, BrickInfo item)
+	{
+			setContent(item.createFragment());
+			mDrawerList.setItemChecked(position, false);
+			setTitle(item.getTitle());
+
+		mDrawerLayout.closeDrawer(frameDrawer);
+
+
+	}
+
+	@Override
+	public void setTitle(CharSequence title)
+	{
+		mTitle = title ;
+		ab.setTitle(mTitle);
+	}
 
 	
 
@@ -50,17 +247,122 @@ public class MainActivity extends Activity
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
 	{
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        if (id == R.id.action_settings)
+       	if (mDrawerToggle.onOptionsItemSelected(item))
 		{
-            return true;
-        }
+			return true;
+		}
+		
         return super.onOptionsItemSelected(item);
     }
+	
+	/**
+	 *Адаптер NavigationDrawer
+	 */
+		
+	 private void getMenu(){
+		 menus = BricksList.getBricks();
+		 mAdapter.setData(menus);
+		 mAdapter.notifyDataSetChanged();
+	 }
+	 
+	class MenuAdapter extends ArrayAdapter<BrickInfo>
+    {
+        final LayoutInflater inflater;
+		private Context context;
+		SharedPreferences prefs;
+		
+		public void setData(ArrayList<BrickInfo> data) {
+            if (getCount() > 0)
+                clear();
+            if (data != null) {
+                for (BrickInfo item : data) {
+                    add(item);
+                }
+            }
+        }
+		
+        public MenuAdapter(Context context, int textViewResourceId, ArrayList<BrickInfo> objects) {
+            super(context, textViewResourceId, objects);
 
+			this.context = context;
+            inflater = LayoutInflater.from(context);
+			prefs = PreferenceManager.getDefaultSharedPreferences(context);
+			
+		}
+		
+
+        @Override
+        public View getView(final int position, View convertView, ViewGroup parent)
+        {
+            final ViewHolder holder;
+
+            if (convertView == null) {
+                convertView = inflater.inflate(R.layout.row, parent, false);
+				holder = new ViewHolder();
+				holder.linear = (LinearLayout)convertView.findViewById(R.id.linearRowBackground);
+				holder.image = (ImageView)convertView.findViewById(R.id.imageView);
+				holder.image.setOnClickListener(new OnClickListener(){
+
+						@Override
+						public void onClick(View p1)
+						{
+							BrickInfo theme = (BrickInfo)holder.check.getTag();
+
+							//	holder.image.setImageResource(theme.isFavorite() ? R.drawable.ic_action_important : R.drawable.ic_action_not_important);
+
+							SharedPreferences.Editor e = prefs.edit();
+							e.putString("mainFavorite_" , theme.getName());
+							e.putBoolean("mainMenu_" + theme.getTitle() , true);
+
+							e.commit();
+							getMenu();
+						}
+					});
+				holder.text = (TextView) convertView.findViewById(R.id.row_title);
+				holder.check = (CheckBox) convertView.findViewById(android.R.id.text1);
+				holder.check.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+						@Override
+						public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+							BrickInfo theme = (BrickInfo)holder.check.getTag();
+							theme.setSelected(buttonView.isChecked());
+
+							SharedPreferences.Editor e = prefs.edit();
+							e.putBoolean("mainMenu_" + theme.getTitle() , theme.isFavorite() ? true : buttonView.isChecked());
+							e.commit();
+							getMenu();
+						}
+					});
+				convertView.setTag(holder);
+
+            } else {
+                holder = (ViewHolder) convertView.getTag();
+            }
+
+			BrickInfo item = this.getItem(position);
+
+            holder.check.setTag(item);
+			holder.image.setVisibility(DeleteMode && !item.getTitle().equals("Поиск") ? View.VISIBLE : View.GONE);
+
+			holder.image.setImageResource(item.isFavorite() ? R.drawable.ic_action_important_light : R.drawable.ic_action_not_important_light );//(theme ? R.drawable.ic_action_important_light : R.drawable.ic_action_important) : (theme ? R.drawable.ic_action_not_important_light : R.drawable.ic_action_not_important));
+			holder.check.setVisibility(DeleteMode ? View.VISIBLE : View.GONE);
+			holder.check.setChecked(item.isSelected());
+
+			holder.text.setText(item.getTitle());
+			/*	textView1.setTypeface(face);
+			 if (current_position == position)
+			 {
+			 textView1.setTypeface(current_face);
+			 }*/
+
+			return convertView;
+        }
+		public class ViewHolder{
+			public CheckBox check;
+			public TextView text;
+			public ImageView image;
+			public LinearLayout linear;
+		}
+    }
     /**
      * A placeholder fragment containing a simple view.
      */
@@ -69,7 +371,9 @@ public class MainActivity extends Activity
 		private EditText login, password;
 		private Button send;
 		private LoginTask loginTask;
-        public PlaceholderFragment()
+		
+        
+		public PlaceholderFragment()
 		{
         }
 
@@ -153,7 +457,7 @@ public class MainActivity extends Activity
 				{
 					getActivity().getActionBar().setTitle(profile.getLogin());
 					getFragmentManager().beginTransaction()
-						.add(R.id.container, new FavoritesListFragment())
+						.add(R.id.content_frame, new FavoritesListFragment())
 						.commit();
 				}
 				else

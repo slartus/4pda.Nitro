@@ -15,6 +15,8 @@ public class BricksList {
         res.add(new NewsBrick());
         res.add(new FavoritesBrick());
         res.add(new ForumsBrick());
-        return res;
+        
+		return res;
+		
     }
 }

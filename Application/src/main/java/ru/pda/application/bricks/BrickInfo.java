@@ -8,11 +8,33 @@ import android.app.Fragment;
 public abstract class BrickInfo {
     private String name;
     private String title;
+	private boolean selected;
+	private boolean favorite;
 
     public BrickInfo(String name,String title){
         this.name=name;
         this.title=title;
     }
+
+	public void setFavorite(boolean favorite)
+	{
+		this.favorite = favorite;
+	}
+
+	public boolean isFavorite()
+	{
+		return favorite;
+	}
+
+	public void setSelected(boolean selected)
+	{
+		this.selected = selected;
+	}
+
+	public boolean isSelected()
+	{
+		return selected;
+	}
 
 
     public String getName() {

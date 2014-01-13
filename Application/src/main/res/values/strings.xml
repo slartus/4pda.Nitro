@@ -5,7 +5,9 @@
     <string name="hello_world">Авторизация</string>
     <string name="action_settings">Settings</string>
 	<string name="login">Логин (Login)</string>
-    <string name="parol">Пароль (Pasword)</string>
+    <string name="parol">Пароль (Password)</string>
+	<string name="app_menu">Меню</string>
+    
 	
 
 </resources>
