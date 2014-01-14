@@ -11,6 +11,7 @@ import java.util.GregorianCalendar;
  */
 public class DateTimeExternals {
     private static SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
+    private static SimpleDateFormat dateTimeFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm");
     private static SimpleDateFormat parseDateTimeFormat = new SimpleDateFormat("dd.MM.yyyy, HH:mm");
 
     /**
@@ -20,6 +21,14 @@ public class DateTimeExternals {
     public static String getTodayString() {
         GregorianCalendar nowCalendar = new GregorianCalendar();
         return dateFormat.format(nowCalendar.getTime());
+    }
+
+    public static String getDateString(Date date) {
+        return dateFormat.format(date);
+    }
+
+    public static String getDateTimeString(Date date) {
+        return dateTimeFormat.format(date);
     }
 
     /**
