@@ -3,12 +3,13 @@
   <component name="FacetManager">
     <facet type="android" name="Android">
       <configuration>
-        <option name="GEN_FOLDER_RELATIVE_PATH_APT" value="/../../4pdaApi/gen" />
-        <option name="GEN_FOLDER_RELATIVE_PATH_AIDL" value="/../../4pdaApi/gen" />
-        <option name="MANIFEST_FILE_RELATIVE_PATH" value="/../../4pdaApi/AndroidManifest.xml" />
-        <option name="RES_FOLDER_RELATIVE_PATH" value="/../../4pdaApi/res" />
-        <option name="ASSETS_FOLDER_RELATIVE_PATH" value="/../../4pdaApi/assets" />
-        <option name="LIBS_FOLDER_RELATIVE_PATH" value="/../../4pdaApi/libs" />
+        <option name="GEN_FOLDER_RELATIVE_PATH_APT" value="/../gen" />
+        <option name="GEN_FOLDER_RELATIVE_PATH_AIDL" value="/../gen" />
+        <option name="MANIFEST_FILE_RELATIVE_PATH" value="/../AndroidManifest.xml" />
+        <option name="RES_FOLDER_RELATIVE_PATH" value="/../res" />
+        <option name="ASSETS_FOLDER_RELATIVE_PATH" value="/../assets" />
+        <option name="LIBS_FOLDER_RELATIVE_PATH" value="/../libs" />
+        <option name="LIBRARY_PROJECT" value="true" />
         <option name="UPDATE_PROPERTY_FILES" value="true" />
         <resOverlayFolders>
           <path>/../../4pdaApi/res-overlay</path>
