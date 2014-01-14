@@ -22,7 +22,7 @@ public class ForumsListFragment extends BaseListFragment {
     
 	private Task task;
 	private ForumsListAdapter adapter;
-	private ArrayList<Forum> forums;
+	private ArrayList<Forum> forums = new ArrayList<Forum>();
 	@Override
     public ArrayList<? extends IListItem> getList() {
         return ForumsApi.getForums(new HttpHelper(App.getInstance()));

@@ -7,7 +7,7 @@
 	<string name="login">Логин (Login)</string>
     <string name="parol">Пароль (Password)</string>
 	<string name="app_menu">Меню</string>
-	<string name="error">Ошибка подключения</string>
+	<string name="error">Опибка подключения.</string>
 	<string name="button_refresh">Повторить</string>
     
     

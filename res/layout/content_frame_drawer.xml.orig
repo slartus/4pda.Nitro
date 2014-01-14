@@ -70,7 +70,7 @@
 			android:layout_gravity="start"
 			android:choiceMode="singleChoice"
 			android:dividerHeight="0dp"
-			/>
+			style="?android:listViewStyle"/>
 
 		<LinearLayout
 			android:layout_height="match_parent"

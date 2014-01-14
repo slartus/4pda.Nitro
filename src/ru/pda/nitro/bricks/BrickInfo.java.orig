@@ -11,11 +11,9 @@ public abstract class BrickInfo {
 	private boolean selected;
 	private boolean favorite;
 
-    public BrickInfo(String name,String title, boolean selected, boolean favorite){
+    public BrickInfo(String name,String title){
         this.name=name;
         this.title=title;
-		this.selected = selected;
-		this.favorite = favorite;
     }
 
 	public void setFavorite(boolean favorite)
@@ -47,6 +45,6 @@ public abstract class BrickInfo {
     public String getTitle() {
         return title;
     }
-	
+
     public abstract Fragment createFragment();
 }

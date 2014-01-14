@@ -2,16 +2,15 @@ package ru.pda.nitro.listfragments;
 
 import java.util.ArrayList;
 
-import ru.forpda.api.NewsApi;
+import ru.forpda.api.ForumsApi;
 import ru.forpda.http.HttpHelper;
-import ru.forpda.interfaces.ListInfo;
 import ru.forpda.interfaces.forum.IListItem;
 import ru.pda.nitro.App;
-import ru.pda.nitro.bricks.NewsBrick;
+import ru.pda.nitro.bricks.ForumsBrick;
 import android.view.*;
 import android.widget.*;
-import android.os.*;
 import ru.pda.nitro.*;
+import android.os.*;
 import ru.pda.nitro.adapters.*;
 import ru.forpda.interfaces.forum.*;
 
@@ -19,24 +18,24 @@ import ru.forpda.interfaces.forum.*;
 /**
  * Created by slartus on 12.01.14.
  */
-public class NewsListFragment extends BaseListFragment {
+public class ForumsListFragment extends BaseListFragment {
     
 	private Task task;
-	private NewsListAdapter adapter;
-	private ArrayList<News> news = new ArrayList<News>();
+	private ForumsListAdapter adapter;
+	private ArrayList<Forum> forums;
 	@Override
     public ArrayList<? extends IListItem> getList() {
-        return NewsApi.getNews(new HttpHelper(App.getInstance()), new ListInfo());
+        return ForumsApi.getForums(new HttpHelper(App.getInstance()));
     }
 
     @Override
     public String getTitle() {
-        return NewsBrick.TITLE;
+        return ForumsBrick.TITLE;
     }
 
     @Override
     public String getName() {
-        return NewsBrick.NAME;
+        return ForumsBrick.NAME;
     }
 	
 	@Override
@@ -54,7 +53,7 @@ public class NewsListFragment extends BaseListFragment {
 	{
 		// TODO: Implement this method
 		super.onActivityCreated(savedInstanceState);
-		adapter = new NewsListAdapter(getActivity(), news);
+		adapter = new ForumsListAdapter();
 		listView.setAdapter(adapter);
 		getData();
 	}
@@ -81,8 +80,8 @@ public class NewsListFragment extends BaseListFragment {
 		@Override
 		protected Boolean doInBackground(Void[] p1)
 		{
-			
-			news = (ArrayList<News>) getList();
+
+			forums = (ArrayList<Forum>) getList();
 			// TODO: Implement this method
 			return false;
 		}
@@ -94,7 +93,7 @@ public class NewsListFragment extends BaseListFragment {
 			super.onPostExecute(result);
 			if(result){
 
-			//	adapter.setData(topics);
+				//	adapter.setData(topics);
 				adapter.notifyDataSetChanged();
 				linearProgress.setVisibility(View.GONE);
 			}else

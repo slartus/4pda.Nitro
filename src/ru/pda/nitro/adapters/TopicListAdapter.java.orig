@@ -55,9 +55,8 @@ public class TopicListAdapter extends BaseAdapter
 	{
 		final ViewHolder holder;
 		if(view == null){
-			view = inflater.inflate(R.layout.list_item, p3, false);
+			view = inflater.inflate(R.layout.item_list_topic, p3, false);
 			holder = new ViewHolder();
-			holder.imageFlag = (ImageView)view.findViewById(R.id.imgFlag);
 			holder.textAutor = (TextView)view.findViewById(R.id.textViewAutor);
 			holder.textDate = (TextView)view.findViewById(R.id.textViewDate);
 			holder.textDescription = (TextView)view.findViewById(R.id.textViewDescription);
@@ -69,19 +68,16 @@ public class TopicListAdapter extends BaseAdapter
 			holder = (ViewHolder) view.getTag();
 		}
 		Topic topic = topics.get(position);
+		Log.e("nitro", "title: " + topic.getTitle());
 		holder.textAutor.setText(topic.getLastPostAuthor());
 		holder.textDate.setText(topic.getLastPostDate().toString());
 		holder.textDescription.setText(topic.getDescription());
 		holder.textForumTitle.setText(topic.getForumTitle());
 		holder.textTitle.setText(topic.getTitle());
-		holder.imageFlag.setImageDrawable(null);
-		if(topic.getHasUnreadPosts())
-			holder.imageFlag.setImageResource(R.drawable.new_flag);
 		// TODO: Implement this method
 		return view;
 	}
 	public class ViewHolder{
-		public ImageView imageFlag;
 		public TextView textTitle;
 		public TextView textDate;
 		public TextView textDescription;

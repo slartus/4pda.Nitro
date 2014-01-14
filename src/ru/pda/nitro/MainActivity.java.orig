@@ -44,7 +44,6 @@ public class MainActivity extends BaseActivity
 	private MenuAdapter mAdapter;
 	private ArrayList<BrickInfo> menus;
 	private UserProfile profile;
-	private int default_item;
 
 	
 
@@ -110,10 +109,18 @@ public class MainActivity extends BaseActivity
 
     }
 
+	
+
+/*	@Override
+    public PullToRefreshAttacher getPullToRefreshAttacher() {
+        return mPullToRefreshAttacher;
+    }*/
+
 	@Override
 	protected void onPostCreate(Bundle savedInstanceState)
 	{
 		super.onPostCreate(savedInstanceState);
+// Sync the toggle state after onRestoreInstanceState has occurred.
 		mDrawerToggle . syncState();
 	}
 	@Override
@@ -126,24 +133,12 @@ public class MainActivity extends BaseActivity
 	private void setDefaultContent(){
 	Fragment mContent;
 		if(profile.isLogined()){
-		//	setTitle(profile.getLogin());
-			mContent = menus.get(getPosition()).createFragment();
+			setTitle(profile.getLogin());
+			mContent = menus.get(1).createFragment();
 		}else{
 			mContent = new PlaceholderFragment();
 		}
 		setContent(mContent);
-	}
-	
-	private int getPosition(){
-		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-		for(int i = 0; i < menus.size(); i++){
-			
-			if(menus.get(i).getName().equals(prefs.getString("mainFavorite_", "favorites"))){
-				setTitle(menus.get(i).getTitle());
-			return i;
-			}
-		}
-		return 0;
 	}
 
 
@@ -252,6 +247,7 @@ public class MainActivity extends BaseActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
 	{
+
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
@@ -273,8 +269,7 @@ public class MainActivity extends BaseActivity
 	 */
 		
 	 private void getMenu(){
-		 SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-		 menus = BricksList.getBricks(prefs);
+		 menus = BricksList.getBricks();
 		 mAdapter.setData(menus);
 		 mAdapter.notifyDataSetChanged();
 	 }
@@ -290,10 +285,7 @@ public class MainActivity extends BaseActivity
                 clear();
             if (data != null) {
                 for (BrickInfo item : data) {
-					if(!DeleteMode && item.isSelected())
                     add(item);
-					else if(DeleteMode)
-						addAll(item);
                 }
             }
         }
@@ -329,7 +321,7 @@ public class MainActivity extends BaseActivity
 
 							SharedPreferences.Editor e = prefs.edit();
 							e.putString("mainFavorite_" , theme.getName());
-							e.putBoolean("mainMenu_" + theme.getName() , true);
+							e.putBoolean("mainMenu_" + theme.getTitle() , true);
 
 							e.commit();
 							getMenu();
@@ -344,7 +336,7 @@ public class MainActivity extends BaseActivity
 							theme.setSelected(buttonView.isChecked());
 
 							SharedPreferences.Editor e = prefs.edit();
-							e.putBoolean("mainMenu_" + theme.getName() , theme.isFavorite() ? true : buttonView.isChecked());
+							e.putBoolean("mainMenu_" + theme.getTitle() , theme.isFavorite() ? true : buttonView.isChecked());
 							e.commit();
 							getMenu();
 						}
@@ -371,9 +363,7 @@ public class MainActivity extends BaseActivity
 			 textView1.setTypeface(current_face);
 			 }*/
 
-			 
 			return convertView;
-			
         }
 		public class ViewHolder{
 			public CheckBox check;
