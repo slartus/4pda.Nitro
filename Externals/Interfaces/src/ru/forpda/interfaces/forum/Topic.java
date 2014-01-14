@@ -10,7 +10,7 @@ public class Topic implements IListItem {
     private CharSequence title;
     private Boolean hasUnreadPosts;
     private CharSequence description;
-    private Date lastPostDate;
+    private String lastPostDate;
     private CharSequence lastPostAuthor;
     private CharSequence forumTitle;
 
@@ -76,11 +76,11 @@ public class Topic implements IListItem {
      *
      * @return
      */
-    public Date getLastPostDate() {
+    public String getLastPostDate() {
         return lastPostDate;
     }
 
-    public void setLastPostDate(Date lastPostDate) {
+    public void setLastPostDate(String lastPostDate) {
         this.lastPostDate = lastPostDate;
     }
 

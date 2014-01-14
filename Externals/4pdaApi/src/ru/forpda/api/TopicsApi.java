@@ -81,7 +81,7 @@ public class TopicsApi {
                 case 3:
                     m = lastMessageDatePattern.matcher(str);
                     if (m.find()) {
-                        topic.setLastPostDate(DateTimeExternals.parseForumDateTime(m.group(1), today, yesterday));
+                        topic.setLastPostDate(DateTimeExternals.getDateTimeString( DateTimeExternals.parseForumDateTime(m.group(1), today, yesterday)));
 
                         topic.setLastPostAuthor(m.group(2));
                         res.add(topic);

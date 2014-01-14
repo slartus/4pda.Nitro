@@ -9,6 +9,8 @@ import ru.pda.nitro.R;
 import android.content.*;
 
 import android.util.*;
+import ru.forpda.common.*;
+
 
 public class TopicListAdapter extends BaseAdapter
 {
@@ -70,7 +72,7 @@ public class TopicListAdapter extends BaseAdapter
 		}
 		Topic topic = topics.get(position);
 		holder.textAutor.setText(topic.getLastPostAuthor());
-		holder.textDate.setText(topic.getLastPostDate().toString());
+		holder.textDate.setText(topic.getLastPostDate());
 		holder.textDescription.setText(topic.getDescription());
 		holder.textForumTitle.setText(topic.getForumTitle());
 		holder.textTitle.setText(topic.getTitle());
