@@ -19,7 +19,32 @@ import ru.forpda.interfaces.forum.*;
 /**
  * Created by slartus on 12.01.14.
  */
-public class NewsListFragment extends BaseListFragment {
+public class NewsListFragment extends BaseListFragment
+{
+
+	@Override
+	public boolean inBackground()
+	{
+		try
+		{
+			news = (ArrayList<News>) getList();
+
+		}
+		catch (Throwable e)
+		{}
+		// TODO: Implement this method
+		return false;
+		// TODO: Implement this method
+	}
+
+	@Override
+	public void inExecute()
+	{
+		adapter.setData(news);
+		adapter.notifyDataSetChanged();
+		// TODO: Implement this method
+	}
+
     
 	private Task task;
 	private NewsListAdapter adapter;
@@ -45,7 +70,7 @@ public class NewsListFragment extends BaseListFragment {
 		// TODO: Implement this method
 		View v = inflater.inflate(R.layout.list_topic, container, false);
 		listView = (ListView)v.findViewById(R.id.listViewTopic);
-		linearProgress = (LinearLayout)getActivity().findViewById(R.id.linearProgress);
+//		linearProgress = (LinearLayout)getActivity().findViewById(R.id.linearProgress);
 		return v;
 	}
 
@@ -61,46 +86,13 @@ public class NewsListFragment extends BaseListFragment {
 
 
 
-	private void getData(){
-		task = new Task();
-		task.execute();
-	}
+	public void getData(){
+		if(!isLoading()){
 
-	public class Task extends AsyncTask<Void, Void, Boolean>
-	{
-
-		@Override
-		protected void onPreExecute()
-		{
-			// TODO: Implement this method
-			super.onPreExecute();
-			linearProgress.setVisibility(View.VISIBLE);
-		}
-
-
-		@Override
-		protected Boolean doInBackground(Void[] p1)
-		{
-			
-			news = (ArrayList<News>) getList();
-			// TODO: Implement this method
-			return false;
-		}
-
-		@Override
-		protected void onPostExecute(Boolean result)
-		{
-			// TODO: Implement this method
-			super.onPostExecute(result);
-			if(result){
-
-			//	adapter.setData(topics);
-				adapter.notifyDataSetChanged();
-				linearProgress.setVisibility(View.GONE);
-			}else
-				getData();
-		}
-
+			task = new Task();
+			task.execute();
+		}else
+			setProgress(false);
 
 	}
 

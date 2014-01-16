@@ -18,7 +18,22 @@ import ru.forpda.interfaces.forum.*;
 /**
  * Created by slartus on 12.01.14.
  */
-public class ForumsListFragment extends BaseListFragment {
+public class ForumsListFragment extends BaseListFragment
+{
+
+	@Override
+	public boolean inBackground()
+	{
+		return true;
+		// TODO: Implement this method
+	}
+
+	@Override
+	public void inExecute()
+	{
+		// TODO: Implement this method
+	}
+
     
 	private Task task;
 	private ForumsListAdapter adapter;
@@ -60,7 +75,8 @@ public class ForumsListFragment extends BaseListFragment {
 
 
 
-	private void getData(){
+	
+	public void getData(){
 		task = new Task();
 		task.execute();
 	}

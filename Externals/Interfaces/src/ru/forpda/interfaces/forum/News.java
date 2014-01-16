@@ -8,7 +8,7 @@ import java.util.Date;
 public class News implements IListItem {
     private CharSequence id;
     private CharSequence title;
-    private Date newsDate;
+    private String newsDate;
     private CharSequence author;
     private CharSequence description;
     private CharSequence imgUrl;
@@ -35,11 +35,11 @@ public class News implements IListItem {
         this.title = title;
     }
 
-    public Date getNewsDate() {
+    public String getNewsDate() {
         return newsDate;
     }
 
-    public void setNewsDate(Date newsDate) {
+    public void setNewsDate(String newsDate) {
         this.newsDate = newsDate;
     }
 

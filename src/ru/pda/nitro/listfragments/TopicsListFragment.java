@@ -37,23 +37,28 @@ public abstract class TopicsListFragment extends BaseListFragment{
 		return false;
     }
 	
-	public void showError(boolean isError){
-		if(isError){
-			linearProgress.setVisibility(View.GONE);
-			linearError.setVisibility(View.VISIBLE);
-			}else{
-				if(!isRefresh())
-				linearProgress.setVisibility(View.VISIBLE);
-				linearError.setVisibility(View.GONE);
-				
-			}
+	@Override
+	public boolean inBackground()
+	{
+		try
+		{
+			return getTopics();
+		}
+		catch (Throwable e)
+		{}
+		
+		return false;
+		// TODO: Implement this method
+	}
+
+	@Override
+	public void inExecute()
+	{
+		adapter.setData(topics);
+		adapter.notifyDataSetChanged();
+		// TODO: Implement this method
 	}
 	
-	public void setProgress(boolean loading) {
-
-		((IRefreshActivity) getActivity()).getPullToRefreshAttacher().setRefreshing(loading);
-
-	}
 	
 	public void getData(){
 		if(!isLoading()){
@@ -65,49 +70,5 @@ public abstract class TopicsListFragment extends BaseListFragment{
 		
 	}
 	
-	public class Task extends AsyncTask<Void, Void, Boolean>
-	{
-
-		@Override
-		protected void onPreExecute()
-		{
-			// TODO: Implement this method
-			super.onPreExecute();
-			setLoading(true);
-			showError(false);
-			setRefresh(false);
-		}
-
-		
-		@Override
-		protected Boolean doInBackground(Void[] p1)
-		{
-			try
-			{
-				return getTopics();
-			}
-			catch (Throwable e)
-			{}
-			// TODO: Implement this method
-			return false;
-		}
-
-		@Override
-		protected void onPostExecute(Boolean result)
-		{
-			// TODO: Implement this method
-			super.onPostExecute(result);
-			if(result){
-			adapter.setData(topics);
-			adapter.notifyDataSetChanged();
-			linearProgress.setVisibility(View.GONE);
-			}else
-			showError(true);
-			
-			setProgress(false);
-			setLoading(false);
-		}
-
-		
-	}
+	
 }

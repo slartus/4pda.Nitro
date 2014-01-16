@@ -12,6 +12,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import ru.forpda.interfaces.IHttpClient;
+import ru.forpda.common.*;
 
 /**
  * Created by slartus on 12.01.14.
@@ -125,7 +126,7 @@ private int newsCountInt;
                 Matcher infoMatcher = infoPattern.matcher(postData);
                 if (infoMatcher.find()) {
                     Date _pubDate = dateFormat.parse(infoMatcher.group(2));
-                    topic.setNewsDate(_pubDate);
+                    topic.setNewsDate(DateTimeExternals.getDateTimeString(  _pubDate));
                     topic.setAuthor(Html.fromHtml(infoMatcher.group(1)));
                 }
 
