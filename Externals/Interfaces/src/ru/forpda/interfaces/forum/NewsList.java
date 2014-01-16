@@ -19,47 +19,48 @@ import ru.forpda.common.*;
  */
 public class NewsList extends ArrayList<News> {
     private IHttpClient mClient;
-    private String mSearchTag;
-    private int mLoadedNewsSize;
-    private String mLastNewsUrl;
-    private int mLastNewsPage;
-    private IFindByIdDelegate mFindByIdDelegate;
-private int newsCountInt;
+    private CharSequence mSearchTag;
 
+    private CharSequence mLastNewsUrl;
+    private int mLastNewsPage;
+    private int newsCountInt;
+
+    /**
+     * Сколько всего новостей на сайте
+     *
+     * @return
+     */
     public int getNewsCount() {
         return newsCountInt;
+
     }
 
-    public void setNewsCount(int newsCountInt) {
-        this.newsCountInt = newsCountInt;
+    private static String getSearchTag(String url) {
+        Matcher m = Pattern.compile("4pda.ru/tag/(.*?)(/|$)").matcher(url);
+        if (m.find()) {
+            return "tag/" + m.group(1) + "/";
+        }
+        return "";
     }
 
-    public interface IFindByIdDelegate {
-        Boolean isHasByTitle(String id);
-    }
-
-    public NewsList(IHttpClient client, String searchTag,
-                int loadedNewsSize,
-                String lastNewsUrl,
-                int lastNewsPage,
-                IFindByIdDelegate findByIdDelegate) {
+    /**
+     * @param client
+     * @param newsUrl          - урл страницы новостей
+     */
+    public NewsList(IHttpClient client, String newsUrl) {
 
         mClient = client;
-        mSearchTag = searchTag;
-        mLoadedNewsSize = loadedNewsSize;
-        mLastNewsUrl = lastNewsUrl;
-        mLastNewsPage = lastNewsPage;
-        mFindByIdDelegate = findByIdDelegate;
+        mSearchTag = getSearchTag(newsUrl);
     }
 
 
     public void loadNextNewsPage() throws IOException, ParseException {
-        if (mLoadedNewsSize == 0) {
+        if (size() == 0) {
             getPage(1, "http://4pda.ru/" + mSearchTag);
             return;
         }
 
-        String url = mLastNewsUrl;
+        CharSequence url = mLastNewsUrl;
 
         if (TextUtils.isEmpty(mSearchTag)) {
             Matcher m = Pattern.compile("4pda.ru/(\\d+)/(\\d+)/(\\d+)/(\\d+)").matcher(url);
@@ -72,6 +73,9 @@ private int newsCountInt;
             int nextPage = mLastNewsPage + 1;
             getPage(nextPage, "http://4pda.ru/" + mSearchTag + "page/" + nextPage);
         }
+
+        mLastNewsUrl = size() > 0 ? get(size() - 1).getId() : "";
+        mLastNewsPage = size() > 0 ? get(size() - 1).getPage() : 0;
     }
 
     private void loadPage(int year, int nextPage, int iteration) throws IOException, ParseException {
@@ -93,7 +97,7 @@ private int newsCountInt;
         Matcher m = Pattern.compile("<div class=\"wp-pagenavi\">.*<a href=\".*?/page/(\\d+)/\"\\s+class=\"page\".*?</div>").matcher(pagebody);
 
         if (m.find()) {
-            int newsPerPage = (mLoadedNewsSize + size()) / curPage;
+            int newsPerPage = size() / curPage;
             return Integer.parseInt(m.group(1)) * newsPerPage;
         }
         return getNewsCount();
@@ -105,7 +109,7 @@ private int newsCountInt;
                 .matcher(dailyNewsPage);
         Boolean someUnloaded = false;// одна из новостей незагружена - значит и остальные
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yy");
-        SimpleDateFormat displayDateFormat = new SimpleDateFormat("dd.MM.yyyy");
+
 
         Pattern mPattern = Pattern.compile("<a href=\"(/\\d+/\\d+/\\d+/(\\d+))/\" rel=\"bookmark\" title=\"(.*?)\" alt=\"\">.*?</a></h2>");
         Pattern infoPattern = Pattern.compile("<strong>(.*?)</strong>&nbsp;\\|\\s*(\\d+\\.\\d+\\.\\d+)\\s*\\|");
@@ -118,7 +122,7 @@ private int newsCountInt;
             if (m.find()) {
                 String id = "http://4pda.ru" + m.group(1);
 
-                if (!someUnloaded && mFindByIdDelegate.isHasByTitle(id)) continue;
+                if (!someUnloaded && findByTitle(id)!=null) continue;
                 someUnloaded = true;
 
                 News topic = new News(id, Html.fromHtml(m.group(3)).toString());
@@ -126,7 +130,7 @@ private int newsCountInt;
                 Matcher infoMatcher = infoPattern.matcher(postData);
                 if (infoMatcher.find()) {
                     Date _pubDate = dateFormat.parse(infoMatcher.group(2));
-                    topic.setNewsDate(DateTimeExternals.getDateTimeString(  _pubDate));
+                    topic.setNewsDate(DateTimeExternals.getDateTimeString(_pubDate));
                     topic.setAuthor(Html.fromHtml(infoMatcher.group(1)));
                 }
 
@@ -145,7 +149,17 @@ private int newsCountInt;
             }
         }
 
-        setNewsCount(Math.max(getNewsCount(), lastPageNum(dailyNewsPage, page)));
+        newsCountInt = Math.max(getNewsCount(), lastPageNum(dailyNewsPage, page));
         return dailyNewsPage;
+    }
+
+    public News findByTitle(String title) {
+        title = title.toLowerCase().replace(" ", "");
+        for (int i = 0; i < size(); i++) {
+            News topic = get(i);
+            if (topic.getTitle().toString().replace(" ", "").equalsIgnoreCase(title))
+                return topic;
+        }
+        return null;
     }
 }
