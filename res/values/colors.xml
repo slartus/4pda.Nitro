@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="fade_bar">#2d2d2d</color>
+    <color name="white">#ffffff</color>
+	
+	<color name="tap_button">#10000000</color>
+	<color name="tap_button_widget">#440A0808</color>
+    <color name="fon_fragment_dk">#0f0f11</color>
+    <color name="fon_news_dk">#1e1f23</color>
+    <color name="fon_fragment">#f2f2f2</color>
+    <color name="fon_news">#fff</color>
+    <color name="color_title">#848484</color>
+    <color name="transparent_bg">#ffffff</color>
+    <color name="market_fon">#1b6d1b</color>
+    <color name="error_fon">#be1c26</color>
+</resources>

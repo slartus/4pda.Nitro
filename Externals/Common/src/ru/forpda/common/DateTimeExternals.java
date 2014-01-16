@@ -11,7 +11,7 @@ import java.util.GregorianCalendar;
  */
 public class DateTimeExternals {
     private static SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
-    private static SimpleDateFormat dateTimeFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm");
+    private static SimpleDateFormat dateTimeFormat = new SimpleDateFormat("dd.MM.yyyy в HH:mm");
     private static SimpleDateFormat parseDateTimeFormat = new SimpleDateFormat("dd.MM.yyyy, HH:mm");
 
     /**
