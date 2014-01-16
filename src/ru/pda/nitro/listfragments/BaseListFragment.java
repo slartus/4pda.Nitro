@@ -14,6 +14,7 @@ import android.view.View.*;
 import ru.pda.nitro.R;
 import ru.pda.nitro.*;
 import uk.co.senab.actionbarpulltorefresh.library.*;
+import ru.pda.nitro.database.*;
 
 
 /**
@@ -51,6 +52,7 @@ public abstract class BaseListFragment extends Fragment {
 				@Override
 				public void onRefreshStarted(View view) {
 					setRefresh(true);
+					getActivity().getContentResolver().delete(Contract.Favorite.CONTENT_URI, null, null);
 					getData();
 				}
 			});

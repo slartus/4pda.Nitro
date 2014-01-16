@@ -14,6 +14,11 @@ import android.os.*;
 import ru.pda.nitro.*;
 import ru.pda.nitro.adapters.*;
 import ru.forpda.interfaces.forum.*;
+import org.apache.http.client.*;
+import ru.forpda.interfaces.*;
+import java.text.*;
+import java.io.*;
+import android.util.*;
 
 
 /**
@@ -21,37 +26,16 @@ import ru.forpda.interfaces.forum.*;
  */
 public class NewsListFragment extends BaseListFragment
 {
-
-	@Override
-	public boolean inBackground()
-	{
-		try
-		{
-			news = (ArrayList<News>) getList();
-
-		}
-		catch (Throwable e)
-		{}
-		// TODO: Implement this method
-		return false;
-		// TODO: Implement this method
-	}
-
-	@Override
-	public void inExecute()
-	{
-		adapter.setData(news);
-		adapter.notifyDataSetChanged();
-		// TODO: Implement this method
-	}
-
-    
+	private NewsList newsList;
 	private Task task;
 	private NewsListAdapter adapter;
 	private ArrayList<News> news = new ArrayList<News>();
+	
 	@Override
     public ArrayList<? extends IListItem> getList() {
-        return NewsApi.getNews(new HttpHelper(App.getInstance()), new ListInfo());
+        
+		
+		return news;
     }
 
     @Override
@@ -84,7 +68,36 @@ public class NewsListFragment extends BaseListFragment
 		getData();
 	}
 
+	@Override
+	public boolean inBackground()
+	{
+		try
+		{
+			newsList = new NewsList(new HttpHelper(App.getInstance()), "");
+			
+			newsList.loadNextNewsPage();
+			for(News data : newsList){
+				news.add(data);
+				Log.e("news", data.getTitle().toString());
+			}
+			return true;
+		}
+		catch (ParseException e)
+		{}
+		catch (IOException e)
+		{}
+		
+		return false;
+		// TODO: Implement this method
+	}
 
+	@Override
+	public void inExecute()
+	{
+		adapter.setData(news);
+		adapter.notifyDataSetChanged();
+		// TODO: Implement this method
+	}
 
 	public void getData(){
 		if(!isLoading()){

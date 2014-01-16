@@ -37,6 +37,7 @@ public class FavoritesListFragment extends TopicsListFragment
 
 	@Override
     public ArrayList<Topic> getTopicsList() throws ParseException, IOException {
+		
         return TopicsApi.getFavorites(new HttpHelper(App.getInstance()), new ListInfo());
     }
 
