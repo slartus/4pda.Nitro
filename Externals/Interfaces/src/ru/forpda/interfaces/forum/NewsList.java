@@ -114,7 +114,7 @@ public class NewsList extends ArrayList<News> {
         Pattern mPattern = Pattern.compile("<a href=\"(/\\d+/\\d+/\\d+/(\\d+))/\" rel=\"bookmark\" title=\"(.*?)\" alt=\"\">.*?</a></h2>");
         Pattern infoPattern = Pattern.compile("<strong>(.*?)</strong>&nbsp;\\|\\s*(\\d+\\.\\d+\\.\\d+)\\s*\\|");
         Pattern textPattern = Pattern.compile("<div class=\"entry\" id=\".*?\">([\\s\\S]*?)</div><div class=\"postmetadata\"");
-        Pattern imagePattern = Pattern.compile("<noindex>.*?<img.*src=\"(.*?)\"");
+        Pattern imagePattern = Pattern.compile("<center><img[^>]*?src=\"(.*?)\"");
         while (postsMatcher.find()) {
             String postData = postsMatcher.group(1);
             Matcher m = mPattern.matcher(postData);
