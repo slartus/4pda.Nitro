@@ -90,6 +90,7 @@ public abstract class TopicsListFragment extends BaseListFragment{
 			}while(cursor.moveToNext());
 
 		}
+		cursor.close();
 		return topics;
 	}
 

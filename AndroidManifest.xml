@@ -26,11 +26,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-		<!--provider
+		<provider
             android:name=".database.Provider"
-            android:authorities="ru.pda.application.database"
+            android:authorities="ru.pda.nitro.database"
             android:exported="true" >
-		</provider-->
+		</provider>
         <meta-data
             android:name="com.sec.android.support.multiwindow"
             android:value="true" />

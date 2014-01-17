@@ -21,6 +21,9 @@ import java.io.*;
 import android.util.*;
 import android.app.*;
 import android.support.v4.view.*;
+import android.database.*;
+import ru.pda.nitro.database.*;
+import android.content.*;
 
 
 /**
@@ -89,13 +92,54 @@ public class NewsListFragment extends BaseListFragment
 	{
 		try
 		{
-			newsList = new NewsList(new HttpHelper(App.getInstance()), newsUrl);
-			
-			newsList.loadNextNewsPage();
-			for(News data : newsList){
-				news.add(data);
+			if(newsUrl.equals(""))
+			if (isRefresh())
+			{
+				newsList = new NewsList(new HttpHelper(App.getInstance()), newsUrl);
+
+				newsList.loadNextNewsPage();
+				for(News data : newsList){
+					news.add(data);
+				}
+				if (news.size() > 0)
+				{
+					deleteAllLocalData(Contract.News.CONTENT_URI);
+					setLocalData(news);
+					return true;
+				}
 			}
-			return true;
+			else
+			{
+				news = getLocalData();
+				if (news.size() == 0)
+				{
+					newsList = new NewsList(new HttpHelper(App.getInstance()), newsUrl);
+
+					newsList.loadNextNewsPage();
+					for(News data : newsList){
+						news.add(data);
+					}
+					if (news.size() > 0)
+					{
+						setLocalData(news);
+						return true;
+					}
+				}
+				else
+					return true;
+			}else{
+				newsList = new NewsList(new HttpHelper(App.getInstance()), newsUrl);
+
+				newsList.loadNextNewsPage();
+				for(News data : newsList){
+					news.add(data);
+				}
+				return true;
+			}
+			
+		
+		
+			
 		}
 		catch (ParseException e)
 		{}
@@ -122,6 +166,41 @@ public class NewsListFragment extends BaseListFragment
 		}else
 			setProgress(false);
 
+	}
+	
+	
+	public ArrayList<News> getLocalData(){
+		news = new ArrayList<News>();
+		Cursor cursor = getActivity().getContentResolver().query(Contract.News.CONTENT_URI, null, null, null, Contract.Favorite.DEFAULT_SORT_ORDER);
+		if(cursor.moveToFirst()){
+			do{
+				News topic = new News(null, null);
+				topic.setDescription(cursor.getString(cursor.getColumnIndexOrThrow(Contract.News.description)));
+				topic.setTitle(cursor.getString(cursor.getColumnIndexOrThrow(Contract.News.title)));
+				topic.setId(cursor.getString(cursor.getColumnIndexOrThrow(Contract.News.id)));
+				topic.setAuthor(cursor.getString(cursor.getColumnIndexOrThrow(Contract.News.author)));
+				topic.setNewsDate(cursor.getString(cursor.getColumnIndexOrThrow(Contract.News.newsDate)));
+				topic.setImgUrl(cursor.getString(cursor.getColumnIndexOrThrow(Contract.News.imgUrl)));
+				news.add(topic);
+			}while(cursor.moveToNext());
+
+		}
+		cursor.close();
+		return news;
+	}
+
+	public void setLocalData(ArrayList<News> topics){
+
+		for(News topic : topics){
+			ContentValues cv = new ContentValues();
+			cv.put(Contract.News.description, topic.getDescription().toString());
+			cv.put(Contract.News.title, topic.getTitle().toString());
+			cv.put(Contract.News.id, topic.getId().toString());
+			cv.put(Contract.News.author, topic.getAuthor().toString());
+			cv.put(Contract.News.newsDate, topic.getNewsDate().toString());
+			cv.put(Contract.News.imgUrl, topic.getImgUrl().toString());
+			getActivity().getContentResolver().insert(Contract.News.CONTENT_URI, cv);
+		}
 	}
 
 	@Override

@@ -27,7 +27,7 @@ public final class Contract
 		public static final String CONTENT_TYPE = "vnd.android.cursor.dir/vnd." + AUTHORITY + ".Favorite";
 		public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/vnd." + AUTHORITY + ".Favorite";
 
-		public static final String DEFAULT_SORT_ORDER = BaseColumns._ID + " DESC";
+		public static final String DEFAULT_SORT_ORDER = BaseColumns._ID + " ASC";
 
     }
 	
@@ -37,6 +37,7 @@ public final class Contract
 		{}
 
 		public static final String id = "id";
+		public static final String category = "category";
 		public static final String title = "title";
 		public static final String author = "author";
 		public static final String newsDate = "newsDate";
@@ -48,7 +49,7 @@ public final class Contract
 		public static final String CONTENT_TYPE = "vnd.android.cursor.dir/vnd." + AUTHORITY + ".News";
 		public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/vnd." + AUTHORITY + ".News";
 
-		public static final String DEFAULT_SORT_ORDER = BaseColumns._ID + " DESC";
+		public static final String DEFAULT_SORT_ORDER = BaseColumns._ID + " ASC";
 
     }
     

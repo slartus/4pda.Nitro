@@ -11,7 +11,7 @@ import android.content.*;
 public class Database extends SQLiteOpenHelper
 {
 	private static final String DATABASE_NAME = "nitro.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 3;
 	
 	static final String NEWS_TABLE = "News";
     static final String FAVORITE_TABLE = "Favorite";
@@ -27,6 +27,7 @@ public class Database extends SQLiteOpenHelper
 
 		db.execSQL("CREATE TABLE " + FAVORITE_TABLE + " ("
 				   + BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+				   + Contract.Favorite.id + " TEXT,"
 				   + Contract.Favorite.title + " TEXT,"
 				   + Contract.Favorite.lastAvtor + " TEXT,"
 				   + Contract.Favorite.lastDate + " TEXT,"
@@ -38,10 +39,11 @@ public class Database extends SQLiteOpenHelper
 
 		db.execSQL("CREATE TABLE " + NEWS_TABLE + " ("
 				   + BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+				   + Contract.News.category + " TEXT,"
 				   + Contract.News.author + " TEXT,"
 				   + Contract.News.description + " TEXT,"
 				   + Contract.News.id + " TEXT,"
-				   + Contract.News.imgUrl + "TEXT,"
+				   + Contract.News.imgUrl + " TEXT,"
 				   + Contract.News.newsDate + " TEXT,"
 				   + Contract.News.page + " INTEGER,"
 				   + Contract.News.title + " TEXT"

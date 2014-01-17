@@ -24,6 +24,7 @@ import ru.pda.nitro.*;
 import android.view.View.*;
 import uk.co.senab.actionbarpulltorefresh.library.*;
 import android.app.*;
+import ru.pda.nitro.database.*;
 
 
 /**
@@ -33,16 +34,19 @@ public class FavoritesListFragment extends TopicsListFragment
 {
 
 	@Override
-    public ArrayList<Topic> getTopicsList() throws ParseException, IOException {
-		
+    public ArrayList<Topic> getTopicsList() throws ParseException, IOException
+	{
+
         return TopicsApi.getFavorites(new HttpHelper(App.getInstance()), new ListInfo());
     }
 
-    public String getTitle() {
+    public String getTitle()
+	{
         return FavoritesBrick.TITLE;
     }
 
-    public String getName() {
+    public String getName()
+	{
         return FavoritesBrick.NAME;
     }
 
@@ -59,14 +63,14 @@ public class FavoritesListFragment extends TopicsListFragment
 	{
 		// TODO: Implement this method
 		super.onActivityCreated(savedInstanceState);
-		
+
 		adapter = new TopicListAdapter(getActivity(), topics);
 		listView.setAdapter(adapter);
 		getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-		
+
 		getData();
-		
-		
+
+
 	}
 
 	@Override
@@ -74,10 +78,33 @@ public class FavoritesListFragment extends TopicsListFragment
 	{
 		// TODO: Implement this method
 		super.getTopics();
-		topics = getTopicsList();
-		if(topics.size() > 0)
-			return true;
-			
+		Log.e("topic", "refresh: " + isRefresh());
+		if (isRefresh())
+		{
+			topics = getTopicsList();
+			if (topics.size() > 0)
+			{
+				deleteAllLocalData(Contract.Favorite.CONTENT_URI);
+				setLocalData(topics);
+				return true;
+			}
+		}
+		else
+		{
+			topics = getLocalData();
+			if (topics.size() == 0)
+			{
+				topics = getTopicsList();
+				if (topics.size() > 0)
+				{
+					setLocalData(topics);
+					return true;
+				}
+			}
+			else
+				return true;
+		}
+		
 		return false;
 	}
 
@@ -86,9 +113,9 @@ public class FavoritesListFragment extends TopicsListFragment
 	{
 		// TODO: Implement this method
 		super.onDestroy();
-		if(task != null)
+		if (task != null)
 			task.cancel(true);
 	}
-	
-	
+
+
 }

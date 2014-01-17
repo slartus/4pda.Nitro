@@ -16,6 +16,8 @@ import ru.pda.nitro.*;
 import uk.co.senab.actionbarpulltorefresh.library.*;
 import ru.pda.nitro.database.*;
 import android.app.*;
+import android.util.*;
+import android.net.*;
 
 
 /**
@@ -52,7 +54,6 @@ public abstract class BaseListFragment extends Fragment {
 				@Override
 				public void onRefreshStarted(View view) {
 					setRefresh(true);
-			//		getActivity().getContentResolver().delete(Contract.Favorite.CONTENT_URI, null, null);
 					getData();
 				}
 			});
@@ -115,7 +116,7 @@ public abstract class BaseListFragment extends Fragment {
 			super.onPreExecute();
 			setLoading(true);
 			showError(false);
-			setRefresh(false);
+			
 		}
 
 
@@ -136,11 +137,17 @@ public abstract class BaseListFragment extends Fragment {
 				linearProgress.setVisibility(View.GONE);
 			}else
 				showError(true);
+				
 			setProgress(false);
 			setLoading(false);
+			
 		}
 
 
+	}
+	
+	public void deleteAllLocalData(Uri mUri){
+		getActivity().getContentResolver().delete(mUri, null, null);
 	}
 	
 	
