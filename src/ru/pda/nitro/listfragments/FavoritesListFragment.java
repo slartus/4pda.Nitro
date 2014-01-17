@@ -23,6 +23,7 @@ import android.content.*;
 import ru.pda.nitro.*;
 import android.view.View.*;
 import uk.co.senab.actionbarpulltorefresh.library.*;
+import android.app.*;
 
 
 /**
@@ -30,10 +31,6 @@ import uk.co.senab.actionbarpulltorefresh.library.*;
  */
 public class FavoritesListFragment extends TopicsListFragment
 {
-
-	
-
-
 
 	@Override
     public ArrayList<Topic> getTopicsList() throws ParseException, IOException {
@@ -54,9 +51,7 @@ public class FavoritesListFragment extends TopicsListFragment
 	{
 		// TODO: Implement this method
 		View v = inflater.inflate(R.layout.list_topic, container, false);
-		listView = (ListView)v.findViewById(R.id.listViewTopic);
-		
-		return v;
+		return initialiseUi(v);
 	}
 
 	@Override
@@ -65,9 +60,9 @@ public class FavoritesListFragment extends TopicsListFragment
 		// TODO: Implement this method
 		super.onActivityCreated(savedInstanceState);
 		
-		
 		adapter = new TopicListAdapter(getActivity(), topics);
 		listView.setAdapter(adapter);
+		getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
 		
 		getData();
 		

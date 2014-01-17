@@ -40,7 +40,7 @@ public class NewsList extends ArrayList<News> {
         if (m.find()) {
             return "tag/" + m.group(1) + "/";
         }
-        return "";
+        return url;
     }
 
     /**

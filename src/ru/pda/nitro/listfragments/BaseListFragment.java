@@ -1,6 +1,6 @@
 package ru.pda.nitro.listfragments;
 
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -15,6 +15,7 @@ import ru.pda.nitro.R;
 import ru.pda.nitro.*;
 import uk.co.senab.actionbarpulltorefresh.library.*;
 import ru.pda.nitro.database.*;
+import android.app.*;
 
 
 /**
@@ -36,9 +37,8 @@ public abstract class BaseListFragment extends Fragment {
 	{
 		// TODO: Implement this method
 		super.onActivityCreated(savedInstanceState);
-		linearProgress = (LinearLayout)getActivity().findViewById(R.id.linearProgress);
-		linearError = (LinearLayout)getActivity().findViewById(R.id.linearError);
-		buttonError = (Button)getActivity().findViewById(R.id.buttonError);
+		
+		
 		buttonError.setOnClickListener(new OnClickListener(){
 
 				@Override
@@ -52,7 +52,7 @@ public abstract class BaseListFragment extends Fragment {
 				@Override
 				public void onRefreshStarted(View view) {
 					setRefresh(true);
-					getActivity().getContentResolver().delete(Contract.Favorite.CONTENT_URI, null, null);
+			//		getActivity().getContentResolver().delete(Contract.Favorite.CONTENT_URI, null, null);
 					getData();
 				}
 			});
@@ -95,6 +95,14 @@ public abstract class BaseListFragment extends Fragment {
 			linearError.setVisibility(View.GONE);
 
 		}
+	}
+	
+	public View initialiseUi(View v){
+		listView = (ListView)v.findViewById(R.id.listViewTopic);
+		linearProgress = (LinearLayout)v.findViewById(R.id.linearProgress);
+		linearError = (LinearLayout)v.findViewById(R.id.linearError);
+		buttonError = (Button)v.findViewById(R.id.buttonError);
+		return v;
 	}
 	
 	public class Task extends AsyncTask<Void, Void, Boolean>

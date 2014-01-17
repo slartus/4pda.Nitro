@@ -19,6 +19,8 @@ import ru.forpda.interfaces.*;
 import java.text.*;
 import java.io.*;
 import android.util.*;
+import android.app.*;
+import android.support.v4.view.*;
 
 
 /**
@@ -27,6 +29,7 @@ import android.util.*;
 public class NewsListFragment extends BaseListFragment
 {
 	private NewsList newsList;
+	private String newsUrl;
 	private Task task;
 	private NewsListAdapter adapter;
 	private ArrayList<News> news = new ArrayList<News>();
@@ -48,14 +51,24 @@ public class NewsListFragment extends BaseListFragment
         return NewsBrick.NAME;
     }
 	
+	public static NewsListFragment newInstance(String url)
+	{
+		NewsListFragment f = new NewsListFragment();
+
+		// Supply num input as an argument.
+		Bundle args = new Bundle();
+		args.putString("_url", url);
+		f.setArguments(args);
+
+		return f;
+	}
+	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
 		// TODO: Implement this method
 		View v = inflater.inflate(R.layout.list_topic, container, false);
-		listView = (ListView)v.findViewById(R.id.listViewTopic);
-//		linearProgress = (LinearLayout)getActivity().findViewById(R.id.linearProgress);
-		return v;
+		return initialiseUi(v);
 	}
 
 	@Override
@@ -65,7 +78,10 @@ public class NewsListFragment extends BaseListFragment
 		super.onActivityCreated(savedInstanceState);
 		adapter = new NewsListAdapter(getActivity(), news);
 		listView.setAdapter(adapter);
+		newsUrl = getArguments().getString("_url");
 		getData();
+		
+		
 	}
 
 	@Override
@@ -73,12 +89,11 @@ public class NewsListFragment extends BaseListFragment
 	{
 		try
 		{
-			newsList = new NewsList(new HttpHelper(App.getInstance()), "");
+			newsList = new NewsList(new HttpHelper(App.getInstance()), newsUrl);
 			
 			newsList.loadNextNewsPage();
 			for(News data : newsList){
 				news.add(data);
-				Log.e("news", data.getTitle().toString());
 			}
 			return true;
 		}

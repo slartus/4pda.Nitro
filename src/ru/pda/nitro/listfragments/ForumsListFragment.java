@@ -13,6 +13,7 @@ import ru.pda.nitro.*;
 import android.os.*;
 import ru.pda.nitro.adapters.*;
 import ru.forpda.interfaces.forum.*;
+import android.app.*;
 
 
 /**
@@ -58,9 +59,7 @@ public class ForumsListFragment extends BaseListFragment
 	{
 		// TODO: Implement this method
 		View v = inflater.inflate(R.layout.list_topic, container, false);
-		listView = (ListView)v.findViewById(R.id.listViewTopic);
-		linearProgress = (LinearLayout)getActivity().findViewById(R.id.linearProgress);
-		return v;
+			return initialiseUi(v);
 	}
 
 	@Override
@@ -70,6 +69,8 @@ public class ForumsListFragment extends BaseListFragment
 		super.onActivityCreated(savedInstanceState);
 		adapter = new ForumsListAdapter();
 		listView.setAdapter(adapter);
+		getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+		
 		getData();
 	}
 

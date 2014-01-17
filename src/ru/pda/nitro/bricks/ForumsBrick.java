@@ -1,6 +1,6 @@
 package ru.pda.nitro.bricks;
 
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 
 import ru.pda.nitro.listfragments.ForumsListFragment;
 import android.content.*;

@@ -2,8 +2,9 @@ package ru.pda.nitro;
 import android.app.*;
 import android.os.*;
 import uk.co.senab.actionbarpulltorefresh.library.*;
+import android.support.v4.app.*;
 
-public class BaseActivity extends Activity implements IRefreshActivity
+public class BaseActivity extends FragmentActivity implements IRefreshActivity
 {
 	public ActionBar ab;
 	private PullToRefreshAttacher mPullToRefreshAttacher;

@@ -2,7 +2,7 @@ package ru.pda.nitro;
 
 import android.app.Activity;
 import android.app.ActionBar;
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
@@ -223,7 +223,7 @@ public class MainActivity extends BaseActivity
 
 	private void setContent(Fragment fragment){
 		
-		getFragmentManager().beginTransaction()
+		getSupportFragmentManager().beginTransaction()
 			.replace(R.id.content_frame , fragment)
 			.commit();
 

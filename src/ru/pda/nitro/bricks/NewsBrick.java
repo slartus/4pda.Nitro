@@ -1,9 +1,10 @@
 package ru.pda.nitro.bricks;
 
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 
 import ru.pda.nitro.listfragments.NewsListFragment;
 import android.content.*;
+import ru.pda.nitro.listfragments.*;
 
 /**
  * Created by slartus on 12.01.14.
@@ -20,6 +21,6 @@ public class NewsBrick extends BrickInfo
 
     @Override
     public Fragment createFragment() {
-        return new NewsListFragment();
+        return new NewsPagerFragment();
     }
 }
