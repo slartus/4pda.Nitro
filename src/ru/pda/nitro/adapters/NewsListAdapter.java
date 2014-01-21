@@ -101,7 +101,7 @@ public class NewsListAdapter extends BaseAdapter
 		News data = news.get(position);
 		holder.textAutor.setText(data.getAuthor());
 		holder.textDate.setText(data.getNewsDate());
-		holder.textDescription.setText(Html.fromHtml(data.getDescription().toString()));
+		holder.textDescription.setText(data.getDescription());
 		holder.textTitle.setText(data.getTitle());
 		if(data.getImgUrl() != null)
 		imageLoader.displayImage(data.getImgUrl().toString(), holder.imageImage, options);

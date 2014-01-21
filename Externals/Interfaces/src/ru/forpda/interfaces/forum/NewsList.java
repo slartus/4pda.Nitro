@@ -11,8 +11,9 @@ import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import ru.forpda.common.DateTimeExternals;
 import ru.forpda.interfaces.IHttpClient;
-import ru.forpda.common.*;
+
 
 /**
  * Created by slartus on 12.01.14.
@@ -136,7 +137,7 @@ public class NewsList extends ArrayList<News> {
 
                 Matcher textMatcher = textPattern.matcher(postData);
                 if (textMatcher.find()) {
-                    topic.setDescription(textMatcher.group(1).replaceAll("<img.*?/>", ""));
+                    topic.setDescription(Html.fromHtml(textMatcher.group(1).replaceAll("<img.*?/>", "")));
                 }
 
                 Matcher imageMatcher = imagePattern.matcher(postData);
