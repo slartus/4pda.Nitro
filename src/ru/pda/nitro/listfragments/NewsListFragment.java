@@ -24,6 +24,7 @@ import android.support.v4.view.*;
 import android.database.*;
 import ru.pda.nitro.database.*;
 import android.content.*;
+import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshAttacher;
 
 
 /**
@@ -31,6 +32,27 @@ import android.content.*;
  */
 public class NewsListFragment extends BaseListFragment
 {
+
+	@Override
+	public void setFrom(int from)
+	{
+		// TODO: Implement this method
+	}
+
+
+	@Override
+	public void setNextPage()
+	{
+		// TODO: Implement this method
+	}
+
+
+	@Override
+	public void onScrollStateChanged(AbsListView p1, int p2)
+	{
+		// TODO: Implement this method
+	}
+
 	private NewsList newsList;
 	private String newsUrl;
 	private Task task;
@@ -80,10 +102,10 @@ public class NewsListFragment extends BaseListFragment
 		// TODO: Implement this method
 		super.onActivityCreated(savedInstanceState);
 		adapter = new NewsListAdapter(getActivity(), news);
+		listView.addFooterView(initialiseFooter());
 		listView.setAdapter(adapter);
 		newsUrl = getArguments().getString("_url");
 		getData();
-		
 		
 	}
 
@@ -95,6 +117,7 @@ public class NewsListFragment extends BaseListFragment
 			if(newsUrl.equals(""))
 			if (isRefresh())
 			{
+				news = new ArrayList<News>();
 				newsList = new NewsList(new HttpHelper(App.getInstance()), newsUrl);
 
 				newsList.loadNextNewsPage();
@@ -136,9 +159,6 @@ public class NewsListFragment extends BaseListFragment
 				}
 				return true;
 			}
-			
-		
-		
 			
 		}
 		catch (ParseException e)

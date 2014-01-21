@@ -14,6 +14,7 @@ import ru.pda.nitro.*;
 import android.database.*;
 import android.content.*;
 import ru.pda.nitro.database.*;
+import android.preference.*;
 
 
 /**
@@ -24,7 +25,6 @@ public abstract class TopicsListFragment extends BaseListFragment{
 	public ArrayList<Topic> topics = new ArrayList<Topic>();
 	public TopicListAdapter adapter;
 	public Task task;
-	public ListInfo listInfo;
 	
 	
 	
@@ -57,9 +57,29 @@ public abstract class TopicsListFragment extends BaseListFragment{
 	@Override
 	public void inExecute()
 	{
+	
+		if(!getCount())
+			showFooter(false);
+			
 		adapter.setData(topics);
 		adapter.notifyDataSetChanged();
 		// TODO: Implement this method
+	}
+	public int getFrom(){
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+		return prefs.getInt("_topics_from", 0);
+	}
+	
+	public int getOutCount(){
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+		return prefs.getInt("_topics_out_count", 0);
+	}
+	
+	public boolean getCount(){
+		if(getOutCount() == 0 | getFrom() <= getOutCount()){
+			return true;
+		}
+		return false;
 	}
 	
 	

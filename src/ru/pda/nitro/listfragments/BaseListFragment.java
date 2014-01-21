@@ -18,6 +18,9 @@ import ru.pda.nitro.database.*;
 import android.app.*;
 import android.util.*;
 import android.net.*;
+import ru.forpda.interfaces.*;
+import android.content.*;
+import android.preference.*;
 
 
 /**
@@ -30,9 +33,27 @@ public abstract class BaseListFragment extends Fragment {
 	public LinearLayout linearError;
 	private boolean loading = false;
 	private boolean refresh = false;
+	private boolean loadmore = false;
+	public int from = -1;
 	public Button buttonError;
-	
+	public RelativeLayout relativeMore;
+	public TextView textMore;
+	public ProgressBar progressMore;
+	public boolean loadMore = false;
+	public Handler mHandler = new Handler();
 	public ListView listView;
+	public ListInfo listInfo;
+
+	public void setLoadmore(boolean loadmore)
+	{
+		this.loadmore = loadmore;
+	}
+
+	public boolean isLoadmore()
+	{
+		return loadmore;
+	}
+
 
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState)
@@ -49,10 +70,12 @@ public abstract class BaseListFragment extends Fragment {
 					getData();
 				}
 			});
+		
 			
 		((IRefreshActivity) getActivity()).getPullToRefreshAttacher().setRefreshableView(listView, new PullToRefreshAttacher.OnRefreshListener() {
 				@Override
 				public void onRefreshStarted(View view) {
+					setFrom(0);
 					setRefresh(true);
 					getData();
 				}
@@ -98,12 +121,55 @@ public abstract class BaseListFragment extends Fragment {
 		}
 	}
 	
+	
+		
 	public View initialiseUi(View v){
 		listView = (ListView)v.findViewById(R.id.listViewTopic);
 		linearProgress = (LinearLayout)v.findViewById(R.id.linearProgress);
 		linearError = (LinearLayout)v.findViewById(R.id.linearError);
 		buttonError = (Button)v.findViewById(R.id.buttonError);
+		
 		return v;
+	}
+	
+	public View initialiseFooter(){
+		View footer = getActivity().getLayoutInflater().inflate(R.layout.footer, null, false);
+		relativeMore = (RelativeLayout)footer.findViewById(R.id.relativeMore);
+		progressMore = (ProgressBar)footer.findViewById(R.id.progressMore);
+		textMore = (TextView)footer.findViewById(R.id.textMore);
+		textMore.setOnClickListener(new OnClickListener(){
+
+				@Override
+				public void onClick(View p1)
+				{
+					setProgressMore(true);
+					setLoadmore(true);
+					setRefresh(true);
+					loadMore = true;
+					setNextPage();
+					getData();
+
+					// TODO: Implement this method
+				}
+			});
+			return footer;
+	}
+	
+	
+	
+	public void setProgressMore(boolean show){
+		if(show){
+			progressMore.setVisibility(View.VISIBLE);
+			textMore.setVisibility(View.GONE);
+		}else{
+			progressMore.setVisibility(View.GONE);
+			textMore.setVisibility(View.VISIBLE);
+			
+		}
+	}
+	
+	public void showFooter(boolean show){
+		relativeMore.setVisibility(show ? View.VISIBLE : View.GONE);
 	}
 	
 	public class Task extends AsyncTask<Void, Void, Boolean>
@@ -135,12 +201,16 @@ public abstract class BaseListFragment extends Fragment {
 			if(result){
 				inExecute();
 				linearProgress.setVisibility(View.GONE);
-			}else
+			}else{
 				showError(true);
-				
+				showFooter(false);
+				}
+			setProgressMore(false);
 			setProgress(false);
 			setLoading(false);
-			
+			setLoadmore(false);
+			loadMore = false;
+					
 		}
 
 
@@ -150,6 +220,9 @@ public abstract class BaseListFragment extends Fragment {
 		getActivity().getContentResolver().delete(mUri, null, null);
 	}
 	
+	public abstract void setFrom(int from);
+	
+	public abstract void setNextPage();
 	
 	public abstract ArrayList<? extends IListItem> getList() throws ParseException, IOException;
 

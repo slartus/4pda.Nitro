@@ -23,6 +23,27 @@ public class ForumsListFragment extends BaseListFragment
 {
 
 	@Override
+	public void setFrom(int from)
+	{
+		// TODO: Implement this method
+	}
+
+
+	@Override
+	public void setNextPage()
+	{
+		// TODO: Implement this method
+	}
+
+
+	@Override
+	public void onScrollStateChanged(AbsListView p1, int p2)
+	{
+		// TODO: Implement this method
+	}
+
+
+	@Override
 	public boolean inBackground()
 	{
 		return true;

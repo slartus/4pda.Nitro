@@ -6,7 +6,7 @@ import ru.pda.nitro.*;
 import android.support.v4.view.ViewPager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.app.FragmentPagerAdapter;
 
 public class NewsPagerFragment extends Fragment
 {
@@ -30,7 +30,8 @@ public class NewsPagerFragment extends Fragment
 		// TODO: Implement this method
 		super.onActivityCreated(savedInstanceState);
 		final ActionBar actionBar = getActivity().getActionBar();
-
+		mViewPager.setOffscreenPageLimit(urls.length);
+		
 		mPagerAdapter = new PagerAdapter(getActivity().getSupportFragmentManager());
 		mViewPager.setAdapter(mPagerAdapter);
 		
@@ -78,7 +79,7 @@ public class NewsPagerFragment extends Fragment
 			mViewPager.setCurrentItem(0);
 		
 	}
-	public class PagerAdapter extends FragmentStatePagerAdapter {
+	public class PagerAdapter extends FragmentPagerAdapter {
     public PagerAdapter(FragmentManager fm) {
         super(fm);
     }
