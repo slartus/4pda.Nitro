@@ -9,7 +9,7 @@ import ru.forpda.interfaces.common.ProgressState;
  * Created by slartus on 12.01.14.
  */
 public interface IHttpClient {
-
+    String getRedirectUrl();
 
     String performGet(String s) throws IOException;
 
