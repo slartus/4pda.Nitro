@@ -2,6 +2,7 @@ package ru.pda.nitro.topicsview;
 
 import android.content.Context;
 import android.view.ViewGroup;
+import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
 import android.widget.LinearLayout;
 
@@ -23,6 +24,9 @@ public class TopicView extends LinearLayout {
     }
 
     class JsObject {
+        @JavascriptInterface
+        public void jumpToPage(int page) {
 
+        }
     }
 }
