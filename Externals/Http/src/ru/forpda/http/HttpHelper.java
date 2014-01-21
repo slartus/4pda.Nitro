@@ -23,7 +23,6 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.ExecutionContext;
 import org.apache.http.protocol.HttpContext;
 
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -34,9 +33,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import ru.forpda.interfaces.IHttpClient;
 import ru.forpda.interfaces.common.ProgressState;
 import ru.forpda.interfaces.exceptions.ShowInBrowserException;
-import ru.forpda.interfaces.IHttpClient;
 
 /**
  * Created by slinkin on 27.06.13.
@@ -51,7 +50,7 @@ public class HttpHelper implements IHttpClient {
     protected static final int GET_TYPE = 2;
     private Context mContext;
 
-    public static String RedirectUrl;
+    private String redirectUrl;
 
     public HttpHelper(Context context) {
 
@@ -59,6 +58,10 @@ public class HttpHelper implements IHttpClient {
     }
 
 
+    @Override
+    public String getRedirectUrl() {
+        return redirectUrl;
+    }
 
     @Override
     public String performGet(String link) throws IOException {
@@ -98,7 +101,7 @@ public class HttpHelper implements IHttpClient {
                                         Map<String, String> additionalHeaders,
                                         boolean redirect) throws IOException {
 
-        RedirectUrl = redirect ? link : null;
+        redirectUrl = link;
         String encoding = HTTP_CONTENT_CHARSET;
 
         HttpRequestBase request = requestType == POST_TYPE ? new HttpPost(link) : new HttpGet(link);
