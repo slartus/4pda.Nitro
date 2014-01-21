@@ -201,7 +201,7 @@ public class TopicApi {
                 ;
     }
 
-    public TopicResult getTopic(IHttpClient client, CharSequence topicUrl) throws IOException {
+    public static TopicResult getTopic(IHttpClient client, CharSequence topicUrl) throws IOException {
         TopicResult topicResult = new TopicResult();
 
 
@@ -227,8 +227,8 @@ public class TopicApi {
      *
      * @throws IOException
      */
-    private void checkTopicResult(CharSequence topicUrl, CharSequence topicId, String topicBody,
-                                  Matcher mainMatcher) throws IOException {
+    private static void checkTopicResult(CharSequence topicUrl, CharSequence topicId, String topicBody,
+                                         Matcher mainMatcher) throws IOException {
         if (!mainMatcher.find()) {
             final Pattern errorPattern = Pattern.compile("<div class=\"errorwrap\">([\\s\\S]*?)</div>");
             Matcher errorMatcher = errorPattern.matcher(topicBody);
