@@ -1,19 +1,23 @@
 package ru.pda.nitro.listfragments;
 
+import android.app.ActionBar;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AbsListView;
+
 import java.util.ArrayList;
 
 import ru.forpda.api.ForumsApi;
 import ru.forpda.http.HttpHelper;
+import ru.forpda.interfaces.forum.Forum;
 import ru.forpda.interfaces.forum.IListItem;
 import ru.pda.nitro.App;
+import ru.pda.nitro.R;
+import ru.pda.nitro.adapters.ForumsListAdapter;
 import ru.pda.nitro.bricks.ForumsBrick;
-import android.view.*;
-import android.widget.*;
-import ru.pda.nitro.*;
-import android.os.*;
-import ru.pda.nitro.adapters.*;
-import ru.forpda.interfaces.forum.*;
-import android.app.*;
 
 
 /**
@@ -21,9 +25,14 @@ import android.app.*;
  */
 public class ForumsListFragment extends BaseListFragment
 {
+    @Override
+    public void onScroll(int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+        // TODO: Implement this method
+    }
 
-	@Override
-	public void setFrom(int from)
+
+    @Override
+    public void setFrom(int from)
 	{
 		// TODO: Implement this method
 	}
@@ -78,16 +87,16 @@ public class ForumsListFragment extends BaseListFragment
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
-		// TODO: Implement this method
-		View v = inflater.inflate(R.layout.list_topic, container, false);
-			return initialiseUi(v);
-	}
+
+        View v = inflater.inflate(R.layout.list_topic, container, false);
+        return initialiseListUi(v);
+    }
 
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState)
 	{
-		// TODO: Implement this method
-		super.onActivityCreated(savedInstanceState);
+
+        super.onActivityCreated(savedInstanceState);
 		adapter = new ForumsListAdapter();
 		listView.setAdapter(adapter);
 		getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);

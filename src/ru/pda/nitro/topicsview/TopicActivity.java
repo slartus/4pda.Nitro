@@ -21,6 +21,11 @@ public class TopicActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.topic_layout);
 
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.topic, new TopicView())
+                    .commit();
+        }
 
         Intent intent = getIntent();
         if (intent != null) {

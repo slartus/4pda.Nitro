@@ -1,20 +1,26 @@
 package ru.pda.nitro.listfragments;
-import android.app.*;
-import android.view.*;
-import android.os.*;
-import ru.pda.nitro.*;
-import android.support.v4.view.ViewPager;
+
+import android.app.ActionBar;
+import android.app.FragmentTransaction;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+
+import ru.pda.nitro.R;
 
 public class NewsPagerFragment extends Fragment
 {
 	private ViewPager mViewPager;
 	private PagerAdapter mPagerAdapter;
-	private String[] urls = {"", "news", "software", "games", "reviews"};
-	private String[] title = {"Все", "Новости", "Софт", "Игры", "Обзоры"};
-	@Override
+    private String[] urls = {"", "news/", "software/", "games/", "reviews/"};
+    private String[] title = {"Все", "Новости", "Софт", "Игры", "Обзоры"};
+
+    @Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
 		// TODO: Implement this method

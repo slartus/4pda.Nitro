@@ -4,7 +4,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.app.Fragment;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AbsListView;
@@ -22,6 +21,7 @@ import java.util.ArrayList;
 
 import ru.forpda.interfaces.ListInfo;
 import ru.forpda.interfaces.forum.IListItem;
+import ru.pda.nitro.BaseFragment;
 import ru.pda.nitro.IRefreshActivity;
 import ru.pda.nitro.R;
 import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshAttacher;
@@ -32,7 +32,8 @@ import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshAttacher;
  * Базовый класс для списков
  * Здесь общие свойства и методы для фрагментов списков
  */
-public abstract class BaseListFragment extends Fragment implements AdapterView.OnItemClickListener {
+public abstract class BaseListFragment extends BaseFragment implements AbsListView.OnScrollListener,
+        AdapterView.OnItemClickListener {
     public LinearLayout linearProgress;
     public LinearLayout linearError;
     private boolean loading = false;
@@ -59,7 +60,6 @@ public abstract class BaseListFragment extends Fragment implements AdapterView.O
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
-        // TODO: Implement this method
         super.onActivityCreated(savedInstanceState);
 
 
@@ -124,6 +124,12 @@ public abstract class BaseListFragment extends Fragment implements AdapterView.O
     }
 
 
+    public View initialiseListUi(View v) {
+        listView = (ListView) v.findViewById(R.id.listViewTopic);
+        initialiseUi(v);
+        return v;
+    }
+
     public View initialiseUi(View v) {
         listView = (ListView) v.findViewById(R.id.listViewTopic);
         linearProgress = (LinearLayout) v.findViewById(R.id.linearProgress);
@@ -149,7 +155,6 @@ public abstract class BaseListFragment extends Fragment implements AdapterView.O
                 setNextPage();
                 getData();
 
-                // TODO: Implement this method
             }
         });
         return footer;
@@ -167,6 +172,10 @@ public abstract class BaseListFragment extends Fragment implements AdapterView.O
         }
     }
 
+    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+        onScroll(firstVisibleItem, visibleItemCount, totalItemCount);
+    }
+
     public void showFooter(boolean show) {
         relativeMore.setVisibility(show ? View.VISIBLE : View.GONE);
     }
@@ -175,23 +184,20 @@ public abstract class BaseListFragment extends Fragment implements AdapterView.O
 
         @Override
         protected void onPreExecute() {
-            // TODO: Implement this method
             super.onPreExecute();
             setLoading(true);
             showError(false);
-
         }
 
 
         @Override
         protected Boolean doInBackground(Void[] p1) {
             return inBackground();
-            // TODO: Implement this method
         }
 
         @Override
         protected void onPostExecute(Boolean result) {
-            // TODO: Implement this method
+
             super.onPostExecute(result);
             if (result) {
                 inExecute();
@@ -215,7 +221,7 @@ public abstract class BaseListFragment extends Fragment implements AdapterView.O
         getActivity().getContentResolver().delete(mUri, null, null);
     }
 
-    public abstract void onScrollStateChanged(AbsListView p1, int p2);
+    public abstract void onScroll(int firstVisibleItem, int visibleItemCount, int totalItemCount);
 
     public abstract void setFrom(int from);
 

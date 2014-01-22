@@ -26,40 +26,46 @@ import ru.pda.nitro.database.Contract;
 /**
  * Created by slartus on 12.01.14.
  */
-public class NewsListFragment extends BaseListFragment
-{
+public class NewsListFragment extends BaseListFragment {
+    @Override
+    public void onScroll(int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+        if ((firstVisibleItem + visibleItemCount) == totalItemCount && !loadMore && !isLoading()) {
+            showFooter(true);
 
-	@Override
-	public void setFrom(int from)
-	{
-		// TODO: Implement this method
-	}
-
-
-	@Override
-	public void setNextPage()
-	{
-		// TODO: Implement this method
-	}
+        }
+        // TODO: Implement this method
+    }
 
 
-	@Override
-	public void onScrollStateChanged(AbsListView p1, int p2)
-	{
-		// TODO: Implement this method
-	}
+    @Override
+    public void setFrom(int from) {
+        // TODO: Implement this method
+    }
 
-	private NewsList newsList;
-	private String newsUrl;
-	private Task task;
-	private NewsListAdapter adapter;
-	private ArrayList<News> news = new ArrayList<News>();
-	
-	@Override
+
+    @Override
+    public void setNextPage() {
+        newsUrl = newsUrl + "page/" + ++from;
+
+    }
+
+
+    @Override
+    public void onScrollStateChanged(AbsListView p1, int p2) {
+        // TODO: Implement this method
+    }
+
+    private NewsList newsList;
+    private String newsUrl;
+    private Task task;
+    private NewsListAdapter adapter;
+    private ArrayList<News> news = new ArrayList<News>();
+
+    @Override
     public ArrayList<? extends IListItem> getList() {
-        
-		
-		return news;
+
+
+        return news;
     }
 
     @Override
@@ -71,160 +77,146 @@ public class NewsListFragment extends BaseListFragment
     public String getName() {
         return NewsBrick.NAME;
     }
-	
-	public static NewsListFragment newInstance(String url)
-	{
-		NewsListFragment f = new NewsListFragment();
 
-		// Supply num input as an argument.
-		Bundle args = new Bundle();
-		args.putString("_url", url);
-		f.setArguments(args);
+    public static NewsListFragment newInstance(String url) {
+        final NewsListFragment f = new NewsListFragment();
 
-		return f;
-	}
-	
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-	{
-		// TODO: Implement this method
-		View v = inflater.inflate(R.layout.list_topic, container, false);
-		return initialiseUi(v);
-	}
+        // Supply num input as an argument.
+        Bundle args = new Bundle();
+        args.putString("_url", url);
+        f.setArguments(args);
 
-	@Override
-	public void onActivityCreated(Bundle savedInstanceState)
-	{
-		// TODO: Implement this method
-		super.onActivityCreated(savedInstanceState);
-		adapter = new NewsListAdapter(getActivity(), news);
-		listView.addFooterView(initialiseFooter());
-		listView.setAdapter(adapter);
-		newsUrl = getArguments().getString("_url");
-		getData();
-		
-	}
+        return f;
+    }
 
-	@Override
-	public boolean inBackground()
-	{
-		try
-		{
-			if(newsUrl.equals(""))
-			if (isRefresh())
-			{
-				news = new ArrayList<News>();
-				newsList = new NewsList(new HttpHelper(App.getInstance()), newsUrl);
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        // TODO: Implement this method
+        View v = inflater.inflate(R.layout.list_topic, container, false);
+        return initialiseListUi(v);
+    }
 
-				newsList.loadNextNewsPage();
-				for(News data : newsList){
-					news.add(data);
-				}
-				if (news.size() > 0)
-				{
-					deleteAllLocalData(Contract.News.CONTENT_URI);
-					setLocalData(news);
-					return true;
-				}
-			}
-			else
-			{
-				news = getLocalData();
-				if (news.size() == 0)
-				{
-					newsList = new NewsList(new HttpHelper(App.getInstance()), newsUrl);
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        // TODO: Implement this method
+        super.onActivityCreated(savedInstanceState);
+        adapter = new NewsListAdapter(getActivity(), news);
+        listView.addFooterView(initialiseFooter());
+        listView.setAdapter(adapter);
+        listView.setOnScrollListener(this);
+        newsUrl = getArguments().getString("_url");
+        getData();
 
-					newsList.loadNextNewsPage();
-					for(News data : newsList){
-						news.add(data);
-					}
-					if (news.size() > 0)
-					{
-						setLocalData(news);
-						return true;
-					}
-				}
-				else
-					return true;
-			}else{
-				newsList = new NewsList(new HttpHelper(App.getInstance()), newsUrl);
+    }
 
-				newsList.loadNextNewsPage();
-				for(News data : newsList){
-					news.add(data);
-				}
-				return true;
-			}
-			
-		}
-		catch (ParseException e)
-		{}
-		catch (IOException e)
-		{}
-		
-		return false;
-		// TODO: Implement this method
-	}
+    @Override
+    public boolean inBackground() {
+        try {
+            if (newsUrl.equals(""))
+                if (isRefresh()) {
+                    news = new ArrayList<News>();
+                    newsList = new NewsList(new HttpHelper(App.getInstance()), newsUrl);
 
-	@Override
-	public void inExecute()
-	{
-		adapter.setData(news);
-		adapter.notifyDataSetChanged();
-		// TODO: Implement this method
-	}
+                    newsList.loadNextNewsPage();
+                    for (News data : newsList) {
+                        news.add(data);
+                    }
+                    if (news.size() > 0) {
+                        if (!isLoadmore()) {
+                            deleteAllLocalData(Contract.News.CONTENT_URI);
+                            setLocalData(news);
+                        }
+                        return true;
+                    }
+                } else {
+                    news = getLocalData();
+                    if (news.size() == 0) {
+                        newsList = new NewsList(new HttpHelper(App.getInstance()), newsUrl);
 
-	public void getData(){
-		if(!isLoading()){
+                        newsList.loadNextNewsPage();
+                        for (News data : newsList) {
+                            news.add(data);
+                        }
+                        if (news.size() > 0) {
+                            setLocalData(news);
+                            return true;
+                        }
+                    } else
+                        return true;
+                }
+            else {
+                newsList = new NewsList(new HttpHelper(App.getInstance()), newsUrl);
 
-			task = new Task();
-			task.execute();
-		}else
-			setProgress(false);
+                newsList.loadNextNewsPage();
+                for (News data : newsList) {
+                    news.add(data);
+                }
+                return true;
+            }
 
-	}
-	
-	
-	public ArrayList<News> getLocalData(){
-		news = new ArrayList<News>();
-		Cursor cursor = getActivity().getContentResolver().query(Contract.News.CONTENT_URI, null, null, null, Contract.Favorite.DEFAULT_SORT_ORDER);
-		if(cursor.moveToFirst()){
-			do{
-				News topic = new News(null, null);
-				topic.setDescription(cursor.getString(cursor.getColumnIndexOrThrow(Contract.News.description)));
-				topic.setTitle(cursor.getString(cursor.getColumnIndexOrThrow(Contract.News.title)));
-				topic.setId(cursor.getString(cursor.getColumnIndexOrThrow(Contract.News.id)));
-				topic.setAuthor(cursor.getString(cursor.getColumnIndexOrThrow(Contract.News.author)));
-				topic.setNewsDate(cursor.getString(cursor.getColumnIndexOrThrow(Contract.News.newsDate)));
-				topic.setImgUrl(cursor.getString(cursor.getColumnIndexOrThrow(Contract.News.imgUrl)));
-				news.add(topic);
-			}while(cursor.moveToNext());
+        } catch (ParseException e) {
+        } catch (IOException e) {
+        }
 
-		}
-		cursor.close();
-		return news;
-	}
+        return false;
+        // TODO: Implement this method
+    }
 
-	public void setLocalData(ArrayList<News> topics){
+    @Override
+    public void inExecute() {
+        adapter.setData(news);
+        adapter.notifyDataSetChanged();
+        // TODO: Implement this method
+    }
 
-		for(News topic : topics){
-			ContentValues cv = new ContentValues();
-			cv.put(Contract.News.description, topic.getDescription().toString());
-			cv.put(Contract.News.title, topic.getTitle().toString());
-			cv.put(Contract.News.id, topic.getId().toString());
-			cv.put(Contract.News.author, topic.getAuthor().toString());
-			cv.put(Contract.News.newsDate, topic.getNewsDate().toString());
-			cv.put(Contract.News.imgUrl, topic.getImgUrl().toString());
-			getActivity().getContentResolver().insert(Contract.News.CONTENT_URI, cv);
-		}
-	}
+    public void getData() {
+        if (!isLoading()) {
 
-	@Override
-	public void onDestroy()
-	{
-		// TODO: Implement this method
-		super.onDestroy();
-		if(task != null)
-			task.cancel(true);
-	}
+            task = new Task();
+            task.execute();
+        } else
+            setProgress(false);
+
+    }
+
+
+    public ArrayList<News> getLocalData() {
+        news = new ArrayList<News>();
+        Cursor cursor = getActivity().getContentResolver().query(Contract.News.CONTENT_URI, null, null, null, Contract.Favorite.DEFAULT_SORT_ORDER);
+        if (cursor.moveToFirst()) {
+            do {
+                News topic = new News(null, null);
+                topic.setDescription(cursor.getString(cursor.getColumnIndexOrThrow(Contract.News.description)));
+                topic.setTitle(cursor.getString(cursor.getColumnIndexOrThrow(Contract.News.title)));
+                topic.setId(cursor.getString(cursor.getColumnIndexOrThrow(Contract.News.id)));
+                topic.setAuthor(cursor.getString(cursor.getColumnIndexOrThrow(Contract.News.author)));
+                topic.setNewsDate(cursor.getString(cursor.getColumnIndexOrThrow(Contract.News.newsDate)));
+                topic.setImgUrl(cursor.getString(cursor.getColumnIndexOrThrow(Contract.News.imgUrl)));
+                news.add(topic);
+            } while (cursor.moveToNext());
+
+        }
+        cursor.close();
+        return news;
+    }
+
+    public void setLocalData(ArrayList<News> topics) {
+
+        for (News topic : topics) {
+            ContentValues cv = new ContentValues();
+            cv.put(Contract.News.description, topic.getDescription().toString());
+            cv.put(Contract.News.title, topic.getTitle().toString());
+            cv.put(Contract.News.id, topic.getId().toString());
+            cv.put(Contract.News.author, topic.getAuthor().toString());
+            cv.put(Contract.News.newsDate, topic.getNewsDate().toString());
+            cv.put(Contract.News.imgUrl, topic.getImgUrl().toString());
+            getActivity().getContentResolver().insert(Contract.News.CONTENT_URI, cv);
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
+
 }

@@ -1,9 +1,13 @@
 package ru.pda.nitro.listfragments;
 
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.preference.PreferenceManager;
+import android.provider.BaseColumns;
+import android.view.View;
+import android.widget.AdapterView;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -32,20 +36,35 @@ public abstract class TopicsListFragment extends BaseListFragment {
     }
 
     @Override
-    public void onItemClick(android.widget.AdapterView<?> adapterView, android.view.View view,
-                            int i, long l) {
+    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
         if (l < 0) return;
-        Object item = adapter.getItem((int) l);
-        if (item == null) return;
-        Topic topic = (Topic) item;
+
+        Topic topic = topics.get(i);
+        topic.setHasUnreadPosts(false);
+        updateItem(i);
+        adapter.notifyDataSetChanged();
+
         TopicActivity.show(getActivity(), topic.getId(), topic.getTitle());
+
     }
+
 
     public abstract ArrayList<Topic> getTopicsList() throws ParseException, IOException;
 
     protected boolean getTopics() throws Throwable {
 
         return false;
+    }
+
+    public void updateItem(int i) {
+        Cursor cursor = getActivity().getContentResolver().query(Contract.Favorite.CONTENT_URI, null, null, null, Contract.Favorite.DEFAULT_SORT_ORDER);
+        cursor.moveToPosition(i);
+        long l = cursor.getLong(cursor.getColumnIndexOrThrow(BaseColumns._ID));
+        ContentValues cv = new ContentValues();
+        cv.put(Contract.Favorite.hasUnreadPosts, false);
+
+        getActivity().getContentResolver().update(ContentUris.withAppendedId(Contract.Favorite.CONTENT_URI, l), cv, null, null);
+
     }
 
     @Override
@@ -56,7 +75,6 @@ public abstract class TopicsListFragment extends BaseListFragment {
         }
 
         return false;
-        // TODO: Implement this method
     }
 
     @Override
@@ -67,7 +85,7 @@ public abstract class TopicsListFragment extends BaseListFragment {
 
         adapter.setData(topics);
         adapter.notifyDataSetChanged();
-        // TODO: Implement this method
+
     }
 
     public int getFrom() {
@@ -101,6 +119,7 @@ public abstract class TopicsListFragment extends BaseListFragment {
     public ArrayList<Topic> getLocalData() {
         topics = new ArrayList<Topic>();
         Cursor cursor = getActivity().getContentResolver().query(Contract.Favorite.CONTENT_URI, null, null, null, Contract.Favorite.DEFAULT_SORT_ORDER);
+
         if (cursor.moveToFirst()) {
             do {
                 Topic topic = new Topic(null, null);
@@ -132,5 +151,12 @@ public abstract class TopicsListFragment extends BaseListFragment {
             cv.put(Contract.Favorite.title, topic.getTitle().toString());
             getActivity().getContentResolver().insert(Contract.Favorite.CONTENT_URI, cv);
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (task != null)
+            task.cancel(true);
     }
 }

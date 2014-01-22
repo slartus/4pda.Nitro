@@ -1,5 +1,15 @@
 package ru.pda.nitro.listfragments;
 
+import android.app.ActionBar;
+import android.content.SharedPreferences;
+import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AbsListView;
+import android.widget.AbsListView.OnScrollListener;
+
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -12,21 +22,7 @@ import ru.pda.nitro.App;
 import ru.pda.nitro.R;
 import ru.pda.nitro.adapters.TopicListAdapter;
 import ru.pda.nitro.bricks.FavoritesBrick;
-
-import android.widget.*;
-import android.view.*;
-import android.os.*;
-
-import android.util.*;
-import android.database.*;
-import android.content.*;
-import ru.pda.nitro.*;
-import android.view.View.*;
-import uk.co.senab.actionbarpulltorefresh.library.*;
-import android.app.*;
-import ru.pda.nitro.database.*;
-import android.preference.*;
-import android.widget.AbsListView.OnScrollListener;
+import ru.pda.nitro.database.Contract;
 
 
 /**
@@ -36,19 +32,10 @@ public class FavoritesListFragment extends TopicsListFragment implements OnScrol
 {
 
 	@Override
-	public void setNextPage()
-	{
-		from = getFrom() + 31;
-		setFrom(from);
-		// TODO: Implement this method
-	}
-
-	
-	@Override
 	public void onScrollStateChanged(AbsListView p1, int p2)
 	{
-		// TODO: Implement this method
-	}
+
+    }
 
 
 	@Override
@@ -71,17 +58,17 @@ public class FavoritesListFragment extends TopicsListFragment implements OnScrol
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
-		// TODO: Implement this method
-		View v = inflater.inflate(R.layout.list_topic, container, false);
-		
-		return initialiseUi(v);
-	}
+
+        View v = inflater.inflate(R.layout.list_topic, container, false);
+
+        return initialiseListUi(v);
+    }
 
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState)
 	{
-		// TODO: Implement this method
-		super.onActivityCreated(savedInstanceState);
+
+        super.onActivityCreated(savedInstanceState);
 
 		listInfo = new ListInfo();
 		adapter = new TopicListAdapter(getActivity(), topics);
@@ -97,7 +84,6 @@ public class FavoritesListFragment extends TopicsListFragment implements OnScrol
 	@Override
 	protected boolean getTopics() throws Throwable
 	{
-		// TODO: Implement this method
 		super.getTopics();
 	
 		if (isRefresh())
@@ -165,9 +151,23 @@ public class FavoritesListFragment extends TopicsListFragment implements OnScrol
 		e.putInt("_topics_out_count", count).commit();
 	}
 
-	
-	
-	public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+    @Override
+    public void setNextPage() {
+        from = getFrom() + 31;
+        setFrom(from);
+
+    }
+
+    @Override
+    public void onScroll(int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+        if ((firstVisibleItem + visibleItemCount) == totalItemCount && !loadMore && getCount() && !isLoading()) {
+            showFooter(true);
+
+        }
+        // TODO: Implement this method
+    }
+
+    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
 		if ((firstVisibleItem + visibleItemCount) == totalItemCount && !loadMore && getCount() && !isLoading())
 		{
 			showFooter(true);
@@ -175,16 +175,6 @@ public class FavoritesListFragment extends TopicsListFragment implements OnScrol
 		}
 
     }
-	
-
-	@Override
-	public void onDestroy()
-	{
-		// TODO: Implement this method
-		super.onDestroy();
-		if (task != null)
-			task.cancel(true);
-	}
 
 
 }
