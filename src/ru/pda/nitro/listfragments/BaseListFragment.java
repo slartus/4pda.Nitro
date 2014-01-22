@@ -63,13 +63,7 @@ public abstract class BaseListFragment extends BaseFragment implements AbsListVi
         super.onActivityCreated(savedInstanceState);
 
 
-        buttonError.setOnClickListener(new OnClickListener() {
-
-            @Override
-            public void onClick(View p1) {
-                getData();
-            }
-        });
+        
         listView.setOnItemClickListener(this);
 
         ((IRefreshActivity) getActivity()).getPullToRefreshAttacher().setRefreshableView(listView, new PullToRefreshAttacher.OnRefreshListener() {

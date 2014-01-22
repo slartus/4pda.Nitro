@@ -65,6 +65,7 @@ public abstract class TopicsListFragment extends BaseListFragment {
 
         getActivity().getContentResolver().update(ContentUris.withAppendedId(Contract.Favorite.CONTENT_URI, l), cv, null, null);
 
+		cursor.close();
     }
 
     @Override
@@ -90,12 +91,12 @@ public abstract class TopicsListFragment extends BaseListFragment {
 
     public int getFrom() {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        return prefs.getInt("_topics_from", 0);
+        return prefs.getInt("_topics_from" + getName(), 0);
     }
 
     public int getOutCount() {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        return prefs.getInt("_topics_out_count", 0);
+        return prefs.getInt("_topics_out_count"+ getName(), 0);
     }
 
     public boolean getCount() {

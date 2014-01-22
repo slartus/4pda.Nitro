@@ -100,6 +100,7 @@ implements LoaderManager.LoaderCallbacks<TopicResult> {
     public Loader<TopicResult> onCreateLoader(int i, Bundle bundle) {
         if (bundle == null) return null;
 
+		showError(false);
         CharSequence topicUrl = null;
         if (bundle.containsKey(TopicActivity.TOPIC_ID_KEY))
             topicUrl = "http://4pda.ru/forum/index.php?showtopic="

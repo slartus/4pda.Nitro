@@ -31,6 +31,7 @@ import ru.pda.nitro.database.Contract;
 public class FavoritesListFragment extends TopicsListFragment implements OnScrollListener
 {
 
+	private int old_from;
 	@Override
 	public void onScrollStateChanged(AbsListView p1, int p2)
 	{
@@ -98,7 +99,7 @@ public class FavoritesListFragment extends TopicsListFragment implements OnScrol
 					setLocalData(topics);
 				return true;
 				}
-				from = getFrom() - 31;
+				from = old_from;
 				setFrom(from);
 				return false;
 			}else{
@@ -139,7 +140,7 @@ public class FavoritesListFragment extends TopicsListFragment implements OnScrol
 		this.from = from;
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
 		SharedPreferences.Editor e = prefs.edit();
-		e.putInt("_topics_from", from).commit();
+		e.putInt("_topics_from" + getName(), from).commit();
 		listInfo.setFrom(from);
 	}
 
@@ -148,14 +149,13 @@ public class FavoritesListFragment extends TopicsListFragment implements OnScrol
 	public void setOutCount(int count){
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
 		SharedPreferences.Editor e = prefs.edit();
-		e.putInt("_topics_out_count", count).commit();
+		e.putInt("_topics_out_count"+ getName(), count).commit();
 	}
 
     @Override
     public void setNextPage() {
-        from = getFrom() + 31;
-        setFrom(from);
-
+		old_from = from;
+        setFrom(topics.size());
     }
 
     @Override
