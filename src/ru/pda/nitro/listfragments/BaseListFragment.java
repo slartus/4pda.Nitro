@@ -219,7 +219,9 @@ public abstract class BaseListFragment extends Fragment {
 	public void deleteAllLocalData(Uri mUri){
 		getActivity().getContentResolver().delete(mUri, null, null);
 	}
-	
+
+    public abstract void onScrollStateChanged(AbsListView p1, int p2);
+
 	public abstract void setFrom(int from);
 	
 	public abstract void setNextPage();

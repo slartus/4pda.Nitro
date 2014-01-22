@@ -1,30 +1,26 @@
 package ru.pda.nitro.listfragments;
 
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AbsListView;
+
+import java.io.IOException;
+import java.text.ParseException;
 import java.util.ArrayList;
 
-import ru.forpda.api.NewsApi;
 import ru.forpda.http.HttpHelper;
-import ru.forpda.interfaces.ListInfo;
 import ru.forpda.interfaces.forum.IListItem;
+import ru.forpda.interfaces.forum.News;
+import ru.forpda.interfaces.forum.NewsList;
 import ru.pda.nitro.App;
+import ru.pda.nitro.R;
+import ru.pda.nitro.adapters.NewsListAdapter;
 import ru.pda.nitro.bricks.NewsBrick;
-import android.view.*;
-import android.widget.*;
-import android.os.*;
-import ru.pda.nitro.*;
-import ru.pda.nitro.adapters.*;
-import ru.forpda.interfaces.forum.*;
-import org.apache.http.client.*;
-import ru.forpda.interfaces.*;
-import java.text.*;
-import java.io.*;
-import android.util.*;
-import android.app.*;
-import android.support.v4.view.*;
-import android.database.*;
-import ru.pda.nitro.database.*;
-import android.content.*;
-import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshAttacher;
+import ru.pda.nitro.database.Contract;
 
 
 /**
