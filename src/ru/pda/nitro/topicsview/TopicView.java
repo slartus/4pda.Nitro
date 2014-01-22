@@ -54,7 +54,7 @@ public class TopicView extends Fragment
 
     @Override
     public void onLoadFinished(Loader<TopicResult> topicResultLoader, TopicResult topicResult) {
-        getWebView().loadDataWithBaseURL("http://4pda.ru/forum/", topicResult.getBody().toString(), "text/html", "UTF-8", null);
+        getWebView().loadDataWithBaseURL("http://4pda.ru/forum/", topicResult.getHtml().toString(), "text/html", "UTF-8", null);
     }
 
     @Override

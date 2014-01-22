@@ -214,9 +214,7 @@ public class TopicApi {
 
         topicResult.parseHeader(mainMatcher.group(1));
 
-        topicBody = mainMatcher.group(1)
-                .replace("onclick=\"return confirm('Подтвердите удаление');\"", "")
-                .replace("href=\"#\"", "");
+        topicBody = mainMatcher.group(1);
 
         topicResult.setBody(topicBody);
         return topicResult;

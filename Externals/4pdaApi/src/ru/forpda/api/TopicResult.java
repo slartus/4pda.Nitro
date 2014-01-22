@@ -88,10 +88,25 @@ public class TopicResult {
         return body;
     }
 
+    public CharSequence getHtml() {
+        return getHeader() + "<body>" + body + "</body></html>";
+    }
+
     public void setBody(CharSequence body) {
         this.body = body;
     }
 
+    public CharSequence getHeader() {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("<html xml:lang=\"en\" lang=\"en\" xmlns=\"http://www.w3.org/1999/xhtml\">\n");
+        stringBuilder.append("<head>\n");
+        stringBuilder.append("<meta http-equiv=\"content-type\" content=\"text/html; charset=windows-1251\" />\n");
+        stringBuilder.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"file:///android_asset/4pda/css/white.css\" />\n");
+        stringBuilder.append("<script type=\"text/javascript\" src=\"file:///android_asset/4pda/js/redirects.js\"></script>\n");
+        stringBuilder.append("<title>" + title + "</title>\n");
+        stringBuilder.append("</head>\n");
+        return stringBuilder;
+    }
 //    /**
 //     * Текущая страница топика
 //     */
