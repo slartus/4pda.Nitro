@@ -1,11 +1,11 @@
 package ru.pda.nitro.topicsview;
 
-import android.app.Fragment;
-import android.app.LoaderManager;
-import android.content.AsyncTaskLoader;
+
 import android.content.Context;
-import android.content.Loader;
 import android.os.Bundle;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.AsyncTaskLoader;
+import android.support.v4.content.Loader;
 import android.view.View;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
@@ -15,13 +15,14 @@ import ru.forpda.api.TopicApi;
 import ru.forpda.api.TopicResult;
 import ru.forpda.http.HttpHelper;
 import ru.pda.nitro.App;
+import ru.pda.nitro.BaseFragment;
 import ru.pda.nitro.R;
 
 /**
  * Created by slinkin on 21.01.14.
  */
-public class TopicView extends Fragment
-        implements LoaderManager.LoaderCallbacks<TopicResult> {
+public class TopicView extends BaseFragment
+implements LoaderManager.LoaderCallbacks<TopicResult> {
 
 
     @Override
@@ -42,11 +43,33 @@ public class TopicView extends Fragment
 
         WebView webView = (WebView) myFragmentView.findViewById(R.id.webview);
         webView.setWebViewClient(new MyWebViewClient());
-        return myFragmentView;
+        return initialiseUi(myFragmentView);
     }
 
     private WebView getWebView() {
         return (WebView) getView().findViewById(R.id.webview);
+    }
+
+    @Override
+    public void getData() {
+        showError(false);
+        getLoaderManager().restartLoader(0, null, this);
+    }
+
+    private void hideProgress() {
+        linearProgress.setVisibility(View.GONE);
+    }
+
+    public void showError(boolean isError) {
+        if (isError) {
+            linearProgress.setVisibility(View.GONE);
+            linearError.setVisibility(View.VISIBLE);
+        } else {
+            //	if(!isRefresh())
+            linearProgress.setVisibility(View.VISIBLE);
+            linearError.setVisibility(View.GONE);
+
+        }
     }
 
     class JsObject {
@@ -90,7 +113,11 @@ public class TopicView extends Fragment
     public void onLoadFinished(Loader<TopicResult> topicResultLoader, TopicResult topicResult) {
         if (getActivity() != null)
             getActivity().setTitle(topicResult.getTitle());
-        getWebView().loadDataWithBaseURL("http://4pda.ru/forum/", topicResult.getHtml().toString(), "text/html", "UTF-8", null);
+        if (topicResult.getBody() != null) {
+            getWebView().loadDataWithBaseURL("http://4pda.ru/forum/", topicResult.getHtml().toString(), "text/html", "UTF-8", null);
+            hideProgress();
+        } else
+            showError(true);
     }
 
     @Override
