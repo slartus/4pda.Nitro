@@ -31,7 +31,7 @@ import ru.pda.nitro.database.Contract;
 public class FavoritesListFragment extends TopicsListFragment implements OnScrollListener
 {
 
-	private int old_from;
+	
 	@Override
 	public void onScrollStateChanged(AbsListView p1, int p2)
 	{
@@ -99,15 +99,12 @@ public class FavoritesListFragment extends TopicsListFragment implements OnScrol
 					setLocalData(topics);
 				return true;
 				}
-				from = old_from;
-				setFrom(from);
-				return false;
 			}else{
 			topics = getTopicsList();
 			if (topics.size() > 0)
 			{
 				setOutCount(listInfo.getOutCount());
-				deleteAllLocalData(Contract.Favorite.CONTENT_URI);
+				deleteAllLocalData(getLocalUri());
 				setLocalData(topics);
 				return true;
 			}
@@ -133,10 +130,12 @@ public class FavoritesListFragment extends TopicsListFragment implements OnScrol
 				return true;
 		}
 		
-		
+		setFrom(getOld_from());
 		return false;
 	}
-	public void setFrom(int from){
+	
+	@Override
+	protected void setFrom(int from){
 		this.from = from;
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
 		SharedPreferences.Editor e = prefs.edit();
@@ -153,18 +152,9 @@ public class FavoritesListFragment extends TopicsListFragment implements OnScrol
 	}
 
     @Override
-    public void setNextPage() {
-		old_from = from;
+    protected void setNextPage() {
+		setOld_from(from);
         setFrom(topics.size());
-    }
-
-    @Override
-    public void onScroll(int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-        if ((firstVisibleItem + visibleItemCount) == totalItemCount && !loadMore && getCount() && !isLoading()) {
-            showFooter(true);
-
-        }
-        // TODO: Implement this method
     }
 
     public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {

@@ -18,6 +18,7 @@ import ru.forpda.interfaces.forum.Topic;
 import ru.pda.nitro.adapters.TopicListAdapter;
 import ru.pda.nitro.database.Contract;
 import ru.pda.nitro.topicsview.TopicActivity;
+import android.net.*;
 
 
 /**
@@ -100,7 +101,7 @@ public abstract class TopicsListFragment extends BaseListFragment {
     }
 
     public boolean getCount() {
-        if (getOutCount() == 0 | getFrom() <= getOutCount()) {
+        if (getOutCount() == 0 | getFrom() < getOutCount()) {
             return true;
         }
         return false;
@@ -119,8 +120,8 @@ public abstract class TopicsListFragment extends BaseListFragment {
 
     public ArrayList<Topic> getLocalData() {
         topics = new ArrayList<Topic>();
-        Cursor cursor = getActivity().getContentResolver().query(Contract.Favorite.CONTENT_URI, null, null, null, Contract.Favorite.DEFAULT_SORT_ORDER);
-
+		if(getLocalUri() != null){
+        Cursor cursor = getActivity().getContentResolver().query(getLocalUri(), null, null, null, Contract.Favorite.DEFAULT_SORT_ORDER);
         if (cursor.moveToFirst()) {
             do {
                 Topic topic = new Topic(null, null);
@@ -136,11 +137,13 @@ public abstract class TopicsListFragment extends BaseListFragment {
 
         }
         cursor.close();
+		}
         return topics;
     }
 
     public void setLocalData(ArrayList<Topic> topics) {
 
+		if(getLocalUri() != null)
         for (Topic topic : topics) {
             ContentValues cv = new ContentValues();
             cv.put(Contract.Favorite.description, topic.getDescription().toString());
@@ -150,7 +153,7 @@ public abstract class TopicsListFragment extends BaseListFragment {
             cv.put(Contract.Favorite.lastAvtor, topic.getLastPostAuthor().toString());
             cv.put(Contract.Favorite.lastDate, topic.getLastPostDate().toString());
             cv.put(Contract.Favorite.title, topic.getTitle().toString());
-            getActivity().getContentResolver().insert(Contract.Favorite.CONTENT_URI, cv);
+            getActivity().getContentResolver().insert(getLocalUri(), cv);
         }
     }
 

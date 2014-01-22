@@ -25,11 +25,14 @@ import ru.pda.nitro.bricks.ForumsBrick;
  */
 public class ForumsListFragment extends BaseListFragment
 {
-    @Override
-    public void onScroll(int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-        // TODO: Implement this method
-    }
+    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+		if ((firstVisibleItem + visibleItemCount) == totalItemCount && !loadMore && !isLoading())
+		{
+			showFooter(true);
 
+		}
+
+    }
 
     @Override
     public void setFrom(int from)
@@ -103,9 +106,6 @@ public class ForumsListFragment extends BaseListFragment
 		
 		getData();
 	}
-
-
-
 	
 	public void getData(){
 		task = new Task();
