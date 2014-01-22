@@ -16,6 +16,7 @@ public class DateTimeExternals {
 
     /**
      * Сегодня в формате dd.MM.yyyy
+     *
      * @return
      */
     public static String getTodayString() {
@@ -33,6 +34,7 @@ public class DateTimeExternals {
 
     /**
      * Вчера в формате dd.MM.yyyy
+     *
      * @return
      */
     public static String getYesterdayString() {
@@ -43,8 +45,9 @@ public class DateTimeExternals {
 
     /**
      * Парсит дату, которую отдаёт форум
-     * @param dateTime строка с датой, в том числе "вчера" и "сегодня"
-     * @param today Дата "вчера", чтобы не приходилось её в методе каждый раз в цикле брать
+     *
+     * @param dateTime  строка с датой, в том числе "вчера" и "сегодня"
+     * @param today     Дата "вчера", чтобы не приходилось её в методе каждый раз в цикле брать
      * @param yesterday Дата "сегодня", чтобы не приходилось её в методе каждый раз в цикле брать
      * @return
      * @throws ParseException
@@ -52,9 +55,13 @@ public class DateTimeExternals {
     public static Date parseForumDateTime(String dateTime, String today, String yesterday) throws ParseException {
         try {
             Date res = parseDateTimeFormat.parse(dateTime.toString().replace("Сегодня", today).replace("Вчера", yesterday));
-            if (res.getYear() < 100)
-                res.setYear(2000 + res.getYear());
-            return res;
+
+            Calendar calendar = new GregorianCalendar();
+            calendar.setTime(res);
+            int year = calendar.get(Calendar.YEAR);
+            if (year < 100)
+                calendar.set(Calendar.YEAR, 2000 + year);
+            return calendar.getTime();
         } catch (ParseException e) {
             e.printStackTrace();
         }
