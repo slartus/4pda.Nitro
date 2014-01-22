@@ -81,6 +81,10 @@ public class TopicResult {
         return topicId;
     }
 
+    public CharSequence getTitle() {
+        return title;
+    }
+
     /**
      * Тело топика
      */

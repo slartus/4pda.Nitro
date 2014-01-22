@@ -246,4 +246,37 @@ public class TopicApi {
             throw new IOException("Ошибка разбора страницы id=" + topicId);
         }
     }
+
+    /**
+     * Если ссылка на текстовую версию сайта, переделаем её на обычную
+     */
+    public static CharSequence normaTopicUrl(CharSequence url) {
+        Matcher m = Pattern.compile("4pda.ru/forum/lofiversion/index.php\\?t(\\d+)(?:-(\\d+))?.html").matcher(url);
+        if (m.find()) {
+            return "http://4pda.ru/forum/index.php?showtopic=" + m.group(1) + (TextUtils.isEmpty(m.group(2)) ? "" : ("&st=" + m.group(2)));
+        }
+
+        return url;
+    }
+
+    /**
+     * Является ли ссылка ссылкой на топик
+     */
+    public static Boolean isTopicUrl(CharSequence url) {
+        url = normaTopicUrl(url);
+
+        String[] patterns = {
+                "4pda.ru/*forum/*index.php\\?((.*)?showtopic=[^\"]*)",
+                "4pda.ru/*forum/*index.php\\?((.*)?act=findpost&pid=\\d+([^\"]*)?)",
+                "4pda.ru/*index.php\\?((.*)?act=findpost&pid=\\d+([^\"]*)?)"
+        };
+        for (String pattern : patterns) {
+            Matcher m = Pattern.compile(pattern).matcher(url);
+            if (m.find()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

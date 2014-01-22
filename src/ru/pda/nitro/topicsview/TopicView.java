@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 
 import ru.forpda.api.TopicApi;
 import ru.forpda.api.TopicResult;
@@ -21,7 +22,7 @@ import ru.pda.nitro.R;
  */
 public class TopicView extends Fragment
         implements LoaderManager.LoaderCallbacks<TopicResult> {
-    public static final String TOPIC_ID_KEY = "TopicIdKey";
+
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -29,7 +30,9 @@ public class TopicView extends Fragment
         // Prepare the loader.  Either re-connect with an existing one,
         // or start a new one.
 
-        getLoaderManager().initLoader(0, savedInstanceState, this);
+        getLoaderManager().initLoader(0, getActivity().getIntent().getExtras(), this);
+
+
     }
 
     @Override
@@ -37,29 +40,13 @@ public class TopicView extends Fragment
                                           android.view.ViewGroup container, android.os.Bundle savedInstanceState) {
         View myFragmentView = inflater.inflate(R.layout.topic_view, container, false);
 
-
+        WebView webView = (WebView) myFragmentView.findViewById(R.id.webview);
+        webView.setWebViewClient(new MyWebViewClient());
         return myFragmentView;
     }
 
     private WebView getWebView() {
         return (WebView) getView().findViewById(R.id.webview);
-    }
-
-
-    @Override
-    public Loader<TopicResult> onCreateLoader(int i, Bundle bundle) {
-        Bundle extras = this.getActivity().getIntent().getExtras();
-        return new TopicLoader(getActivity(), "http://4pda.ru/forum/index.php?showtopic=" + extras.getString(TOPIC_ID_KEY));
-    }
-
-    @Override
-    public void onLoadFinished(Loader<TopicResult> topicResultLoader, TopicResult topicResult) {
-        getWebView().loadDataWithBaseURL("http://4pda.ru/forum/", topicResult.getHtml().toString(), "text/html", "UTF-8", null);
-    }
-
-    @Override
-    public void onLoaderReset(Loader<TopicResult> topicResultLoader) {
-
     }
 
     class JsObject {
@@ -69,12 +56,54 @@ public class TopicView extends Fragment
         }
     }
 
+    private class MyWebViewClient extends WebViewClient {
+        @Override
+        public boolean shouldOverrideUrlLoading(WebView view, final String url) {
+            if (!TopicApi.isTopicUrl(url))
+                return false;
+
+            showTopic(TopicApi.normaTopicUrl(url));
+            return true;
+        }
+    }
+
+    private void showTopic(CharSequence topicUrl) {
+        Bundle bundle = new Bundle();
+        bundle.putCharSequence(TopicActivity.TOPIC_URL_KEY, topicUrl);
+        getLoaderManager().restartLoader(0, bundle, this);
+    }
+
+    @Override
+    public Loader<TopicResult> onCreateLoader(int i, Bundle bundle) {
+        if (bundle == null) return null;
+
+        CharSequence topicUrl = null;
+        if (bundle.containsKey(TopicActivity.TOPIC_ID_KEY))
+            topicUrl = "http://4pda.ru/forum/index.php?showtopic="
+                    + bundle.getCharSequence(TopicActivity.TOPIC_ID_KEY);
+        else if (bundle.containsKey(TopicActivity.TOPIC_URL_KEY))
+            topicUrl = bundle.getCharSequence(TopicActivity.TOPIC_URL_KEY);
+        return new TopicLoader(getActivity(), topicUrl);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<TopicResult> topicResultLoader, TopicResult topicResult) {
+        if (getActivity() != null)
+            getActivity().setTitle(topicResult.getTitle());
+        getWebView().loadDataWithBaseURL("http://4pda.ru/forum/", topicResult.getHtml().toString(), "text/html", "UTF-8", null);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<TopicResult> topicResultLoader) {
+
+    }
+
     private static class TopicLoader extends AsyncTaskLoader<TopicResult> {
         Throwable ex;
-        private String mUrl;
+        private CharSequence mUrl;
         private TopicResult mData;
 
-        public TopicLoader(Context context, String url) {
+        public TopicLoader(Context context, CharSequence url) {
             super(context);
 
             mUrl = url;

@@ -38,7 +38,7 @@ public abstract class TopicsListFragment extends BaseListFragment {
         Object item = adapter.getItem((int) l);
         if (item == null) return;
         Topic topic = (Topic) item;
-        TopicActivity.show(getActivity(), topic.getId());
+        TopicActivity.show(getActivity(), topic.getId(), topic.getTitle());
     }
 
     public abstract ArrayList<Topic> getTopicsList() throws ParseException, IOException;
