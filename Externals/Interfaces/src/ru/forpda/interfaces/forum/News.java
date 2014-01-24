@@ -1,7 +1,5 @@
 package ru.forpda.interfaces.forum;
 
-import java.util.Date;
-
 /**
  * Created by slartus on 12.01.14.
  */
@@ -13,6 +11,10 @@ public class News implements IListItem {
     private CharSequence description;
     private CharSequence imgUrl;
     private int page;
+
+    private CharSequence tagLink;
+    private CharSequence tagName;
+    private CharSequence tagTitle;
 
     public News(CharSequence id, CharSequence title) {
         this.id = id;
@@ -73,5 +75,38 @@ public class News implements IListItem {
 
     public void setPage(int page) {
         this.page = page;
+    }
+
+    /**
+     * Ссылка на раздел
+     */
+    public CharSequence getTagLink() {
+        return tagLink;
+    }
+
+    public void setTagLink(CharSequence tagLink) {
+        this.tagLink = tagLink;
+    }
+
+    /**
+     * Имя раздела
+     */
+    public CharSequence getTagName() {
+        return tagName;
+    }
+
+    public void setTagName(CharSequence tagName) {
+        this.tagName = tagName;
+    }
+
+    /**
+     * Название раздела
+     */
+    public CharSequence getTagTitle() {
+        return tagTitle;
+    }
+
+    public void setTagTitle(CharSequence tagTitle) {
+        this.tagTitle = tagTitle;
     }
 }

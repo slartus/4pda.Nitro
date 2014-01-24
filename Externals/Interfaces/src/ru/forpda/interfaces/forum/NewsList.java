@@ -121,7 +121,7 @@ public class NewsList extends ArrayList<News> {
 
         Pattern mPattern = Pattern.compile("<a href=\"(/\\d+/\\d+/\\d+/(\\d+))/\" rel=\"bookmark\" title=\"(.*?)\" alt=\"\">.*?</a></h2>");
         Pattern infoPattern = Pattern.compile("<strong>(.*?)</strong>&nbsp;\\|\\s*(\\d+\\.\\d+\\.\\d+)\\s*\\|");
-        Pattern textPattern = Pattern.compile("<div class=\"entry\" id=\".*?\">([\\s\\S]*?)</div><div class=\"postmetadata\"");
+        Pattern textPattern = Pattern.compile("<div class=\"entry\" id=\"[^\"]*\">(?:<a href=\"([^\"]*)\" class=\"oprj ([^\"]*)\"><div>(.*?)</div>)?([\\s\\S]*?)</div><div class=\"postmetadata\"");
         Pattern imagePattern = Pattern.compile("<center><img[^>]*?src=\"(.*?)\"");
         while (postsMatcher.find()) {
             String postData = postsMatcher.group(1);
@@ -133,27 +133,32 @@ public class NewsList extends ArrayList<News> {
                 if (!someUnloaded && findByTitle(id)!=null) continue;
                 someUnloaded = true;
 
-                News topic = new News(id, Html.fromHtml(m.group(3)).toString());
+                News news = new News(id, Html.fromHtml(m.group(3)).toString());
 
                 Matcher infoMatcher = infoPattern.matcher(postData);
                 if (infoMatcher.find()) {
                     Date _pubDate = dateFormat.parse(infoMatcher.group(2));
-                    topic.setNewsDate(DateTimeExternals.getDateString(_pubDate));
-                    topic.setAuthor(Html.fromHtml(infoMatcher.group(1)));
+                    news.setNewsDate(DateTimeExternals.getDateString(_pubDate));
+                    news.setAuthor(Html.fromHtml(infoMatcher.group(1)));
                 }
 
                 Matcher textMatcher = textPattern.matcher(postData);
                 if (textMatcher.find()) {
-                    topic.setDescription(Html.fromHtml(removeDescriptionTrash(textMatcher.group(1))).toString());
+                    if (textMatcher.group(1) != null) {
+                        news.setTagLink(textMatcher.group(1));
+                        news.setTagName(textMatcher.group(1));
+                        news.setTagTitle(textMatcher.group(1));
+                    }
+                    news.setDescription(Html.fromHtml(removeDescriptionTrash(textMatcher.group(4))).toString());
                 }
 
                 Matcher imageMatcher = imagePattern.matcher(postData);
                 if (imageMatcher.find()) {
-                    topic.setImgUrl(imageMatcher.group(1));
+                    news.setImgUrl(imageMatcher.group(1));
                 }
 
-                topic.setPage(page);
-                add(topic);
+                news.setPage(page);
+                add(news);
             }
         }
 
