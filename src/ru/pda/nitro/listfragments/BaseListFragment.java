@@ -25,6 +25,7 @@ import ru.pda.nitro.BaseFragment;
 import ru.pda.nitro.IRefreshActivity;
 import ru.pda.nitro.R;
 import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshAttacher;
+import ru.pda.nitro.database.*;
 
 
 /**
@@ -33,56 +34,70 @@ import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshAttacher;
  * Здесь общие свойства и методы для фрагментов списков
  */
 public abstract class BaseListFragment extends BaseFragment implements AbsListView.OnScrollListener,
-        AdapterView.OnItemClickListener {
-    public LinearLayout linearProgress;
-    public LinearLayout linearError;
-    private boolean loading = false;
-    private boolean refresh = false;
+AdapterView.OnItemClickListener
+{
+	public Task task;
     private boolean loadmore = false;
     public int from = -1;
+	private int old_from;
     public Button buttonError;
     public RelativeLayout relativeMore;
     public TextView textMore;
     public ProgressBar progressMore;
     public boolean loadMore = false;
-    public Handler mHandler = new Handler();
-    public ListView listView;
     public ListInfo listInfo;
+	public ListView listView;
 
-    public void setLoadmore(boolean loadmore) {
+
+	public void setOld_from(int old_from)
+	{
+		this.old_from = old_from;
+	}
+
+	public int getOld_from()
+	{
+		return old_from;
+	}
+
+    public void setLoadmore(boolean loadmore)
+	{
         this.loadmore = loadmore;
     }
 
-    public boolean isLoadmore() {
+    public boolean isLoadmore()
+	{
         return loadmore;
     }
 
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
+    public void onActivityCreated(Bundle savedInstanceState)
+	{
         super.onActivityCreated(savedInstanceState);
-
-
-        buttonError.setOnClickListener(new OnClickListener() {
-
-            @Override
-            public void onClick(View p1) {
-                getData();
-            }
-        });
-        listView.setOnItemClickListener(this);
-
-        ((IRefreshActivity) getActivity()).getPullToRefreshAttacher().setRefreshableView(listView, new PullToRefreshAttacher.OnRefreshListener() {
-            @Override
-            public void onRefreshStarted(View view) {
-                setFrom(0);
-                setRefresh(true);
-                getData();
-            }
-        });
+       listView.setOnItemClickListener(this);
+		
     }
+	
+	@Override
+	public void onResume()
+	{
+		super.onResume();
+		((IRefreshActivity) getActivity()).getPullToRefreshAttacher().setRefreshableView(listView, new PullToRefreshAttacher.OnRefreshListener() {
+				@Override
+				public void onRefreshStarted(View view)
+				{
+					setOld_from(from);
+					setFrom(0);
+					setRefresh(true);
+					getData();
+				}
+			});
+	}
 
-    public void setProgress(boolean loading) {
+
+
+    public void setProgress(boolean loading)
+	{
 
         ((IRefreshActivity) getActivity()).getPullToRefreshAttacher().setRefreshing(loading);
 
@@ -90,100 +105,71 @@ public abstract class BaseListFragment extends BaseFragment implements AbsListVi
 
     @Override
     public void onItemClick(android.widget.AdapterView<?> adapterView, android.view.View view,
-                            int i, long l) {
+                            int i, long l)
+	{
 
     }
 
 
-    public void setRefresh(boolean refresh) {
-        this.refresh = refresh;
-    }
-
-    public boolean isRefresh() {
-        return refresh;
-    }
-
-    public void setLoading(boolean loading) {
-        this.loading = loading;
-    }
-
-    public boolean isLoading() {
-        return loading;
-    }
-
-    public void showError(boolean isError) {
-        if (isError) {
-            linearProgress.setVisibility(View.GONE);
-            linearError.setVisibility(View.VISIBLE);
-        } else {
-            if (!isRefresh())
-                linearProgress.setVisibility(View.VISIBLE);
-            linearError.setVisibility(View.GONE);
-
-        }
+    public View initialiseListUi(View v)
+	{
+		listView = (ListView) v.findViewById(R.id.listViewTopic);
+		return initialiseUi(v);
     }
 
 
-    public View initialiseListUi(View v) {
-        listView = (ListView) v.findViewById(R.id.listViewTopic);
-        initialiseUi(v);
-        return v;
-    }
-
-    public View initialiseUi(View v) {
-        listView = (ListView) v.findViewById(R.id.listViewTopic);
-        linearProgress = (LinearLayout) v.findViewById(R.id.linearProgress);
-        linearError = (LinearLayout) v.findViewById(R.id.linearError);
-        buttonError = (Button) v.findViewById(R.id.buttonError);
-
-        return v;
-    }
-
-    public View initialiseFooter() {
+    public View initialiseFooter()
+	{
         View footer = getActivity().getLayoutInflater().inflate(R.layout.footer, null, false);
         relativeMore = (RelativeLayout) footer.findViewById(R.id.relativeMore);
         progressMore = (ProgressBar) footer.findViewById(R.id.progressMore);
         textMore = (TextView) footer.findViewById(R.id.textMore);
         textMore.setOnClickListener(new OnClickListener() {
 
-            @Override
-            public void onClick(View p1) {
-                setProgressMore(true);
-                setLoadmore(true);
-                setRefresh(true);
-                loadMore = true;
-                setNextPage();
-                getData();
+				@Override
+				public void onClick(View p1)
+				{
+					setProgressMore(true);
+					setLoadmore(true);
+					setRefresh(true);
+					loadMore = true;
+					setNextPage();
+					getData();
 
-            }
-        });
+				}
+			});
         return footer;
     }
 
 
-    public void setProgressMore(boolean show) {
-        if (show) {
+    public void setProgressMore(boolean show)
+	{
+        if (show)
+		{
             progressMore.setVisibility(View.VISIBLE);
             textMore.setVisibility(View.GONE);
-        } else {
+        }
+		else
+		{
             progressMore.setVisibility(View.GONE);
             textMore.setVisibility(View.VISIBLE);
 
         }
     }
 
-    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-        onScroll(firstVisibleItem, visibleItemCount, totalItemCount);
-    }
 
-    public void showFooter(boolean show) {
+    public void showFooter(boolean show)
+	{
         relativeMore.setVisibility(show ? View.VISIBLE : View.GONE);
     }
+	
 
-    public class Task extends AsyncTask<Void, Void, Boolean> {
+    public class Task extends AsyncTask<Void, Void, Boolean>
+	{
 
         @Override
-        protected void onPreExecute() {
+        protected void onPreExecute()
+		{
             super.onPreExecute();
             setLoading(true);
             showError(false);
@@ -191,23 +177,40 @@ public abstract class BaseListFragment extends BaseFragment implements AbsListVi
 
 
         @Override
-        protected Boolean doInBackground(Void[] p1) {
+        protected Boolean doInBackground(Void[] p1)
+		{
             return inBackground();
         }
 
+
         @Override
-        protected void onPostExecute(Boolean result) {
+        protected void onPostExecute(Boolean result)
+		{
 
             super.onPostExecute(result);
-            if (result) {
+            if (result)
+			{
                 inExecute();
-                linearProgress.setVisibility(View.GONE);
-            } else {
-                showError(true);
-                showFooter(false);
+                hideProgress();
+            }
+			else
+			{
+				if (isLoadmore())
+				{
+					textMore.setText(R.string.error);
+				}
+				else
+				{
+					textMore.setText("Загрузить еще...");
+					showError(true);
+					showFooter(false);
+				}
             }
             setProgressMore(false);
-            setProgress(false);
+			if (getActivity() != null)
+				setProgress(false);
+
+				
             setLoading(false);
             setLoadmore(false);
             loadMore = false;
@@ -217,18 +220,34 @@ public abstract class BaseListFragment extends BaseFragment implements AbsListVi
 
     }
 
-    public void deleteAllLocalData(Uri mUri) {
-        getActivity().getContentResolver().delete(mUri, null, null);
+    public void deleteAllLocalData(Uri mUri)
+	{
+        if (mUri != null)
+			getActivity().getContentResolver().delete(mUri, null, null);
     }
 
-    public abstract void onScroll(int firstVisibleItem, int visibleItemCount, int totalItemCount);
+	
+	@Override
+	public void onDestroy()
+	{
+		super.onDestroy();
+		if(task != null)
+			task.cancel(true);
+	}
+	
+	
+	
 
-    public abstract void setFrom(int from);
+    protected void setFrom(int from)
+	{}
 
-    public abstract void setNextPage();
+    protected void setNextPage()
+	{}
 
     public abstract ArrayList<? extends IListItem> getList() throws ParseException, IOException;
 
+	public abstract Uri getUri();
+	
     public abstract String getName();
 
     public abstract String getTitle();

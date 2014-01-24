@@ -23,6 +23,9 @@ import ru.pda.nitro.R;
 import ru.pda.nitro.adapters.TopicListAdapter;
 import ru.pda.nitro.bricks.FavoritesBrick;
 import ru.pda.nitro.database.Contract;
+import android.util.*;
+import android.net.*;
+import uk.co.senab.actionbarpulltorefresh.library.*;
 
 
 /**
@@ -31,6 +34,7 @@ import ru.pda.nitro.database.Contract;
 public class FavoritesListFragment extends TopicsListFragment implements OnScrollListener
 {
 
+	
 	@Override
 	public void onScrollStateChanged(AbsListView p1, int p2)
 	{
@@ -49,6 +53,12 @@ public class FavoritesListFragment extends TopicsListFragment implements OnScrol
 	{
         return FavoritesBrick.TITLE;
     }
+	
+	@Override
+	public Uri getUri()
+	{
+		return FavoritesBrick.URI;
+	}
 
     public String getName()
 	{
@@ -98,15 +108,12 @@ public class FavoritesListFragment extends TopicsListFragment implements OnScrol
 					setLocalData(topics);
 				return true;
 				}
-				from = getFrom() - 31;
-				setFrom(from);
-				return false;
 			}else{
 			topics = getTopicsList();
 			if (topics.size() > 0)
 			{
 				setOutCount(listInfo.getOutCount());
-				deleteAllLocalData(Contract.Favorite.CONTENT_URI);
+				deleteAllLocalData(getUri());
 				setLocalData(topics);
 				return true;
 			}
@@ -115,7 +122,10 @@ public class FavoritesListFragment extends TopicsListFragment implements OnScrol
 		else
 		{
 			setFrom(getFrom());
+			Log.e("topic", "from" + getFrom());
 			topics = getLocalData();
+			Log.e("topic", "topics.size(): " + topics.size());
+			
 			setOutCount(getOutCount());
 			if (topics.size() == 0)
 			{
@@ -132,14 +142,16 @@ public class FavoritesListFragment extends TopicsListFragment implements OnScrol
 				return true;
 		}
 		
-		
+		setFrom(getOld_from());
 		return false;
 	}
-	public void setFrom(int from){
+	
+	@Override
+	protected void setFrom(int from){
 		this.from = from;
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
 		SharedPreferences.Editor e = prefs.edit();
-		e.putInt("_topics_from", from).commit();
+		e.putInt("_topics_from" + getName(), from).commit();
 		listInfo.setFrom(from);
 	}
 
@@ -148,23 +160,13 @@ public class FavoritesListFragment extends TopicsListFragment implements OnScrol
 	public void setOutCount(int count){
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
 		SharedPreferences.Editor e = prefs.edit();
-		e.putInt("_topics_out_count", count).commit();
+		e.putInt("_topics_out_count"+ getName(), count).commit();
 	}
 
     @Override
-    public void setNextPage() {
-        from = getFrom() + 31;
-        setFrom(from);
-
-    }
-
-    @Override
-    public void onScroll(int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-        if ((firstVisibleItem + visibleItemCount) == totalItemCount && !loadMore && getCount() && !isLoading()) {
-            showFooter(true);
-
-        }
-        // TODO: Implement this method
+    protected void setNextPage() {
+		setOld_from(from);
+        setFrom(topics.size());
     }
 
     public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {

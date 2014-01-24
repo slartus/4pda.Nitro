@@ -33,7 +33,6 @@ implements LoaderManager.LoaderCallbacks<TopicResult> {
 
         getLoaderManager().initLoader(0, getActivity().getIntent().getExtras(), this);
 
-
     }
 
     @Override
@@ -56,21 +55,7 @@ implements LoaderManager.LoaderCallbacks<TopicResult> {
         getLoaderManager().restartLoader(0, null, this);
     }
 
-    private void hideProgress() {
-        linearProgress.setVisibility(View.GONE);
-    }
-
-    public void showError(boolean isError) {
-        if (isError) {
-            linearProgress.setVisibility(View.GONE);
-            linearError.setVisibility(View.VISIBLE);
-        } else {
-            //	if(!isRefresh())
-            linearProgress.setVisibility(View.VISIBLE);
-            linearError.setVisibility(View.GONE);
-
-        }
-    }
+    
 
     class JsObject {
         @JavascriptInterface
@@ -100,6 +85,7 @@ implements LoaderManager.LoaderCallbacks<TopicResult> {
     public Loader<TopicResult> onCreateLoader(int i, Bundle bundle) {
         if (bundle == null) return null;
 
+		showError(false);
         CharSequence topicUrl = null;
         if (bundle.containsKey(TopicActivity.TOPIC_ID_KEY))
             topicUrl = "http://4pda.ru/forum/index.php?showtopic="
@@ -111,8 +97,8 @@ implements LoaderManager.LoaderCallbacks<TopicResult> {
 
     @Override
     public void onLoadFinished(Loader<TopicResult> topicResultLoader, TopicResult topicResult) {
-        if (getActivity() != null)
-            getActivity().setTitle(topicResult.getTitle());
+    //    if (getActivity() != null)
+    //        getActivity().setTitle(topicResult.getTitle());
         if (topicResult.getBody() != null) {
             getWebView().loadDataWithBaseURL("http://4pda.ru/forum/", topicResult.getHtml().toString(), "text/html", "UTF-8", null);
             hideProgress();

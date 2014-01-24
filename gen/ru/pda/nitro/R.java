@@ -191,7 +191,7 @@ containing a value of this type.
         public static final int tap_button=0x7f02003d;
     }
     public static final class id {
-        public static final int action_settings=0x7f06002d;
+        public static final int action_settings=0x7f06002f;
         public static final int buttonError=0x7f060028;
         public static final int buttonLogin=0x7f060013;
         public static final int container=0x7f060008;
@@ -236,7 +236,9 @@ containing a value of this type.
         public static final int textViewError=0x7f060027;
         public static final int textViewForumTitle=0x7f060022;
         public static final int textViewTitle=0x7f06001f;
+        public static final int topic=0x7f06002d;
         public static final int txtBottomRight=0x7f060023;
+        public static final int webview=0x7f06002e;
     }
     public static final class integer {
         public static final int spb_default_interpolator=0x7f090001;
@@ -255,6 +257,8 @@ containing a value of this type.
         public static final int main=0x7f030009;
         public static final int news_list_pager=0x7f03000a;
         public static final int row=0x7f03000b;
+        public static final int topic_layout=0x7f03000c;
+        public static final int topic_view=0x7f03000d;
     }
     public static final class menu {
         public static final int main=0x7f0c0000;

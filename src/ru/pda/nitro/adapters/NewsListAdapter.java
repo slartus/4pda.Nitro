@@ -16,17 +16,16 @@ import android.graphics.Bitmap;
 
 public class NewsListAdapter extends BaseAdapter
 {
-
-	private ArrayList<News> news;
+	private NewsList newsList;
 	private Context context;
 	final LayoutInflater inflater;
-	DisplayImageOptions options;
+	private DisplayImageOptions options;
 	private ImageLoader imageLoader = ImageLoader.getInstance();
 	
-	public NewsListAdapter(Context context, ArrayList<News> data){
+	public NewsListAdapter(Context context, NewsList newsList){
 		inflater = (LayoutInflater)context.getSystemService(context.LAYOUT_INFLATER_SERVICE);
 		
-		this.news = data;
+		this.newsList = newsList;
 		this.context = context;
 		
 		options = new DisplayImageOptions.Builder()
@@ -56,22 +55,22 @@ public class NewsListAdapter extends BaseAdapter
 		this.imageLoader.init(config);
 	}
 	
-	public void setData(ArrayList<News> data){
-		this.news = data;
+	public void setData(NewsList data){
+		this.newsList = data;
 	}
 	
 	@Override
 	public int getCount()
 	{
 		// TODO: Implement this method
-		return news.size();
+		return newsList.size();
 	}
 
 	@Override
 	public Object getItem(int p1)
 	{
 		// TODO: Implement this method
-		return news.get(p1);
+		return newsList.get(p1);
 	}
 
 	@Override
@@ -98,7 +97,7 @@ public class NewsListAdapter extends BaseAdapter
 		}else{
 			holder = (ViewHolder) view.getTag();
 		}
-		News data = news.get(position);
+		News data = newsList.get(position);
 		holder.textAutor.setText(data.getAuthor());
 		holder.textDate.setText(data.getNewsDate());
 		holder.textDescription.setText(data.getDescription());

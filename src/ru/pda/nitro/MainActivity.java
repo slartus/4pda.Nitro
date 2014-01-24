@@ -44,7 +44,7 @@ public class MainActivity extends BaseActivity
 	private MenuAdapter mAdapter;
 	private ArrayList<BrickInfo> menus;
 	private UserProfile profile;
-	private int default_item;
+	private Fragment mContent;
 
 	
 
@@ -124,14 +124,13 @@ public class MainActivity extends BaseActivity
 	}
 
 	private void setDefaultContent(){
-	Fragment mContent;
+	
 		if(profile.isLogined()){
-		//	setTitle(profile.getLogin());
 			mContent = menus.get(getPosition()).createFragment();
 		}else{
 			mContent = new PlaceholderFragment();
 		}
-		setContent(mContent);
+		setContent(mContent, false);
 	}
 	
 	private int getPosition(){
@@ -154,10 +153,7 @@ public class MainActivity extends BaseActivity
 		{
 			BrickInfo item = mAdapter.getItem(position);
 
-			if (DeleteMode) {
-				//	item.setSelected(!item.isSelected());
-				//	mAdapter.notifyDataSetChanged();
-			} else {
+			if (!DeleteMode) {
 				if (mTitle.equals(item.getTitle()))
 				{
 					mDrawerLayout.closeDrawer(frameDrawer);
@@ -221,7 +217,8 @@ public class MainActivity extends BaseActivity
     }
 
 
-	private void setContent(Fragment fragment){
+	private void setContent(Fragment fragment, boolean back){
+		
 		
 		getSupportFragmentManager().beginTransaction()
 			.replace(R.id.content_frame , fragment)
@@ -231,13 +228,11 @@ public class MainActivity extends BaseActivity
 
 	private void selectItem(int position, BrickInfo item)
 	{
-			setContent(item.createFragment());
+			setContent(item.createFragment(), true);
 			mDrawerList.setItemChecked(position, false);
 			setTitle(item.getTitle());
 
 		mDrawerLayout.closeDrawer(frameDrawer);
-
-
 	}
 
 	@Override
