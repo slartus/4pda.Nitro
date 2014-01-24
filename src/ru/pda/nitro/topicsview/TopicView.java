@@ -87,10 +87,14 @@ implements LoaderManager.LoaderCallbacks<TopicResult> {
 
 		showError(false);
         CharSequence topicUrl = null;
-        if (bundle.containsKey(TopicActivity.TOPIC_ID_KEY))
-            topicUrl = "http://4pda.ru/forum/index.php?showtopic="
-                    + bundle.getCharSequence(TopicActivity.TOPIC_ID_KEY);
-        else if (bundle.containsKey(TopicActivity.TOPIC_URL_KEY))
+        if (bundle.containsKey(TopicActivity.TOPIC_ID_KEY)) {
+            CharSequence topicId = bundle.getCharSequence(TopicActivity.TOPIC_ID_KEY);
+
+            if (bundle.containsKey(TopicActivity.NAVIGATE_ACTION_KEY))
+                topicUrl = TopicApi.getTopicUrl(topicId, bundle.getCharSequence(TopicActivity.NAVIGATE_ACTION_KEY));
+            else
+                topicUrl = TopicApi.getTopicUrl(topicId, null);
+        } else if (bundle.containsKey(TopicActivity.TOPIC_URL_KEY))
             topicUrl = bundle.getCharSequence(TopicActivity.TOPIC_URL_KEY);
         return new TopicLoader(getActivity(), topicUrl);
     }

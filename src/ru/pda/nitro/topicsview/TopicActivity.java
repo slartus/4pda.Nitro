@@ -14,6 +14,7 @@ import ru.pda.nitro.R;
 public class TopicActivity extends BaseActivity {
     public static final String TOPIC_ID_KEY = "ru.pda.nitro.topicsview.TOPIC_ID_KEY";
     public static final String TOPIC_URL_KEY = "ru.pda.nitro.topicsview.TOPIC_URL_KEY";
+    public static final String NAVIGATE_ACTION_KEY = "ru.pda.nitro.topicsview.NAVIGATE_ACTION_KEY";
     public static final String TOPIC_TITLE_KEY = "ru.pda.nitro.topicsview.TOPIC_TITLE_KEY";
 
     @Override
@@ -38,14 +39,18 @@ public class TopicActivity extends BaseActivity {
     }
 
 
-    public static void show(Activity activity, CharSequence topicId) {
-        show(activity, topicId, null);
+    public static void show(Activity activity, CharSequence topicId,
+                            CharSequence navigateAction) {
+        show(activity, topicId, null, navigateAction);
     }
 
-    public static void show(Activity activity, CharSequence topicId, CharSequence topicTitle) {
+    public static void show(Activity activity, CharSequence topicId, CharSequence topicTitle,
+                            CharSequence navigateAction) {
         Intent intent = new Intent(activity.getApplicationContext(), TopicActivity.class);
 
         intent.putExtra(TOPIC_ID_KEY, topicId);
+        if (!TextUtils.isEmpty(navigateAction))
+            intent.putExtra(NAVIGATE_ACTION_KEY, navigateAction);
         if (!TextUtils.isEmpty(topicTitle))
             intent.putExtra(TOPIC_TITLE_KEY, topicTitle);
         activity.startActivity(intent);

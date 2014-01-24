@@ -3,13 +3,11 @@ package ru.pda.nitro.listfragments;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -25,7 +23,6 @@ import ru.pda.nitro.BaseFragment;
 import ru.pda.nitro.IRefreshActivity;
 import ru.pda.nitro.R;
 import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshAttacher;
-import ru.pda.nitro.database.*;
 
 
 /**
@@ -33,9 +30,10 @@ import ru.pda.nitro.database.*;
  * Базовый класс для списков
  * Здесь общие свойства и методы для фрагментов списков
  */
-public abstract class BaseListFragment extends BaseFragment implements AbsListView.OnScrollListener,
-AdapterView.OnItemClickListener
-{
+public abstract class BaseListFragment extends BaseFragment
+        implements AbsListView.OnScrollListener,
+        AdapterView.OnItemClickListener,
+        android.view.View.OnCreateContextMenuListener {
 	public Task task;
     private boolean loadmore = false;
     public int from = -1;
@@ -74,8 +72,10 @@ AdapterView.OnItemClickListener
     public void onActivityCreated(Bundle savedInstanceState)
 	{
         super.onActivityCreated(savedInstanceState);
-       listView.setOnItemClickListener(this);
-		
+        listView.setOnItemClickListener(this);
+        registerForContextMenu(listView);
+        listView.setOnCreateContextMenuListener(this);
+
     }
 	
 	@Override
@@ -94,8 +94,6 @@ AdapterView.OnItemClickListener
 			});
 	}
 
-
-
     public void setProgress(boolean loading)
 	{
 
@@ -110,6 +108,11 @@ AdapterView.OnItemClickListener
 
     }
 
+    @Override
+    public void onCreateContextMenu(android.view.ContextMenu contextMenu, android.view.View view,
+                                    android.view.ContextMenu.ContextMenuInfo contextMenuInfo) {
+
+    }
 
     public View initialiseListUi(View v)
 	{

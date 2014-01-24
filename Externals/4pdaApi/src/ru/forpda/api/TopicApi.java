@@ -44,6 +44,21 @@ public class TopicApi {
     public static final String SUBSCRIBE_EMAIL_TYPE_WEEKLY = "weekly";
 
     /**
+     * Параметр для перехода в топике к первому непрочитанному сообщению
+     */
+    public static final CharSequence NAVIGATE_VIEW_NEW_POST = "getnewpost";
+
+    /**
+     * Параметр для перехода в топике к первому сообщению
+     */
+    public static final CharSequence NAVIGATE_VIEW_FIRST_POST = "getfirstpost";
+
+    /**
+     * Параметр для перехода в топике к последнему сообщению
+     */
+    public static final CharSequence NAVIGATE_VIEW_LAST_POST = "getlastpost";
+
+    /**
      * Подписка на ответы в топике
      *
      * @param forumId   - id форума (можно получить из TopicApi.getForumId)
@@ -201,6 +216,42 @@ public class TopicApi {
                 ;
     }
 
+    public static CharSequence getTopicUrl(CharSequence topicId,
+                                           CharSequence navigateViewParam) {
+        String topicUrl = "http://4pda.ru/forum/index.php?showtopic=" + topicId;
+        if (NAVIGATE_VIEW_NEW_POST.equals(navigateViewParam)) {
+            topicUrl += "&view=getnewpost";
+        } else if (NAVIGATE_VIEW_LAST_POST.equals(navigateViewParam)) {
+            topicUrl += "&view=getlastpost";
+        }
+
+        return topicUrl;
+    }
+
+    /**
+     * Получение топика
+     *
+     * @param client            - клиент
+     * @param topicId           - идентификатор топика
+     * @param navigateViewParam - параметр навигации (см. NAVIGATE_VIEW_)
+     * @return
+     * @throws IOException
+     */
+    public static TopicResult getTopic(IHttpClient client, CharSequence topicId,
+                                       CharSequence navigateViewParam) throws IOException {
+        CharSequence topicUrl = getTopicUrl(topicId, navigateViewParam);
+
+        return getTopic(client, topicUrl);
+    }
+
+    /**
+     * Получение топика
+     *
+     * @param client   - клиент
+     * @param topicUrl - ссылка на топик
+     * @return
+     * @throws IOException
+     */
     public static TopicResult getTopic(IHttpClient client, CharSequence topicUrl) throws IOException {
         TopicResult topicResult = new TopicResult();
 
