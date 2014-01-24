@@ -130,7 +130,7 @@ public class MainActivity extends BaseActivity
 		}else{
 			mContent = new PlaceholderFragment();
 		}
-		setContent(mContent);
+		setContent(mContent, false);
 	}
 	
 	private int getPosition(){
@@ -217,7 +217,7 @@ public class MainActivity extends BaseActivity
     }
 
 
-	private void setContent(Fragment fragment){
+	private void setContent(Fragment fragment, boolean back){
 		
 		
 		getSupportFragmentManager().beginTransaction()
@@ -228,7 +228,7 @@ public class MainActivity extends BaseActivity
 
 	private void selectItem(int position, BrickInfo item)
 	{
-			setContent(item.createFragment());
+			setContent(item.createFragment(), true);
 			mDrawerList.setItemChecked(position, false);
 			setTitle(item.getTitle());
 

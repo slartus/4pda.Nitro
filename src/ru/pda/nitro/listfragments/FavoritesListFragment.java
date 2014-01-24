@@ -23,6 +23,9 @@ import ru.pda.nitro.R;
 import ru.pda.nitro.adapters.TopicListAdapter;
 import ru.pda.nitro.bricks.FavoritesBrick;
 import ru.pda.nitro.database.Contract;
+import android.util.*;
+import android.net.*;
+import uk.co.senab.actionbarpulltorefresh.library.*;
 
 
 /**
@@ -50,6 +53,12 @@ public class FavoritesListFragment extends TopicsListFragment implements OnScrol
 	{
         return FavoritesBrick.TITLE;
     }
+	
+	@Override
+	public Uri getUri()
+	{
+		return FavoritesBrick.URI;
+	}
 
     public String getName()
 	{
@@ -104,7 +113,7 @@ public class FavoritesListFragment extends TopicsListFragment implements OnScrol
 			if (topics.size() > 0)
 			{
 				setOutCount(listInfo.getOutCount());
-				deleteAllLocalData(getLocalUri());
+				deleteAllLocalData(getUri());
 				setLocalData(topics);
 				return true;
 			}
@@ -113,7 +122,10 @@ public class FavoritesListFragment extends TopicsListFragment implements OnScrol
 		else
 		{
 			setFrom(getFrom());
+			Log.e("topic", "from" + getFrom());
 			topics = getLocalData();
+			Log.e("topic", "topics.size(): " + topics.size());
+			
 			setOutCount(getOutCount());
 			if (topics.size() == 0)
 			{

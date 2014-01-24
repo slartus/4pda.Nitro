@@ -36,7 +36,7 @@ import ru.pda.nitro.database.*;
 public abstract class BaseListFragment extends BaseFragment implements AbsListView.OnScrollListener,
 AdapterView.OnItemClickListener
 {
-
+	public Task task;
     private boolean loadmore = false;
     public int from = -1;
 	private int old_from;
@@ -74,10 +74,10 @@ AdapterView.OnItemClickListener
     public void onActivityCreated(Bundle savedInstanceState)
 	{
         super.onActivityCreated(savedInstanceState);
-
-        listView.setOnItemClickListener(this);
+       listView.setOnItemClickListener(this);
+		
     }
-
+	
 	@Override
 	public void onResume()
 	{
@@ -109,7 +109,6 @@ AdapterView.OnItemClickListener
 	{
 
     }
-
 
 
     public View initialiseListUi(View v)
@@ -163,6 +162,7 @@ AdapterView.OnItemClickListener
 	{
         relativeMore.setVisibility(show ? View.VISIBLE : View.GONE);
     }
+	
 
     public class Task extends AsyncTask<Void, Void, Boolean>
 	{
@@ -181,6 +181,7 @@ AdapterView.OnItemClickListener
 		{
             return inBackground();
         }
+
 
         @Override
         protected void onPostExecute(Boolean result)
@@ -209,6 +210,7 @@ AdapterView.OnItemClickListener
 			if (getActivity() != null)
 				setProgress(false);
 
+				
             setLoading(false);
             setLoadmore(false);
             loadMore = false;
@@ -224,19 +226,14 @@ AdapterView.OnItemClickListener
 			getActivity().getContentResolver().delete(mUri, null, null);
     }
 
-	public Uri getLocalUri()
+	
+	@Override
+	public void onDestroy()
 	{
-		switch (getName())
-		{
-			case "favorites":
-				return Contract.Favorite.CONTENT_URI;
-			case "news":
-				return Contract.News.CONTENT_URI;
-
-		}
-		return null;
+		super.onDestroy();
+		if(task != null)
+			task.cancel(true);
 	}
-
 	
 	
 	
@@ -249,6 +246,8 @@ AdapterView.OnItemClickListener
 
     public abstract ArrayList<? extends IListItem> getList() throws ParseException, IOException;
 
+	public abstract Uri getUri();
+	
     public abstract String getName();
 
     public abstract String getTitle();

@@ -14,7 +14,6 @@ import java.util.regex.Pattern;
 
 import ru.forpda.common.DateTimeExternals;
 import ru.forpda.interfaces.IHttpClient;
-import android.util.*;
 
 
 /**
@@ -58,7 +57,7 @@ public class NewsList extends ArrayList<News> {
 
 
     public void loadNextNewsPage() throws IOException, ParseException {
-        Log.e("news", "size: " + size() + " empty: " + TextUtils.isEmpty(mSearchTag));
+       
 		if (size() == 0) {
             getPage(1, "http://4pda.ru/" + mSearchTag);
             return;
@@ -77,7 +76,6 @@ public class NewsList extends ArrayList<News> {
         } else {
             int nextPage = mLastNewsPage + 1;
             getPage(nextPage, "http://4pda.ru/" + mSearchTag + "page/" + nextPage);
-			Log.e("news", "url: " +"http://4pda.ru/" + mSearchTag + "page/" + nextPage );
         }
 
         

@@ -18,6 +18,7 @@ import ru.pda.nitro.App;
 import ru.pda.nitro.R;
 import ru.pda.nitro.adapters.ForumsListAdapter;
 import ru.pda.nitro.bricks.ForumsBrick;
+import android.net.*;
 
 
 /**
@@ -25,6 +26,13 @@ import ru.pda.nitro.bricks.ForumsBrick;
  */
 public class ForumsListFragment extends BaseListFragment
 {
+
+	@Override
+	public Uri getUri()
+	{
+		return ForumsBrick.URI;
+	}
+
     public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
 		if ((firstVisibleItem + visibleItemCount) == totalItemCount && !loadMore && !isLoading())
 		{

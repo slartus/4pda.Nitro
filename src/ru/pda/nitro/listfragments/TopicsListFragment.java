@@ -19,6 +19,7 @@ import ru.pda.nitro.adapters.TopicListAdapter;
 import ru.pda.nitro.database.Contract;
 import ru.pda.nitro.topicsview.TopicActivity;
 import android.net.*;
+import android.widget.*;
 
 
 /**
@@ -26,11 +27,10 @@ import android.net.*;
  * базовый класс для списков тем
  */
 public abstract class TopicsListFragment extends BaseListFragment {
-    public ArrayList<Topic> topics = new ArrayList<Topic>();
+    
+	public ArrayList<Topic> topics = new ArrayList<Topic>();
     public TopicListAdapter adapter;
-    public Task task;
-
-
+    
     @Override
     public ArrayList<? extends IListItem> getList() throws ParseException, IOException {
         return getTopicsList();
@@ -109,8 +109,7 @@ public abstract class TopicsListFragment extends BaseListFragment {
 
 
     public void getData() {
-        if (!isLoading()) {
-
+		  if (!isLoading()) {
             task = new Task();
             task.execute();
         } else
@@ -120,8 +119,8 @@ public abstract class TopicsListFragment extends BaseListFragment {
 
     public ArrayList<Topic> getLocalData() {
         topics = new ArrayList<Topic>();
-		if(getLocalUri() != null){
-        Cursor cursor = getActivity().getContentResolver().query(getLocalUri(), null, null, null, Contract.Favorite.DEFAULT_SORT_ORDER);
+		if(getUri() != null){
+        Cursor cursor = getActivity().getContentResolver().query(getUri(), null, null, null, Contract.Favorite.DEFAULT_SORT_ORDER);
         if (cursor.moveToFirst()) {
             do {
                 Topic topic = new Topic(null, null);
@@ -143,7 +142,7 @@ public abstract class TopicsListFragment extends BaseListFragment {
 
     public void setLocalData(ArrayList<Topic> topics) {
 
-		if(getLocalUri() != null)
+		if(getUri() != null)
         for (Topic topic : topics) {
             ContentValues cv = new ContentValues();
             cv.put(Contract.Favorite.description, topic.getDescription().toString());
@@ -153,14 +152,8 @@ public abstract class TopicsListFragment extends BaseListFragment {
             cv.put(Contract.Favorite.lastAvtor, topic.getLastPostAuthor().toString());
             cv.put(Contract.Favorite.lastDate, topic.getLastPostDate().toString());
             cv.put(Contract.Favorite.title, topic.getTitle().toString());
-            getActivity().getContentResolver().insert(getLocalUri(), cv);
+            getActivity().getContentResolver().insert(getUri(), cv);
         }
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        if (task != null)
-            task.cancel(true);
-    }
 }

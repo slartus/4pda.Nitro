@@ -5,13 +5,14 @@ import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import ru.pda.nitro.R;
+import java.util.*;
 
 public class NewsPagerFragment extends Fragment
 {
@@ -23,7 +24,6 @@ public class NewsPagerFragment extends Fragment
     @Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
-		// TODO: Implement this method
 		View v = inflater.inflate(R.layout.news_list_pager, container, false);
 		mViewPager = (ViewPager) v.findViewById(R.id.pager);
 		
@@ -33,34 +33,28 @@ public class NewsPagerFragment extends Fragment
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState)
 	{
-		// TODO: Implement this method
 		super.onActivityCreated(savedInstanceState);
 		final ActionBar actionBar = getActivity().getActionBar();
 		mViewPager.setOffscreenPageLimit(urls.length);
 		
 		mPagerAdapter = new PagerAdapter(getActivity().getSupportFragmentManager());
 		mViewPager.setAdapter(mPagerAdapter);
-		
+		mViewPager.setCurrentItem(0);
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
-		// Create a tab listener that is called when the user changes tabs.
 		ActionBar.TabListener tabListener = new ActionBar.TabListener() {
 			public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft) {
-				// show the given tab
 				mViewPager.setCurrentItem(tab.getPosition());
 				
 			}
 
 			public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction ft) {
-				// hide the given tab
 			}
 
 			public void onTabReselected(ActionBar.Tab tab, FragmentTransaction ft) {
-				// probably ignore this event
 			}
 		};
 
-		// Add 3 tabs, specifying the tab's text and TabListener
 		if(actionBar.getTabCount() > 0)
 			actionBar.removeAllTabs();
 		for (int i = 0; i < urls.length; i++) {
@@ -74,30 +68,37 @@ public class NewsPagerFragment extends Fragment
 
 		mViewPager.setOnPageChangeListener(
             new ViewPager.SimpleOnPageChangeListener() {
-                @Override
+
+				@Override
                 public void onPageSelected(int position) {
-                    // When swiping between pages, select the
-                    // corresponding tab.
                     getActivity().getActionBar().setSelectedNavigationItem(position);
+				
+					FragmentLifecycle fragmentToShow = (FragmentLifecycle)mPagerAdapter.getItem(position);
+					fragmentToShow.onResumeFragment();
+				
                 }
-            });
-			
-			mViewPager.setCurrentItem(0);
+            });	
 		
 	}
-	public class PagerAdapter extends FragmentPagerAdapter {
-    public PagerAdapter(FragmentManager fm) {
-        super(fm);
-    }
+	public class PagerAdapter extends FragmentStatePagerAdapter {
+    private List<Fragment> fragments;
+
+	public PagerAdapter(FragmentManager fm) {
+		super(fm);
+		this.fragments = new ArrayList<Fragment>();
+		for(int i = 0; i < urls.length; i++){
+			fragments.add(new NewsListFragment().newInstance(urls[i], i));
+		}
+	}
 
     @Override
     public Fragment getItem(int i) {
-      return new NewsListFragment().newInstance(urls[i]);
+      return fragments.get(i);
     }
 
     @Override
     public int getCount() {
-        return urls.length;
+        return fragments.size();
     }
 
 }
