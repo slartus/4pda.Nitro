@@ -144,7 +144,7 @@ public class NewsList extends ArrayList<News> {
 
                 Matcher textMatcher = textPattern.matcher(postData);
                 if (textMatcher.find()) {
-                    topic.setDescription(Html.fromHtml(removeReadMore(textMatcher.group(1))).toString());
+                    topic.setDescription(Html.fromHtml(removeDescriptionTrash(textMatcher.group(1))).toString());
                 }
 
                 Matcher imageMatcher = imagePattern.matcher(postData);
@@ -162,11 +162,11 @@ public class NewsList extends ArrayList<News> {
     }
 
     /**
-     * Удалить из текста ссылки "Читать дальше"
+     * Удалить из краткого текста новости ссылки "читать дальше" и картинки
      *
      * @return
      */
-    private static String removeReadMore(CharSequence description) {
+    private static String removeDescriptionTrash(CharSequence description) {
         return Pattern
                 .compile("<p style=\"[^\"]*\"><a href=\"/\\d+/\\d+/\\d+/\\d+/#more-\\d+\" class=\"more-link\">читать дальше</a></p>|<img[^>]*?/>")
                 .matcher(description)
