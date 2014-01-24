@@ -11,7 +11,6 @@ import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-
 import ru.forpda.common.DateTimeExternals;
 import ru.forpda.interfaces.IHttpClient;
 
@@ -37,6 +36,12 @@ public class NewsList extends ArrayList<News> {
 
     }
 
+    /**
+     * Возвращает из url тэг
+     *
+     * @param url
+     * @return news, articles, software и тд. или пусто для "Все"
+     */
     private static String getSearchTag(String url) {
         Matcher m = Pattern.compile("4pda.ru/tag/(.*?)(/|$)").matcher(url);
         if (m.find()) {
@@ -57,11 +62,13 @@ public class NewsList extends ArrayList<News> {
 
 
     public void loadNextNewsPage() throws IOException, ParseException {
+
         if (size() == 0) {
             getPage(1, "http://4pda.ru/" + mSearchTag);
             return;
         }
-
+        mLastNewsUrl = size() > 0 ? get(size() - 1).getId() : "";
+        mLastNewsPage = size() > 0 ? get(size() - 1).getPage() : 0;
         CharSequence url = mLastNewsUrl;
 
         if (TextUtils.isEmpty(mSearchTag)) {
@@ -76,8 +83,7 @@ public class NewsList extends ArrayList<News> {
             getPage(nextPage, "http://4pda.ru/" + mSearchTag + "page/" + nextPage);
         }
 
-        mLastNewsUrl = size() > 0 ? get(size() - 1).getId() : "";
-        mLastNewsPage = size() > 0 ? get(size() - 1).getPage() : 0;
+
     }
 
     private void loadPage(int year, int nextPage, int iteration) throws IOException, ParseException {
@@ -132,13 +138,13 @@ public class NewsList extends ArrayList<News> {
                 Matcher infoMatcher = infoPattern.matcher(postData);
                 if (infoMatcher.find()) {
                     Date _pubDate = dateFormat.parse(infoMatcher.group(2));
-                    topic.setNewsDate(DateTimeExternals.getDateTimeString(_pubDate));
+                    topic.setNewsDate(DateTimeExternals.getDateString(_pubDate));
                     topic.setAuthor(Html.fromHtml(infoMatcher.group(1)));
                 }
 
                 Matcher textMatcher = textPattern.matcher(postData);
                 if (textMatcher.find()) {
-                    topic.setDescription(Html.fromHtml(textMatcher.group(1).replaceAll("<img.*?/>", "")));
+                    topic.setDescription(Html.fromHtml(removeReadMore(textMatcher.group(1))).toString());
                 }
 
                 Matcher imageMatcher = imagePattern.matcher(postData);
@@ -153,6 +159,18 @@ public class NewsList extends ArrayList<News> {
 
         newsCountInt = Math.max(getNewsCount(), lastPageNum(dailyNewsPage, page));
         return dailyNewsPage;
+    }
+
+    /**
+     * Удалить из текста ссылки "Читать дальше"
+     *
+     * @return
+     */
+    private static String removeReadMore(CharSequence description) {
+        return Pattern
+                .compile("<p style=\"[^\"]*\"><a href=\"/\\d+/\\d+/\\d+/\\d+/#more-\\d+\" class=\"more-link\">читать дальше</a></p>|<img[^>]*?/>")
+                .matcher(description)
+                .replaceAll("");
     }
 
     public News findByTitle(String title) {
