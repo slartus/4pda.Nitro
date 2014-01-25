@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
-	xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_height="wrap_content"
-	android:layout_width="fill_parent"
-	android:orientation="vertical">
 
 	<LinearLayout
-		android:background="#ffffff"
+		xmlns:android="http://schemas.android.com/apk/res/android"
+		
+		android:background="#e0e0e0"
 		android:layout_height="wrap_content"
 		android:layout_width="match_parent"
 		android:paddingLeft="10dp"
@@ -15,9 +12,13 @@
 		android:paddingBottom="5dp"
 		android:orientation="vertical">
 
-
+		<FrameLayout
+			android:layout_height="wrap_content"
+			android:layout_width="fill_parent"
+			android:orientation="vertical">
+		
 		<LinearLayout
-			android:layout_alignParentBottom="true"
+			android:background="@drawable/card_bg_play"
 			android:layout_height="wrap_content"
 			android:layout_width="fill_parent"
 			android:orientation="vertical">
@@ -30,6 +31,7 @@
 
 
 			<LinearLayout
+				android:padding="5dp"
 				android:layout_height="wrap_content"
 				android:layout_width="match_parent"
 				android:orientation="vertical">
@@ -66,6 +68,17 @@
 						android:layout_width="wrap_content"/>
 
 				</LinearLayout>
+				
+				<TextView
+					android:visibility="gone"
+					android:textColor="#b2b2b2"
+					android:paddingTop="5dp"
+					android:paddingBottom="5dp"
+					android:id="@+id/textTag"
+					android:textSize="14sp"
+					android:layout_height="wrap_content"
+					android:layout_width="fill_parent"/>
+				
 
 				<TextView
 					android:paddingTop="5dp"
@@ -78,15 +91,17 @@
 			</LinearLayout>
 
 		</LinearLayout>
-	</LinearLayout>
-	<LinearLayout
-		android:layout_height="match_parent"
-		android:layout_width="match_parent"
-		android:background="@drawable/tap_button"
-		android:id="@+id/linearStartPost"
-		android:orientation="vertical"/>
+			<LinearLayout
+				android:layout_height="match_parent"
+				android:layout_width="match_parent"
+				android:background="@drawable/tap_button"
+				android:id="@+id/linearStartPost"
+				android:layout_marginBottom="4dp"
+				android:orientation="vertical"/>
 
-</FrameLayout>
+		</FrameLayout>
+	</LinearLayout>
+
 
 	
 

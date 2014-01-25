@@ -24,13 +24,13 @@ import ru.pda.nitro.R;
 public class TopicView extends BaseFragment
 implements LoaderManager.LoaderCallbacks<TopicResult> {
 
-
+	CharSequence topicUrl = null;
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         // Prepare the loader.  Either re-connect with an existing one,
         // or start a new one.
-
+		getPullToRefreshAttacher(getWebView());
         getLoaderManager().initLoader(0, getActivity().getIntent().getExtras(), this);
 
     }
@@ -42,6 +42,7 @@ implements LoaderManager.LoaderCallbacks<TopicResult> {
 
         WebView webView = (WebView) myFragmentView.findViewById(R.id.webview);
         webView.setWebViewClient(new MyWebViewClient());
+		
         return initialiseUi(myFragmentView);
     }
 
@@ -51,9 +52,20 @@ implements LoaderManager.LoaderCallbacks<TopicResult> {
 
     @Override
     public void getData() {
-        showError(false);
-        getLoaderManager().restartLoader(0, null, this);
+        refreshData();
     }
+
+	@Override
+	protected void refreshData()
+	{
+		super.refreshData();
+		if(!isLoading()){
+		showTopic(topicUrl);
+		}else
+		setProgress(false);
+	}
+	
+	
 
     
 
@@ -76,7 +88,9 @@ implements LoaderManager.LoaderCallbacks<TopicResult> {
     }
 
     private void showTopic(CharSequence topicUrl) {
-        Bundle bundle = new Bundle();
+		setRefresh(true);
+		showError(false);
+		Bundle bundle = new Bundle();
         bundle.putCharSequence(TopicActivity.TOPIC_URL_KEY, topicUrl);
         getLoaderManager().restartLoader(0, bundle, this);
     }
@@ -85,8 +99,10 @@ implements LoaderManager.LoaderCallbacks<TopicResult> {
     public Loader<TopicResult> onCreateLoader(int i, Bundle bundle) {
         if (bundle == null) return null;
 
+		setLoading(true);
+		if(!isRefresh())
 		showError(false);
-        CharSequence topicUrl = null;
+		
         if (bundle.containsKey(TopicActivity.TOPIC_ID_KEY)) {
             CharSequence topicId = bundle.getCharSequence(TopicActivity.TOPIC_ID_KEY);
 
@@ -101,13 +117,17 @@ implements LoaderManager.LoaderCallbacks<TopicResult> {
 
     @Override
     public void onLoadFinished(Loader<TopicResult> topicResultLoader, TopicResult topicResult) {
-    //    if (getActivity() != null)
-    //        getActivity().setTitle(topicResult.getTitle());
-        if (topicResult.getBody() != null) {
+        if (getActivity() != null)
+            getActivity().setTitle(topicResult.getTitle());
+        if (topicResult != null && topicResult.getBody() != null){
             getWebView().loadDataWithBaseURL("http://4pda.ru/forum/", topicResult.getHtml().toString(), "text/html", "UTF-8", null);
-            hideProgress();
         } else
             showError(true);
+			
+			setRefresh(false);
+			setLoading(false);
+			hideProgress();
+			setProgress(false);
     }
 
     @Override

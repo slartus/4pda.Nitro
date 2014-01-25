@@ -13,10 +13,12 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.cache.memory.impl.UsingFreqLimitedMemoryCache;
 import com.nostra13.universalimageloader.cache.disc.naming.HashCodeFileNameGenerator;
 import android.graphics.Bitmap;
+import android.graphics.*;
 
 public class NewsListAdapter extends BaseAdapter
 {
 	private NewsList newsList;
+	private Typeface face;
 	private Context context;
 	final LayoutInflater inflater;
 	private DisplayImageOptions options;
@@ -24,6 +26,7 @@ public class NewsListAdapter extends BaseAdapter
 	
 	public NewsListAdapter(Context context, NewsList newsList){
 		inflater = (LayoutInflater)context.getSystemService(context.LAYOUT_INFLATER_SERVICE);
+		face = Typeface.createFromAsset(context.getAssets(), "4pda/fonts/RobotoSlab-Light.ttf");
 		
 		this.newsList = newsList;
 		this.context = context;
@@ -62,21 +65,18 @@ public class NewsListAdapter extends BaseAdapter
 	@Override
 	public int getCount()
 	{
-		// TODO: Implement this method
 		return newsList.size();
 	}
 
 	@Override
 	public Object getItem(int p1)
 	{
-		// TODO: Implement this method
 		return newsList.get(p1);
 	}
 
 	@Override
 	public long getItemId(int p1)
 	{
-		// TODO: Implement this method
 		return p1;
 	}
 
@@ -87,11 +87,13 @@ public class NewsListAdapter extends BaseAdapter
 		if(view == null){
 			view = inflater.inflate(R.layout.item_news, parent, false);
 			holder = new ViewHolder();
+			holder.textTag =(TextView)view.findViewById(R.id.textTag);
 			holder.imageImage = (ImageView)view.findViewById(R.id.imageImage);
 			holder.textAutor = (TextView)view.findViewById(R.id.textAvtor);
 			holder.textDate = (TextView)view.findViewById(R.id.textDate);
 			holder.textDescription = (TextView)view.findViewById(R.id.textDescription);
 			holder.textTitle = (TextView)view.findViewById(R.id.textTitle);
+			holder.textTitle.setTypeface(face);
 			view.setTag(holder);
 
 		}else{
@@ -104,6 +106,10 @@ public class NewsListAdapter extends BaseAdapter
 		holder.textTitle.setText(data.getTitle());
 		if(data.getImgUrl() != null)
 		imageLoader.displayImage(data.getImgUrl().toString(), holder.imageImage, options);
+		if(data.getTagTitle() != null){
+			holder.textTag.setVisibility(View.VISIBLE);
+			holder.textTag.setText(data.getTagTitle());
+			}
 	
 		return view;
 	}
@@ -114,6 +120,7 @@ public class NewsListAdapter extends BaseAdapter
 		public TextView textDate;
 		public TextView textDescription;
 		public TextView textAutor;
+		public TextView textTag;
 	}
 
 }

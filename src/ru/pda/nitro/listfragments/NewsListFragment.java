@@ -25,6 +25,7 @@ import android.content.*;
 import android.preference.*;
 import android.util.*;
 import android.net.*;
+import uk.co.senab.actionbarpulltorefresh.library.*;
 
 
 /**
@@ -32,7 +33,6 @@ import android.net.*;
  */
 public class NewsListFragment extends BaseListFragment implements FragmentLifecycle
 {
-
 	private int position = 0;
     private NewsList newsList = null;
     private String newsUrl = "";
@@ -92,14 +92,17 @@ public class NewsListFragment extends BaseListFragment implements FragmentLifecy
         listView.addFooterView(initialiseFooter());
         listView.setAdapter(adapter);
         listView.setOnScrollListener(this);
-		if (position == 0)
+		if (position == 0){
+			getPullToRefreshAttacher(listView);
 			getData();
+		}
     }
 
 
 	@Override
 	public void onResumeFragment()
 	{
+		getPullToRefreshAttacher(listView);
 		if (newsList != null && newsList.size() == 0)
 			getData();
 	}
@@ -121,7 +124,8 @@ public class NewsListFragment extends BaseListFragment implements FragmentLifecy
 			}
 			else if (isRefresh() && !isLoadmore())
 			{
-				newsList.clear();
+				newsList = new NewsList(new HttpHelper(App.getInstance()), newsUrl);
+				
 				newsList.loadNextNewsPage();
 				setLocalData(newsList);
 				return true;

@@ -10,6 +10,7 @@ import android.content.*;
 
 import android.util.*;
 import ru.forpda.common.*;
+import android.graphics.*;
 
 
 public class TopicListAdapter extends BaseAdapter
@@ -18,10 +19,12 @@ public class TopicListAdapter extends BaseAdapter
 	private Context context;
 	private ArrayList<Topic> topics;
 	final LayoutInflater inflater;
+	private Typeface face;
 	
 	public TopicListAdapter(Context context,ArrayList<Topic> topics){
 		
 		inflater = (LayoutInflater)context.getSystemService(context.LAYOUT_INFLATER_SERVICE);
+		face = Typeface.createFromAsset(context.getAssets(), "4pda/fonts/Roboto-Regular.ttf");
 		
 		this.context = context;
 		this.topics = topics;
@@ -65,6 +68,7 @@ public class TopicListAdapter extends BaseAdapter
 			holder.textDescription = (TextView)view.findViewById(R.id.textViewDescription);
 			holder.textForumTitle = (TextView)view.findViewById(R.id.textViewForumTitle);
 			holder.textTitle = (TextView)view.findViewById(R.id.textViewTitle);
+			holder.textTitle.setTypeface(face);
 			view.setTag(holder);
 			
 		}else{
@@ -77,9 +81,10 @@ public class TopicListAdapter extends BaseAdapter
 		holder.textForumTitle.setText(topic.getForumTitle());
 		holder.textTitle.setText(topic.getTitle());
 		holder.imageFlag.setImageDrawable(null);
-		if(topic.getHasUnreadPosts())
+		if(topic.getHasUnreadPosts()){
 			holder.imageFlag.setImageResource(R.drawable.new_flag);
-		// TODO: Implement this method
+			}
+
 		return view;
 	}
 	public class ViewHolder{

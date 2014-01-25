@@ -146,8 +146,8 @@ public class NewsList extends ArrayList<News> {
                 if (textMatcher.find()) {
                     if (textMatcher.group(1) != null) {
                         news.setTagLink(textMatcher.group(1));
-                        news.setTagName(textMatcher.group(1));
-                        news.setTagTitle(textMatcher.group(1));
+                        news.setTagName(textMatcher.group(2));
+                        news.setTagTitle(textMatcher.group(3));
                     }
                     news.setDescription(Html.fromHtml(removeDescriptionTrash(textMatcher.group(4))).toString());
                 }

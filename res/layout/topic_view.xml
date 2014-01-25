@@ -28,37 +28,8 @@
 
         </LinearLayout>
 
-        <LinearLayout
-			android:background="#10000000"
-			android:layout_height="match_parent"
-			android:layout_width="match_parent"
-			android:orientation="vertical"
-			android:gravity="center"
-			android:id="@+id/linearError"
-			android:visibility="gone">
-			<LinearLayout
-				android:background="#ffffff"
-				android:layout_height="wrap_content"
-				android:layout_width="wrap_content"
-				android:gravity="center"
-				android:orientation="vertical">
-
-				<TextView
-					android:id="@+id/textViewError"
-					android:layout_height="wrap_content"
-					android:text="@string/error"
-					android:padding="10dp"
-					android:textSize="20sp"
-					android:layout_width="wrap_content"/>
-
-				<Button
-					android:id="@+id/buttonError"
-					android:layout_height="wrap_content"
-					android:text="@string/button_refresh"
-					android:layout_width="wrap_content"/>
-
-			</LinearLayout>
-		</LinearLayout>
+       	<include layout="@layout/error_layout"/>
+		
     </FrameLayout>
 
 </LinearLayout>

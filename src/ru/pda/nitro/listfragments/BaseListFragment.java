@@ -75,31 +75,22 @@ public abstract class BaseListFragment extends BaseFragment
         listView.setOnItemClickListener(this);
         registerForContextMenu(listView);
         listView.setOnCreateContextMenuListener(this);
-
+		
+		
     }
-	
+
 	@Override
-	public void onResume()
+	protected void refreshData()
 	{
-		super.onResume();
-		((IRefreshActivity) getActivity()).getPullToRefreshAttacher().setRefreshableView(listView, new PullToRefreshAttacher.OnRefreshListener() {
-				@Override
-				public void onRefreshStarted(View view)
-				{
-					setOld_from(from);
-					setFrom(0);
-					setRefresh(true);
-					getData();
-				}
-			});
+		super.refreshData();
+		if(!isLoading()){
+			setOld_from(from);
+			setFrom(0);
+			setRefresh(true);
+		}
+		getData();
 	}
-
-    public void setProgress(boolean loading)
-	{
-
-        ((IRefreshActivity) getActivity()).getPullToRefreshAttacher().setRefreshing(loading);
-
-    }
+	
 
     @Override
     public void onItemClick(android.widget.AdapterView<?> adapterView, android.view.View view,

@@ -6,11 +6,12 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.*;
+import uk.co.senab.actionbarpulltorefresh.library.*;
 
 public abstract class BaseFragment extends Fragment {
     public LinearLayout linearProgress;
     public LinearLayout linearError;
-    public Button buttonError;
+    public TextView buttonError, buttonErrorOk;
 	private boolean refresh = false;
 	private boolean loading = false;
     
@@ -21,14 +22,24 @@ public abstract class BaseFragment extends Fragment {
 		
         linearProgress = (LinearLayout) v.findViewById(R.id.linearProgress);
         linearError = (LinearLayout) v.findViewById(R.id.linearError);
-        buttonError = (Button) v.findViewById(R.id.buttonError);
+        buttonError = (TextView) v.findViewById(R.id.buttonErrorRefresh);
+		buttonErrorOk = (TextView)v.findViewById(R.id.buttonErrorOk);
         buttonError.setOnClickListener(new OnClickListener() {
 
             @Override
             public void onClick(View p1) {
-                getData();
+                setProgress(true);
+				getData();
             }
         });
+		buttonErrorOk.setOnClickListener(new OnClickListener(){
+
+				@Override
+				public void onClick(View p1)
+				{
+					linearError.setVisibility(View.GONE);
+				}
+			});
         return v;
     }
 	
@@ -53,8 +64,7 @@ public abstract class BaseFragment extends Fragment {
             linearProgress.setVisibility(View.GONE);
             linearError.setVisibility(View.VISIBLE);
         } else {
-            if (!isRefresh())
-                linearProgress.setVisibility(View.VISIBLE);
+            linearProgress.setVisibility(!isRefresh() ? View.VISIBLE : View.GONE);
             linearError.setVisibility(View.GONE);
 
         }
@@ -63,4 +73,23 @@ public abstract class BaseFragment extends Fragment {
 	public void hideProgress() {
         linearProgress.setVisibility(View.GONE);
     }
+	
+	public void setProgress(boolean loading)
+	{
+
+        ((IRefreshActivity) getActivity()).getPullToRefreshAttacher().setRefreshing(loading);
+
+    }
+	
+	public void getPullToRefreshAttacher(View view){
+		((IRefreshActivity) getActivity()).getPullToRefreshAttacher().setRefreshableView(view, new PullToRefreshAttacher.OnRefreshListener() {
+				@Override
+				public void onRefreshStarted(View view)
+				{
+					refreshData();
+				}
+			});
+	}
+	
+	protected void refreshData(){};
 }

@@ -87,7 +87,7 @@ public class FavoritesListFragment extends TopicsListFragment implements OnScrol
 		listView.setAdapter(adapter);
 		listView.setOnScrollListener(this);
 		getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-		
+		getPullToRefreshAttacher(listView);
 		getData();
 	}
 
@@ -122,9 +122,7 @@ public class FavoritesListFragment extends TopicsListFragment implements OnScrol
 		else
 		{
 			setFrom(getFrom());
-			Log.e("topic", "from" + getFrom());
 			topics = getLocalData();
-			Log.e("topic", "topics.size(): " + topics.size());
 			
 			setOutCount(getOutCount());
 			if (topics.size() == 0)
