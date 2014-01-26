@@ -120,7 +120,7 @@ implements LoaderManager.LoaderCallbacks<TopicResult> {
         if (getActivity() != null)
             getActivity().setTitle(topicResult.getTitle());
         if (topicResult != null && topicResult.getBody() != null){
-            getWebView().loadDataWithBaseURL("http://4pda.ru/forum/", topicResult.getHtml().toString(), "text/html", "UTF-8", null);
+			getWebView().loadDataWithBaseURL("http://4pda.ru/forum/", topicResult.getHtml().toString(), "text/html", "UTF-8", null);
         } else
             showError(true);
 			
@@ -134,6 +134,8 @@ implements LoaderManager.LoaderCallbacks<TopicResult> {
     public void onLoaderReset(Loader<TopicResult> topicResultLoader) {
 
     }
+	
+	
 
     private static class TopicLoader extends AsyncTaskLoader<TopicResult> {
         Throwable ex;
