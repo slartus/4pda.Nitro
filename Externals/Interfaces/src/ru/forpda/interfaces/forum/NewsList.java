@@ -113,15 +113,21 @@ public class NewsList extends ArrayList<News> {
 
     private String getPage(int page, String newsUrl) throws IOException, ParseException {
         String dailyNewsPage = mClient.performGet(newsUrl);
-        Matcher postsMatcher = Pattern.compile("<div class=\"post\" id=\"post-\\d+\">([\\s\\S]*?)<a href=\"/\\d+/\\d+/\\d+/\\d+/#comments\"")
+        Matcher postsMatcher = Pattern.compile("<div class=\"post\" id=\"post-\\d+\">([\\s\\S]*?)<span id=\"ka_\\d+_0_n\"></span></div><br /></div></div>")
                 .matcher(dailyNewsPage);
         Boolean someUnloaded = false;// одна из новостей незагружена - значит и остальные
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yy");
 
 
         Pattern mPattern = Pattern.compile("<a href=\"(/\\d+/\\d+/\\d+/(\\d+))/\" rel=\"bookmark\" title=\"(.*?)\" alt=\"\">.*?</a></h2>");
-        Pattern infoPattern = Pattern.compile("<strong>(.*?)</strong>&nbsp;\\|\\s*(\\d+\\.\\d+\\.\\d+)\\s*\\|");
-        Pattern textPattern = Pattern.compile("<div class=\"entry\" id=\"[^\"]*\">(?:<a href=\"([^\"]*)\" class=\"oprj ([^\"]*)\"><div>(.*?)</div>)?([\\s\\S]*?)</div><div class=\"postmetadata\"");
+
+        Pattern textPattern = Pattern.compile("<div class=\"entry\" id=\"[^\"]*\">" +
+                "(?:<a href=\"([^\"]*)\" class=\"oprj ([^\"]*)\"><div>(.*?)</div>)?" +
+                "([\\s\\S]*?)" +
+                "(?:<noindex><span class=\"mb_source\">Источник:&nbsp;<a href=\"([^\"]*)\" target=\"[^\"]*\">(.*?)</a></span></noindex>)?" +
+                "<br /><br /></div><div class=\"postmetadata\" id=\"ka_meta_\\d+_0\"><span id=\"ka_\\d+_0\"></span>&nbsp;\\|&nbsp;" +
+                "<strong>(.*?)</strong>&nbsp;\\|\\s*(\\d+\\.\\d+\\.\\d+)\\s*\\|\\s*" +
+                "<a href=\"/\\d+/\\d+/\\d+/\\d+/#comments\" title=\"[^\"]*\"><b class=\"spr pc\"></b>\\s*(\\d+)\\s*</a>");
         Pattern imagePattern = Pattern.compile("<center><img[^>]*?src=\"(.*?)\"");
         while (postsMatcher.find()) {
             String postData = postsMatcher.group(1);
@@ -135,13 +141,6 @@ public class NewsList extends ArrayList<News> {
 
                 News news = new News(id, Html.fromHtml(m.group(3)).toString());
 
-                Matcher infoMatcher = infoPattern.matcher(postData);
-                if (infoMatcher.find()) {
-                    Date _pubDate = dateFormat.parse(infoMatcher.group(2));
-                    news.setNewsDate(DateTimeExternals.getDateString(_pubDate));
-                    news.setAuthor(Html.fromHtml(infoMatcher.group(1)));
-                }
-
                 Matcher textMatcher = textPattern.matcher(postData);
                 if (textMatcher.find()) {
                     if (textMatcher.group(1) != null) {
@@ -149,7 +148,15 @@ public class NewsList extends ArrayList<News> {
                         news.setTagName(textMatcher.group(2));
                         news.setTagTitle(textMatcher.group(3));
                     }
+                    if (textMatcher.group(5) != null) {
+                        news.setSourceUrl(textMatcher.group(5));
+                        news.setSourceTitle(textMatcher.group(6));
+                    }
                     news.setDescription(Html.fromHtml(removeDescriptionTrash(textMatcher.group(4))).toString());
+                    news.setAuthor(Html.fromHtml(textMatcher.group(7)));
+                    Date _pubDate = dateFormat.parse(textMatcher.group(8));
+                    news.setNewsDate(DateTimeExternals.getDateString(_pubDate));
+                    news.setCommentsCount(Integer.parseInt(textMatcher.group(9)));
                 }
 
                 Matcher imageMatcher = imagePattern.matcher(postData);
@@ -175,7 +182,7 @@ public class NewsList extends ArrayList<News> {
         return Pattern
                 .compile("<p style=\"[^\"]*\"><a href=\"/\\d+/\\d+/\\d+/\\d+/#more-\\d+\" class=\"more-link\">читать дальше</a></p>|<img[^>]*?/>")
                 .matcher(description)
-                .replaceAll("");
+                .replaceAll("").trim();
     }
 
     public News findByTitle(String title) {
