@@ -79,14 +79,15 @@ public class FavoritesListFragment extends TopicsListFragment implements OnScrol
 	{
 
         super.onActivityCreated(savedInstanceState);
-
+		getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+		
 		listInfo = new ListInfo();
 		adapter = new TopicListAdapter(getActivity(), topics);
 		
 		listView.addFooterView(initialiseFooter());
 		listView.setAdapter(adapter);
+		registerForContextMenu(listView);
 		listView.setOnScrollListener(this);
-		getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
 		getPullToRefreshAttacher(listView);
 		getData();
 	}
@@ -176,5 +177,5 @@ public class FavoritesListFragment extends TopicsListFragment implements OnScrol
 
     }
 
-
+	
 }

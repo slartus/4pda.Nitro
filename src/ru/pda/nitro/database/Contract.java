@@ -44,6 +44,13 @@ public final class Contract
 		public static final String page = "page";
 		public static final String description = "description";
 		public static final String imgUrl = "imgUrl";
+		public static final String commentsCount = "commentsCount";
+		public static final String sourceTitle = "sourceTitle";
+		public static final String sourseUrl = "sourceUrl";
+		public static final String tagLink = "tagLink";
+		public static final String tagName = "tagName";
+		public static final String tagTitle = "tagTitle";
+		
 
 		public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/News");
 		public static final String CONTENT_TYPE = "vnd.android.cursor.dir/vnd." + AUTHORITY + ".News";

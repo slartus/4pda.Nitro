@@ -7,6 +7,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.*;
 import uk.co.senab.actionbarpulltorefresh.library.*;
+import android.os.*;
 
 public abstract class BaseFragment extends Fragment {
     public LinearLayout linearProgress;
@@ -14,7 +15,7 @@ public abstract class BaseFragment extends Fragment {
     public TextView buttonError, buttonErrorOk;
 	private boolean refresh = false;
 	private boolean loading = false;
-    
+    public Handler handler;
 
     public abstract void getData();
 
@@ -37,7 +38,7 @@ public abstract class BaseFragment extends Fragment {
 				@Override
 				public void onClick(View p1)
 				{
-					linearError.setVisibility(View.GONE);
+					hideError();
 				}
 			});
         return v;
@@ -59,7 +60,7 @@ public abstract class BaseFragment extends Fragment {
         return refresh;
     }
 
-	public void showError(boolean isError) {
+	public void showStatus(boolean isError) {
         if (isError) {
             linearProgress.setVisibility(View.GONE);
             linearError.setVisibility(View.VISIBLE);
@@ -69,6 +70,10 @@ public abstract class BaseFragment extends Fragment {
 
         }
     }
+	
+	public void hideError(){
+		linearError.setVisibility(View.GONE);
+	}
 	
 	public void hideProgress() {
         linearProgress.setVisibility(View.GONE);

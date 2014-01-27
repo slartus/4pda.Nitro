@@ -24,7 +24,7 @@ public class NewsPagerFragment extends Fragment
     @Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
-		View v = inflater.inflate(R.layout.news_list_pager, container, false);
+		View v = inflater.inflate(R.layout.view_pager, container, false);
 		mViewPager = (ViewPager) v.findViewById(R.id.pager);
 		
 		return v;

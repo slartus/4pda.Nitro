@@ -15,12 +15,18 @@ public class News implements IListItem {
     private CharSequence tagLink;
     private CharSequence tagName;
     private CharSequence tagTitle;
+	
+	private CharSequence sourceTitle;
+	private CharSequence sourceUrl;
+	
+	private int commentsCount;
 
     public News(CharSequence id, CharSequence title) {
         this.id = id;
         this.title = title;
     }
 
+	
     public CharSequence getId() {
         return id;
     }
@@ -109,4 +115,48 @@ public class News implements IListItem {
     public void setTagTitle(CharSequence tagTitle) {
         this.tagTitle = tagTitle;
     }
+	
+	/*
+	 *Количество комментариев
+	 */
+	
+	public void setCommentsCount(int commentsCount)
+	{
+		this.commentsCount = commentsCount;
+	}
+
+	public int getCommentsCount()
+	{
+		return commentsCount;
+	}
+	
+	/*
+	 * Url источника
+	 */
+
+	public void setSourceUrl(CharSequence sourceUrl)
+	{
+		this.sourceUrl = sourceUrl;
+	}
+
+	public CharSequence getSourceUrl()
+	{
+		return sourceUrl;
+	}
+	
+	/*
+	 * Текст источника
+	 */
+	
+
+	public void setSourceTitle(CharSequence sourceTitle)
+	{
+		this.sourceTitle = sourceTitle;
+	}
+
+	public CharSequence getSourceTitle()
+	{
+		return sourceTitle;
+	}
+	
 }

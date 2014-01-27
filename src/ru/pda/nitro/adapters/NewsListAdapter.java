@@ -32,8 +32,8 @@ public class NewsListAdapter extends BaseAdapter
 		this.context = context;
 		
 		options = new DisplayImageOptions.Builder()
-			.showStubImage(R.drawable.empty_state_land)
-			.showImageForEmptyUri(R.drawable.empty_state_land)
+			.showStubImage(R.drawable.no_image)
+			.showImageForEmptyUri(R.drawable.no_image)
 			.cacheInMemory()
 			.cacheOnDisc()
 			.bitmapConfig(Bitmap.Config.RGB_565)
@@ -87,6 +87,8 @@ public class NewsListAdapter extends BaseAdapter
 		if(view == null){
 			view = inflater.inflate(R.layout.item_news, parent, false);
 			holder = new ViewHolder();
+			holder.textSource = (TextView)view.findViewById(R.id.textSource);
+			holder.textComments = (TextView)view.findViewById(R.id.textComments);
 			holder.textTag =(TextView)view.findViewById(R.id.textTag);
 			holder.imageImage = (ImageView)view.findViewById(R.id.imageImage);
 			holder.textAutor = (TextView)view.findViewById(R.id.textAvtor);
@@ -100,6 +102,7 @@ public class NewsListAdapter extends BaseAdapter
 			holder = (ViewHolder) view.getTag();
 		}
 		News data = newsList.get(position);
+		holder.textComments.setText(String.valueOf(data.getCommentsCount()));
 		holder.textAutor.setText(data.getAuthor());
 		holder.textDate.setText(data.getNewsDate());
 		holder.textDescription.setText(data.getDescription());
@@ -110,6 +113,10 @@ public class NewsListAdapter extends BaseAdapter
 			holder.textTag.setVisibility(View.VISIBLE);
 			holder.textTag.setText(data.getTagTitle());
 			}
+		if(data.getSourceTitle() != null){
+			holder.textSource.setVisibility(View.VISIBLE);
+			holder.textSource.setText("Источник: " + data.getSourceTitle());
+		}
 	
 		return view;
 	}
@@ -121,6 +128,8 @@ public class NewsListAdapter extends BaseAdapter
 		public TextView textDescription;
 		public TextView textAutor;
 		public TextView textTag;
+		public TextView textComments;
+		public TextView textSource;
 	}
 
 }

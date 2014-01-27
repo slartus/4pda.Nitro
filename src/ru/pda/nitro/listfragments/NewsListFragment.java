@@ -26,6 +26,7 @@ import android.preference.*;
 import android.util.*;
 import android.net.*;
 import uk.co.senab.actionbarpulltorefresh.library.*;
+import ru.pda.nitro.database.*;
 
 
 /**
@@ -117,25 +118,19 @@ public class NewsListFragment extends BaseListFragment implements FragmentLifecy
 			{
 				return true;
 			}
-			else if (!isRefresh() && !isLoadmore())
-			{
-				newsList.loadNextNewsPage();
-				return true;
-			}
 			else if (isRefresh() && !isLoadmore())
 			{
 				newsList = new NewsList(new HttpHelper(App.getInstance()), newsUrl);
-				
-				newsList.loadNextNewsPage();
-				setLocalData(newsList);
-				return true;
 			}
 			else if (isLoadmore())
 			{
 				newsList.loadNextNewsPage();
 				return true;
 			}
-
+			
+			newsList.loadNextNewsPage();
+			setLocalData(newsList);
+			return true;
 
         }
 		catch (ParseException e)
@@ -188,26 +183,19 @@ public class NewsListFragment extends BaseListFragment implements FragmentLifecy
         if (newsUrl.equals(""))
 		{
 			Cursor cursor = getActivity().getContentResolver().query(Contract.News.CONTENT_URI, null, null, null, Contract.Favorite.DEFAULT_SORT_ORDER);
-			if (cursor.moveToFirst())
-			{
-				do {
-					News topic = new News(null, null);
-					topic.setDescription(cursor.getString(cursor.getColumnIndexOrThrow(Contract.News.description)));
-					topic.setTitle(cursor.getString(cursor.getColumnIndexOrThrow(Contract.News.title)));
-					topic.setId(cursor.getString(cursor.getColumnIndexOrThrow(Contract.News.id)));
-					topic.setAuthor(cursor.getString(cursor.getColumnIndexOrThrow(Contract.News.author)));
-					topic.setNewsDate(cursor.getString(cursor.getColumnIndexOrThrow(Contract.News.newsDate)));
-					topic.setImgUrl(cursor.getString(cursor.getColumnIndexOrThrow(Contract.News.imgUrl)));
-					newsList.add(topic);
-				} while (cursor.moveToNext());
-				cursor.close();
-				return true;
+			if(LocalDataHelper.getLocalNews(cursor) != null){
+			for(News item : LocalDataHelper.news){
+				newsList.add(item);
 			}
-			else
-			{
+			
+			cursor.close();
+			return true;
+			}else{
 				cursor.close();
+				return false;
 			}
-
+			
+			
 		}
         return false;
     }
@@ -218,16 +206,27 @@ public class NewsListFragment extends BaseListFragment implements FragmentLifecy
 		if (newsUrl.equals(""))
 		{
 			deleteAllLocalData(getUri());
-			for (News topic : topics)
-			{
-				ContentValues cv = new ContentValues();
-				cv.put(Contract.News.description, topic.getDescription().toString());
-				cv.put(Contract.News.title, topic.getTitle().toString());
-				cv.put(Contract.News.id, topic.getId().toString());
-				cv.put(Contract.News.author, topic.getAuthor().toString());
-				cv.put(Contract.News.newsDate, topic.getNewsDate().toString());
-				cv.put(Contract.News.imgUrl, topic.getImgUrl().toString());
-				getActivity().getContentResolver().insert(getUri(), cv);
+			ContentValues cv = new ContentValues();
+			for(News topic : newsList){
+			cv.put(Contract.News.description, topic.getDescription().toString());
+			cv.put(Contract.News.title, topic.getTitle().toString());
+			cv.put(Contract.News.id, topic.getId().toString());
+			cv.put(Contract.News.author, topic.getAuthor().toString());
+			cv.put(Contract.News.newsDate, topic.getNewsDate().toString());
+			cv.put(Contract.News.imgUrl, topic.getImgUrl().toString());
+			
+			cv.put(Contract.News.commentsCount, topic.getCommentsCount());
+			
+			if(topic.getSourceTitle() != null){
+			cv.put(Contract.News.sourceTitle, topic.getSourceTitle().toString());
+			cv.put(Contract.News.sourseUrl, topic.getSourceUrl().toString());
+			}
+			if(topic.getTagLink()!= null){
+			cv.put(Contract.News.tagLink, topic.getTagLink().toString());
+			cv.put(Contract.News.tagName, topic.getTagName().toString());
+			cv.put(Contract.News.tagTitle, topic.getTagTitle().toString());
+			}
+			getActivity().getContentResolver().insert(getUri(), cv);
 			}
 		}
     }

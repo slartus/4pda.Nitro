@@ -73,7 +73,6 @@ public abstract class BaseListFragment extends BaseFragment
 	{
         super.onActivityCreated(savedInstanceState);
         listView.setOnItemClickListener(this);
-        registerForContextMenu(listView);
         listView.setOnCreateContextMenuListener(this);
 		
 		
@@ -166,7 +165,7 @@ public abstract class BaseListFragment extends BaseFragment
 		{
             super.onPreExecute();
             setLoading(true);
-            showError(false);
+            showStatus(false);
         }
 
 
@@ -196,7 +195,7 @@ public abstract class BaseListFragment extends BaseFragment
 				else
 				{
 					textMore.setText("Загрузить еще...");
-					showError(true);
+					showStatus(true);
 					showFooter(false);
 				}
             }

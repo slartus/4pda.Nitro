@@ -11,7 +11,7 @@ import android.content.*;
 public class Database extends SQLiteOpenHelper
 {
 	private static final String DATABASE_NAME = "nitro.db";
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 5;
 	
 	static final String NEWS_TABLE = "News";
     static final String FAVORITE_TABLE = "Favorite";
@@ -46,7 +46,13 @@ public class Database extends SQLiteOpenHelper
 				   + Contract.News.imgUrl + " TEXT,"
 				   + Contract.News.newsDate + " TEXT,"
 				   + Contract.News.page + " INTEGER,"
-				   + Contract.News.title + " TEXT"
+				   + Contract.News.title + " TEXT,"
+				   + Contract.News.commentsCount + " INTEGER,"
+				   + Contract.News.sourceTitle + " TEXT,"
+				   + Contract.News.sourseUrl + " TEXT,"
+				   + Contract.News.tagLink + " TEXT,"
+				   + Contract.News.tagName + " TEXT,"
+				   + Contract.News.tagTitle + " TEXT"
 				   + ")");
 				   
     }
@@ -54,7 +60,10 @@ public class Database extends SQLiteOpenHelper
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion)
     {
-		
+	/*	Cursor cursor = db.query(NEWS_TABLE, null, null, null, null, null, Contract.News.DEFAULT_SORT_ORDER);
+		LocalDataHelper.getLocalNews(cursor);
+		cursor.close();
+		*/
 		db.execSQL("DROP TABLE IF EXISTS " + FAVORITE_TABLE);
 		db.execSQL("DROP TABLE IF EXISTS " + NEWS_TABLE);
 		onCreate(db);

@@ -30,6 +30,8 @@ import ru.pda.nitro.R;
 import ru.pda.nitro.adapters.TopicListAdapter;
 import ru.pda.nitro.database.Contract;
 import ru.pda.nitro.topicsview.TopicActivity;
+import android.os.*;
+import android.view.*;
 
 
 /**
@@ -41,7 +43,9 @@ public abstract class TopicsListFragment extends BaseListFragment {
     public ArrayList<Topic> topics = new ArrayList<Topic>();
     public TopicListAdapter adapter;
     public static final int NAVIGATE_DIALOG_FRAGMENT = 1;
-
+	private int selectedItem;
+	
+	
     @Override
     public ArrayList<? extends IListItem> getList() throws ParseException, IOException {
         return getTopicsList();
@@ -55,18 +59,42 @@ public abstract class TopicsListFragment extends BaseListFragment {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(App.getInstance());
         String navigateAction = prefs.getString(getName() + ".navigate_action", null);
         if (navigateAction == null) {
+			setSelectedItem(i);
             showNavigateDialog(topic);
             return;
         }
 
         showTopicActivity(i, topic, navigateAction);
     }
+	
+	public void setSelectedItem(int selectedItem)
+	{
+		this.selectedItem = selectedItem;
+	}
+
+	public int getSelectedItem()
+	{
+		return selectedItem;
+	}
 
     public void onCreateContextMenu(android.view.ContextMenu contextMenu, android.view.View view,
                                     android.view.ContextMenu.ContextMenuInfo contextMenuInfo) {
         MenuInflater inflater = getActivity().getMenuInflater();
-     //   inflater.inflate(R.menu.topic_navigate_context_menu, contextMenu);
+        inflater.inflate(R.menu.topic_navigate_context_menu, contextMenu);
     }
+
+	@Override
+	public boolean onContextItemSelected(MenuItem item)
+	{
+		switch(item.getItemId()){
+			case R.id.default_action:
+			
+				break;
+		}
+		return super.onContextItemSelected(item);
+	}
+	
+	
 
     private void showTopicActivity(int i, Topic topic, CharSequence navigateAction) {
         topic.setHasUnreadPosts(false);
@@ -84,16 +112,26 @@ public abstract class TopicsListFragment extends BaseListFragment {
         return false;
     }
 
-    public void updateItem(int i) {
-        Cursor cursor = getActivity().getContentResolver().query(Contract.Favorite.CONTENT_URI, null, null, null, Contract.Favorite.DEFAULT_SORT_ORDER);
-        cursor.moveToPosition(i);
-        long l = cursor.getLong(cursor.getColumnIndexOrThrow(BaseColumns._ID));
-        ContentValues cv = new ContentValues();
-        cv.put(Contract.Favorite.hasUnreadPosts, false);
+    public void updateItem(final int i) {
+        handler = new Handler();
+		handler.post(new Runnable(){
 
-        getActivity().getContentResolver().update(ContentUris.withAppendedId(Contract.Favorite.CONTENT_URI, l), cv, null, null);
+				@Override
+				public void run()
+				{
+					Cursor cursor = getActivity().getContentResolver().query(Contract.Favorite.CONTENT_URI, null, null, null, Contract.Favorite.DEFAULT_SORT_ORDER);
+					cursor.moveToPosition(i);
+					long l = cursor.getLong(cursor.getColumnIndexOrThrow(BaseColumns._ID));
+					cursor.close();
+					ContentValues cv = new ContentValues();
+					cv.put(Contract.Favorite.hasUnreadPosts, false);
 
-        cursor.close();
+					getActivity().getContentResolver().update(ContentUris.withAppendedId(Contract.Favorite.CONTENT_URI, l), cv, null, null);
+					
+				}
+			});
+		
+        
     }
 
     @Override
@@ -184,23 +222,32 @@ public abstract class TopicsListFragment extends BaseListFragment {
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(int requestCode,final int resultCode,final Intent data) {
         switch (requestCode) {
             case NAVIGATE_DIALOG_FRAGMENT:
-                CharSequence topicId = data.getExtras().getCharSequence(SelectNavigateDialogFragment.TOPIC_ID_KEY);
-                CharSequence navigateAction = data.getExtras().getCharSequence(SelectNavigateDialogFragment.NAVIGATE_ACTION_KEY);
-                if (resultCode == SelectNavigateDialogFragment.RESULT_ALWAYS) {
-                    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(App.getInstance());
-                    SharedPreferences.Editor editor = prefs.edit();
-                    editor.putString(getName() + ".navigate_action", navigateAction.toString());
-                    editor.commit();
-                } else if (resultCode != SelectNavigateDialogFragment.RESULT_JUST_NOW) {
-                    return;
-                }
-                int i = (int) listView.getSelectedItemId();
-                Topic topic = topics.get(i);
-                showTopicActivity(i, topic, navigateAction);
-        }
+                Handler handler = new Handler();
+				handler.postDelayed(new Runnable(){
+
+						@Override
+						public void run()
+						{
+							CharSequence topicId = data.getExtras().getCharSequence(SelectNavigateDialogFragment.TOPIC_ID_KEY);
+							CharSequence navigateAction = data.getExtras().getCharSequence(SelectNavigateDialogFragment.NAVIGATE_ACTION_KEY);
+							if (resultCode == SelectNavigateDialogFragment.RESULT_ALWAYS) {
+								SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(App.getInstance());
+								SharedPreferences.Editor editor = prefs.edit();
+								editor.putString(getName() + ".navigate_action", navigateAction.toString());
+								editor.commit();
+							} else if (resultCode != SelectNavigateDialogFragment.RESULT_JUST_NOW) {
+								return;
+							}
+							
+							Topic topic = topics.get(getSelectedItem());
+							showTopicActivity(getSelectedItem(), topic, navigateAction);
+							
+						}
+					}, 1000);
+				   }
     }
 
     void showNavigateDialog(Topic topic) {
@@ -250,7 +297,7 @@ public abstract class TopicsListFragment extends BaseListFragment {
                             selected[0] = i;
                         }
                     })
-                    .setTitle("Действие по умолчанию")
+                    .setTitle(R.string.default_action)
                     .setPositiveButton("Всегда",
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int whichButton) {

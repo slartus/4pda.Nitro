@@ -89,7 +89,7 @@ implements LoaderManager.LoaderCallbacks<TopicResult> {
 
     private void showTopic(CharSequence topicUrl) {
 		setRefresh(true);
-		showError(false);
+		showStatus(false);
 		Bundle bundle = new Bundle();
         bundle.putCharSequence(TopicActivity.TOPIC_URL_KEY, topicUrl);
         getLoaderManager().restartLoader(0, bundle, this);
@@ -101,7 +101,7 @@ implements LoaderManager.LoaderCallbacks<TopicResult> {
 
 		setLoading(true);
 		if(!isRefresh())
-		showError(false);
+		showStatus(false);
 		
         if (bundle.containsKey(TopicActivity.TOPIC_ID_KEY)) {
             CharSequence topicId = bundle.getCharSequence(TopicActivity.TOPIC_ID_KEY);
@@ -117,12 +117,12 @@ implements LoaderManager.LoaderCallbacks<TopicResult> {
 
     @Override
     public void onLoadFinished(Loader<TopicResult> topicResultLoader, TopicResult topicResult) {
-        if (getActivity() != null)
-            getActivity().setTitle(topicResult.getTitle());
+      //  if (getActivity() != null)
+       //     getActivity().setTitle(topicResult.getTitle());
         if (topicResult != null && topicResult.getBody() != null){
 			getWebView().loadDataWithBaseURL("http://4pda.ru/forum/", topicResult.getHtml().toString(), "text/html", "UTF-8", null);
         } else
-            showError(true);
+            showStatus(true);
 			
 			setRefresh(false);
 			setLoading(false);

@@ -7,7 +7,7 @@
 	android:orientation="vertical"
 	android:gravity="center"
 	android:id="@+id/linearError"
-	android:visibility="visible">
+	android:visibility="gone">
 
 	<LinearLayout
 		android:background="@drawable/card_bg_play"
@@ -38,7 +38,10 @@
 			<TextView
 				android:background="@drawable/tap_button"
 				android:textSize="20sp"
-				android:padding="20dp"
+				android:paddingTop="10dp"
+				android:paddingBottom="10dp"
+				android:paddingLeft="20dp"
+				android:paddingRight="20dp"
 				android:id="@+id/buttonErrorOk"
 				android:layout_height="wrap_content"
 				android:text="Ok"
@@ -55,12 +58,14 @@
 				android:gravity="center"
 				android:background="@drawable/tap_button"
 				android:textSize="20sp"
-				android:padding="20dp"
+				android:paddingTop="10dp"
+				android:paddingBottom="10dp"
+				android:paddingLeft="20dp"
+				android:paddingRight="20dp"
 				android:id="@+id/buttonErrorRefresh"
 				android:layout_height="wrap_content"
 				android:text="@string/button_refresh"
 				android:layout_width="wrap_content"/>
-
 			
 		</LinearLayout>
 

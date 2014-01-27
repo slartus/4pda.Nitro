@@ -9,6 +9,8 @@
 	<string name="app_menu">Меню</string>
 	<string name="error">Ошибка подключения</string>
 	<string name="button_refresh">Повторить</string>
+	<!--topic_navigate_context_menu-->
+	<string name="default_action">Действие по умолчанию</string>
     
     
 	

@@ -3,6 +3,7 @@ package ru.pda.nitro;
 import android.app.Activity;
 import android.app.ActionBar;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
@@ -29,6 +30,8 @@ import ru.pda.nitro.bricks.BrickInfo;
 import ru.pda.nitro.bricks.BricksList;
 import ru.pda.nitro.listfragments.FavoritesListFragment;
 import ru.forpda.interfaces.forum.*;
+import android.graphics.*;
+import android.app.*;
 
 public class MainActivity extends BaseActivity
 {
@@ -45,7 +48,8 @@ public class MainActivity extends BaseActivity
 	private ArrayList<BrickInfo> menus;
 	private UserProfile profile;
 	private Fragment mContent;
-
+	private Handler handler;
+	private int current_position;
 	
 
 	@Override
@@ -74,7 +78,6 @@ public class MainActivity extends BaseActivity
 				@Override
 				public boolean onItemLongClick(AdapterView<?> p1, View p2, int p3, long p4)
 				{
-					// TODO: Implement this metho
 					startDeleteMode();
 					return false;
 				}
@@ -103,8 +106,15 @@ public class MainActivity extends BaseActivity
 		
 		if (savedInstanceState == null)
 		{
-			
-            setDefaultContent();
+			handler = new Handler();
+			handler.post(new Runnable(){
+
+					@Override
+					public void run()
+					{
+						setDefaultContent();
+					}
+				});
         }
 		
 
@@ -139,6 +149,7 @@ public class MainActivity extends BaseActivity
 			
 			if(menus.get(i).getName().equals(prefs.getString("mainFavorite_", "favorites"))){
 				setTitle(menus.get(i).getTitle());
+				current_position = i;
 			return i;
 			}
 		}
@@ -218,22 +229,31 @@ public class MainActivity extends BaseActivity
 
 
 	private void setContent(Fragment fragment, boolean back){
-		
-		
-		getSupportFragmentManager().beginTransaction()
+
+		getSupportFragmentManager()
+			.beginTransaction()
 			.replace(R.id.content_frame , fragment)
 			.commit();
-
 	}
 
-	private void selectItem(int position, BrickInfo item)
+	private void selectItem(final int position, final BrickInfo item)
 	{
-			setContent(item.createFragment(), true);
-			mDrawerList.setItemChecked(position, false);
-			setTitle(item.getTitle());
-
 		mDrawerLayout.closeDrawer(frameDrawer);
-	}
+		handler = new Handler();
+		handler.postDelayed(new Runnable(){
+
+				@Override
+				public void run()
+				{
+					current_position = position;
+					setContent(item.createFragment(), true);
+					mDrawerList.setItemChecked(position, false);
+					setTitle(item.getTitle());
+					
+				}
+			}, 1000);
+			
+			}
 
 	@Override
 	public void setTitle(CharSequence title)
@@ -279,6 +299,7 @@ public class MainActivity extends BaseActivity
         final LayoutInflater inflater;
 		private Context context;
 		SharedPreferences prefs;
+		private Typeface face, current_face;
 		
 		public void setData(ArrayList<BrickInfo> data) {
             if (getCount() > 0)
@@ -299,6 +320,8 @@ public class MainActivity extends BaseActivity
 			this.context = context;
             inflater = LayoutInflater.from(context);
 			prefs = PreferenceManager.getDefaultSharedPreferences(context);
+			current_face = Typeface.createFromAsset(context.getAssets(), "4pda/fonts/Roboto-Black.ttf");
+			face = Typeface.createFromAsset(context.getAssets(), "4pda/fonts/Roboto-Regular.ttf");
 			
 		}
 		
@@ -360,11 +383,11 @@ public class MainActivity extends BaseActivity
 			holder.check.setChecked(item.isSelected());
 
 			holder.text.setText(item.getTitle());
-			/*	textView1.setTypeface(face);
+			holder.text.setTypeface(face);
 			 if (current_position == position)
 			 {
-			 textView1.setTypeface(current_face);
-			 }*/
+			 holder.text.setTypeface(current_face);
+			 }
 
 			 
 			return convertView;
@@ -413,7 +436,6 @@ public class MainActivity extends BaseActivity
 		@Override
 		public void onActivityCreated(Bundle savedInstanceState)
 		{
-			// TODO: Implement this method
 			super.onActivityCreated(savedInstanceState);
 		}
 		
@@ -436,7 +458,6 @@ public class MainActivity extends BaseActivity
 			@Override
 			protected void onPreExecute()
 			{
-				// TODO: Implement this method
 				super.onPreExecute();
 				mLogin = login.getText().toString();
 				mPassword = password.getText().toString();
@@ -446,7 +467,6 @@ public class MainActivity extends BaseActivity
 			@Override
 			protected Boolean doInBackground(Void[] p1)
 			{
-				// TODO: Implement this meth
 				try
 				{
 					if (profile.doLogin(mLogin,mPassword))
@@ -465,7 +485,6 @@ public class MainActivity extends BaseActivity
 			@Override
 			protected void onPostExecute(Boolean result)
 			{
-				// TODO: Implement this method
 				super.onPostExecute(result);
 				if (result)
 				{
