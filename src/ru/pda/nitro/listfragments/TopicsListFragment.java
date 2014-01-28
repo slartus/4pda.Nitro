@@ -78,7 +78,7 @@ public abstract class TopicsListFragment extends BaseListFragment {
     public void onCreateContextMenu(android.view.ContextMenu contextMenu, android.view.View view,
                                     android.view.ContextMenu.ContextMenuInfo contextMenuInfo) {
         MenuInflater inflater = getActivity().getMenuInflater();
-        inflater.inflate(R.menu.topic_navigate_context_menu, contextMenu);
+        inflater.inflate(R.menu.topic_context_menu, contextMenu);
     }
 
     @Override
