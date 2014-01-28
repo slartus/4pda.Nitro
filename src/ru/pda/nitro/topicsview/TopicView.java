@@ -89,7 +89,7 @@ implements LoaderManager.LoaderCallbacks<TopicResult> {
 
     private void showTopic(CharSequence topicUrl) {
 		setRefresh(true);
-		showStatus(false);
+//		showStatus(false);
 		Bundle bundle = new Bundle();
         bundle.putCharSequence(TopicActivity.TOPIC_URL_KEY, topicUrl);
         getLoaderManager().restartLoader(0, bundle, this);
@@ -100,8 +100,11 @@ implements LoaderManager.LoaderCallbacks<TopicResult> {
         if (bundle == null) return null;
 
 		setLoading(true);
-		if(!isRefresh())
-		showStatus(false);
+		
+	/*	if(!isRefresh())
+		showStatus(false);*/
+		
+		setProgress(true);
 		
         if (bundle.containsKey(TopicActivity.TOPIC_ID_KEY)) {
             CharSequence topicId = bundle.getCharSequence(TopicActivity.TOPIC_ID_KEY);
