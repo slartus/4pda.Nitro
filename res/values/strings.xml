@@ -11,8 +11,9 @@
 	<string name="button_refresh">Повторить</string>
 	<!--topic_navigate_context_menu-->
 	<string name="default_action">Действие по умолчанию</string>
-    
-    
-	
+    <string name="navigate_getfirstpost">К первому</string>
+    <string name="navigate_getlastpost">К последнему</string>
+    <string name="navigate_getnewpost">К первому непрочитанному</string>
+
 
 </resources>

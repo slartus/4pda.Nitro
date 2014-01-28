@@ -11,10 +11,12 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.provider.BaseColumns;
 import android.support.v4.app.DialogFragment;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 
@@ -30,8 +32,6 @@ import ru.pda.nitro.R;
 import ru.pda.nitro.adapters.TopicListAdapter;
 import ru.pda.nitro.database.Contract;
 import ru.pda.nitro.topicsview.TopicActivity;
-import android.os.*;
-import android.view.*;
 
 
 /**
@@ -43,9 +43,9 @@ public abstract class TopicsListFragment extends BaseListFragment {
     public ArrayList<Topic> topics = new ArrayList<Topic>();
     public TopicListAdapter adapter;
     public static final int NAVIGATE_DIALOG_FRAGMENT = 1;
-	private int selectedItem;
-	
-	
+    private int selectedItem;
+
+
     @Override
     public ArrayList<? extends IListItem> getList() throws ParseException, IOException {
         return getTopicsList();
@@ -59,23 +59,21 @@ public abstract class TopicsListFragment extends BaseListFragment {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(App.getInstance());
         String navigateAction = prefs.getString(getName() + ".navigate_action", null);
         if (navigateAction == null) {
-			setSelectedItem(i);
+            setSelectedItem(i);
             showNavigateDialog(topic);
             return;
         }
 
         showTopicActivity(i, topic, navigateAction);
     }
-	
-	public void setSelectedItem(int selectedItem)
-	{
-		this.selectedItem = selectedItem;
-	}
 
-	public int getSelectedItem()
-	{
-		return selectedItem;
-	}
+    public void setSelectedItem(int selectedItem) {
+        this.selectedItem = selectedItem;
+    }
+
+    public int getSelectedItem() {
+        return selectedItem;
+    }
 
     public void onCreateContextMenu(android.view.ContextMenu contextMenu, android.view.View view,
                                     android.view.ContextMenu.ContextMenuInfo contextMenuInfo) {
@@ -83,18 +81,54 @@ public abstract class TopicsListFragment extends BaseListFragment {
         inflater.inflate(R.menu.topic_navigate_context_menu, contextMenu);
     }
 
-	@Override
-	public boolean onContextItemSelected(MenuItem item)
-	{
-		switch(item.getItemId()){
-			case R.id.default_action:
-			
-				break;
-		}
-		return super.onContextItemSelected(item);
-	}
-	
-	
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        Topic topic = topics.get(getSelectedItem());
+
+        switch (item.getItemId()) {
+            case R.id.navigate_getfirstpost:
+                prepareShowTopicActivity(getSelectedItem(), topic, TopicApi.NAVIGATE_VIEW_FIRST_POST);
+                break;
+            case R.id.navigate_getlastpost:
+                prepareShowTopicActivity(getSelectedItem(), topic, TopicApi.NAVIGATE_VIEW_LAST_POST);
+                break;
+            case R.id.navigate_getnewpost:
+                prepareShowTopicActivity(getSelectedItem(), topic, TopicApi.NAVIGATE_VIEW_NEW_POST);
+                break;
+        }
+        return super.onContextItemSelected(item);
+    }
+
+    private void prepareShowTopicActivity(final int itemId, final Topic topic, final CharSequence navigateAction) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(App.getInstance());
+        String savedNavigateAction = prefs.getString(getName() + ".navigate_action", null);
+
+        if (!navigateAction.equals(savedNavigateAction)) {
+            new AlertDialog.Builder(getActivity())
+                    .setTitle(R.string.default_action)
+                    .setCancelable(true)
+                    .setMessage("Назначить действием по умолчанию?")
+                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.dismiss();
+                            saveDefaultAction(navigateAction);
+                            showTopicActivity(itemId, topic, navigateAction);
+                        }
+                    })
+                    .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.dismiss();
+
+                            showTopicActivity(itemId, topic, navigateAction);
+                        }
+                    })
+                    .create().show();
+        } else {
+            showTopicActivity(itemId, topic, navigateAction);
+        }
+    }
 
     private void showTopicActivity(int i, Topic topic, CharSequence navigateAction) {
         topic.setHasUnreadPosts(false);
@@ -104,34 +138,29 @@ public abstract class TopicsListFragment extends BaseListFragment {
         TopicActivity.show(getActivity(), topic.getId(), topic.getTitle(), navigateAction);
     }
 
-
     public abstract ArrayList<Topic> getTopicsList() throws ParseException, IOException;
 
     protected boolean getTopics() throws Throwable {
-
         return false;
     }
 
     public void updateItem(final int i) {
         handler = new Handler();
-		handler.post(new Runnable(){
+        handler.post(new Runnable() {
 
-				@Override
-				public void run()
-				{
-					Cursor cursor = getActivity().getContentResolver().query(Contract.Favorite.CONTENT_URI, null, null, null, Contract.Favorite.DEFAULT_SORT_ORDER);
-					cursor.moveToPosition(i);
-					long l = cursor.getLong(cursor.getColumnIndexOrThrow(BaseColumns._ID));
-					cursor.close();
-					ContentValues cv = new ContentValues();
-					cv.put(Contract.Favorite.hasUnreadPosts, false);
+            @Override
+            public void run() {
+                Cursor cursor = getActivity().getContentResolver().query(Contract.Favorite.CONTENT_URI, null, null, null, Contract.Favorite.DEFAULT_SORT_ORDER);
+                cursor.moveToPosition(i);
+                long l = cursor.getLong(cursor.getColumnIndexOrThrow(BaseColumns._ID));
+                cursor.close();
+                ContentValues cv = new ContentValues();
+                cv.put(Contract.Favorite.hasUnreadPosts, false);
 
-					getActivity().getContentResolver().update(ContentUris.withAppendedId(Contract.Favorite.CONTENT_URI, l), cv, null, null);
-					
-				}
-			});
-		
-        
+                getActivity().getContentResolver().update(ContentUris.withAppendedId(Contract.Favorite.CONTENT_URI, l), cv, null, null);
+
+            }
+        });
     }
 
     @Override
@@ -171,7 +200,6 @@ public abstract class TopicsListFragment extends BaseListFragment {
         }
         return false;
     }
-
 
     public void getData() {
         if (!isLoading()) {
@@ -222,32 +250,35 @@ public abstract class TopicsListFragment extends BaseListFragment {
     }
 
     @Override
-    public void onActivityResult(int requestCode,final int resultCode,final Intent data) {
+    public void onActivityResult(int requestCode, final int resultCode, final Intent data) {
         switch (requestCode) {
             case NAVIGATE_DIALOG_FRAGMENT:
                 Handler handler = new Handler();
-				handler.postDelayed(new Runnable(){
+                handler.postDelayed(new Runnable() {
 
-						@Override
-						public void run()
-						{
-							CharSequence topicId = data.getExtras().getCharSequence(SelectNavigateDialogFragment.TOPIC_ID_KEY);
-							CharSequence navigateAction = data.getExtras().getCharSequence(SelectNavigateDialogFragment.NAVIGATE_ACTION_KEY);
-							if (resultCode == SelectNavigateDialogFragment.RESULT_ALWAYS) {
-								SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(App.getInstance());
-								SharedPreferences.Editor editor = prefs.edit();
-								editor.putString(getName() + ".navigate_action", navigateAction.toString());
-								editor.commit();
-							} else if (resultCode != SelectNavigateDialogFragment.RESULT_JUST_NOW) {
-								return;
-							}
-							
-							Topic topic = topics.get(getSelectedItem());
-							showTopicActivity(getSelectedItem(), topic, navigateAction);
-							
-						}
-					}, 1000);
-				   }
+                    @Override
+                    public void run() {
+                        CharSequence topicId = data.getExtras().getCharSequence(SelectNavigateDialogFragment.TOPIC_ID_KEY);
+                        CharSequence navigateAction = data.getExtras().getCharSequence(SelectNavigateDialogFragment.NAVIGATE_ACTION_KEY);
+                        if (resultCode == SelectNavigateDialogFragment.RESULT_ALWAYS) {
+                            saveDefaultAction(navigateAction);
+                        } else if (resultCode != SelectNavigateDialogFragment.RESULT_JUST_NOW) {
+                            return;
+                        }
+
+                        Topic topic = topics.get(getSelectedItem());
+                        showTopicActivity(getSelectedItem(), topic, navigateAction);
+
+                    }
+                }, 1000);
+        }
+    }
+
+    private void saveDefaultAction(CharSequence navigateAction) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(App.getInstance());
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString(getName() + ".navigate_action", navigateAction.toString());
+        editor.commit();
     }
 
     void showNavigateDialog(Topic topic) {
@@ -263,7 +294,6 @@ public abstract class TopicsListFragment extends BaseListFragment {
         dialogFrag.setTargetFragment(this, NAVIGATE_DIALOG_FRAGMENT);
         dialogFrag.show(getFragmentManager().beginTransaction(), "dialog");
     }
-
 
     public static class SelectNavigateDialogFragment extends DialogFragment {
         public static final int RESULT_ALWAYS = 123;
@@ -285,8 +315,8 @@ public abstract class TopicsListFragment extends BaseListFragment {
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             final CharSequence topicId = getArguments().getCharSequence(TOPIC_ID_KEY);
-            CharSequence[] titles = new CharSequence[]{"К первому",
-                    "К последнему", "К первому непрочитанному"};
+            CharSequence[] titles = new CharSequence[]{getActivity().getString(R.string.navigate_getfirstpost),
+                    getActivity().getString(R.string.navigate_getlastpost), getActivity().getString(R.string.navigate_getnewpost)};
             final CharSequence[] values = new CharSequence[]{TopicApi.NAVIGATE_VIEW_FIRST_POST,
                     TopicApi.NAVIGATE_VIEW_LAST_POST, TopicApi.NAVIGATE_VIEW_NEW_POST};
             final int[] selected = {2};
