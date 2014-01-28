@@ -1,0 +1,14 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/navigate_getfirstpost"
+        android:title="@string/navigate_getfirstpost" />
+    <item
+        android:id="@+id/navigate_getlastpost"
+        android:title="@string/navigate_getlastpost" />
+
+    <item
+        android:id="@+id/navigate_getnewpost"
+        android:title="@string/navigate_getnewpost" />
+
+</menu>

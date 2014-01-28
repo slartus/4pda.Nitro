@@ -1,7 +1,0 @@
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-    
-    <item
-        android:id="@+id/default_action"
-        android:title="@string/default_action"/>
-    
-</menu>
