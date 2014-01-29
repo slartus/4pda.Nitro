@@ -259,13 +259,13 @@ public class TopicApi {
         String topicBody = client.performGet(normalizeTopicUrl(topicUrl).toString());
         topicResult.parseUrl(client.getRedirectUrl());
 
-        Matcher mainMatcher = Pattern.compile("(<div class=\"pagination\">.[\\s\\S]*?<div class=\"pagination\">.*?</div>)")
+        Matcher mainMatcher = Pattern.compile("([\\s\\S]*?)(<div class=\"pagination\">.[\\s\\S]*?<div class=\"pagination\">.*?</div>)")
                 .matcher(topicBody);
         checkTopicResult(topicUrl, topicResult.getTopicId(), topicBody, mainMatcher);
 
         topicResult.parseHeader(mainMatcher.group(1));
 
-        topicBody = mainMatcher.group(1);
+        topicBody = mainMatcher.group(2);
 
         topicResult.setBody(topicBody);
         return topicResult;

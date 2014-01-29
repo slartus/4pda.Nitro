@@ -37,7 +37,7 @@ public class TopicResult {
      * @param header
      */
     public void parseHeader(CharSequence header) {
-        final Pattern titlePattern = Pattern.compile("<title>(.*?) - 4PDA</title>");
+        final Pattern titlePattern = Pattern.compile("<title>(.*?)\\s*-\\s*4PDA</title>", Pattern.CASE_INSENSITIVE);
 //        final Pattern descriptionPattern = Pattern.compile("<div class=\"topic_title_post\">(.*?)<");
 //        final Pattern moderatorTitlePattern = Pattern.compile("onclick=\"return setpidchecks\\(this.checked\\);\".*?>&nbsp;(.*?)<");
 //        final Pattern pagesCountPattern = Pattern.compile("var pages = parseInt\\((\\d+)\\);");
