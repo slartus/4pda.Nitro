@@ -195,6 +195,7 @@ containing a value of this type.
         public static final int buttonErrorOk=0x7f060012;
         public static final int buttonErrorRefresh=0x7f060013;
         public static final int buttonLogin=0x7f060019;
+        public static final int close_tab=0x7f060039;
         public static final int container=0x7f06000a;
         public static final int content_frame=0x7f06000c;
         public static final int drawer_layout=0x7f06000b;
@@ -274,28 +275,32 @@ containing a value of this type.
     public static final class menu {
         public static final int main=0x7f0c0000;
         public static final int topic_context_menu=0x7f0c0001;
+        public static final int topic_view=0x7f0c0002;
     }
     public static final class string {
         public static final int action_settings=0x7f050006;
-        public static final int app_menu=0x7f050009;
+        public static final int app_menu=0x7f05000c;
         public static final int app_name=0x7f050001;
-        public static final int button_refresh=0x7f05000b;
+        public static final int button_refresh=0x7f05000e;
+        public static final int close_tab=0x7f050007;
         /** topic_navigate_context_menu
          */
-        public static final int default_action=0x7f05000c;
-        public static final int error=0x7f05000a;
+        public static final int default_action=0x7f05000f;
+        public static final int downloads=0x7f050008;
+        public static final int error=0x7f05000d;
         public static final int hello=0x7f050000;
         public static final int hello_world=0x7f050005;
-        public static final int login=0x7f050007;
-        public static final int navigate_getfirstpost=0x7f05000d;
-        public static final int navigate_getlastpost=0x7f05000e;
-        public static final int navigate_getnewpost=0x7f05000f;
-        public static final int no=0x7f050011;
-        public static final int parol=0x7f050008;
+        public static final int login=0x7f05000a;
+        public static final int navigate_getfirstpost=0x7f050010;
+        public static final int navigate_getlastpost=0x7f050011;
+        public static final int navigate_getnewpost=0x7f050012;
+        public static final int no=0x7f050014;
+        public static final int parol=0x7f05000b;
         public static final int pull_to_refresh_pull_label=0x7f050003;
         public static final int pull_to_refresh_refreshing_label=0x7f050004;
         public static final int spb_default_speed=0x7f050002;
-        public static final int yes=0x7f050010;
+        public static final int stoping=0x7f050009;
+        public static final int yes=0x7f050013;
     }
     public static final class style {
         public static final int ActionBarTabStyle=0x7f0b0003;

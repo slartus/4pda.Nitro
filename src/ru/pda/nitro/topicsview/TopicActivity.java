@@ -17,6 +17,7 @@ public class TopicActivity extends BaseActivity {
     public static final String TOPIC_URL_KEY = "ru.pda.nitro.topicsview.TOPIC_URL_KEY";
     public static final String NAVIGATE_ACTION_KEY = "ru.pda.nitro.topicsview.NAVIGATE_ACTION_KEY";
     public static final String TOPIC_TITLE_KEY = "ru.pda.nitro.topicsview.TOPIC_TITLE_KEY";
+	public static final String TOPIC_LIST_TITLE_KEY = "ru.pda.nitro.topicsview.TOPIC_LIST_TITLE_KEY";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,8 +34,8 @@ public class TopicActivity extends BaseActivity {
         if (intent != null) {
             Bundle extras = intent.getExtras();
             if (extras != null) {
-                if (extras.containsKey(TOPIC_TITLE_KEY))
-                    setTitle(extras.getString(TOPIC_TITLE_KEY));
+                if (extras.containsKey(TOPIC_LIST_TITLE_KEY))
+                    setTitle(extras.getString(TOPIC_LIST_TITLE_KEY));
             }
         }
 		
@@ -43,10 +44,10 @@ public class TopicActivity extends BaseActivity {
 
     public static void show(Activity activity, CharSequence topicId,
                             CharSequence navigateAction) {
-        show(activity, topicId, null, navigateAction);
+        show(activity, topicId, null, null, navigateAction);
     }
 
-    public static void show(Activity activity, CharSequence topicId, CharSequence topicTitle,
+    public static void show(Activity activity, CharSequence topicId, CharSequence topicTitle, CharSequence topicListTitle,
                             CharSequence navigateAction) {
         Intent intent = new Intent(activity.getApplicationContext(), TopicActivity.class);
 
@@ -55,6 +56,8 @@ public class TopicActivity extends BaseActivity {
             intent.putExtra(NAVIGATE_ACTION_KEY, navigateAction);
         if (!TextUtils.isEmpty(topicTitle))
             intent.putExtra(TOPIC_TITLE_KEY, topicTitle);
+		if (!TextUtils.isEmpty(topicListTitle))
+            intent.putExtra(TOPIC_LIST_TITLE_KEY, topicListTitle);
         activity.startActivity(intent);
     }
 }

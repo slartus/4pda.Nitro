@@ -135,7 +135,7 @@ public abstract class TopicsListFragment extends BaseListFragment {
         updateItem(i);
         adapter.notifyDataSetChanged();
 
-        TopicActivity.show(getActivity(), topic.getId(), topic.getTitle(), navigateAction);
+        TopicActivity.show(getActivity(), topic.getId(), topic.getTitle(), getTitle(), navigateAction);
     }
 
     public abstract ArrayList<Topic> getTopicsList() throws ParseException, IOException;
@@ -151,14 +151,14 @@ public abstract class TopicsListFragment extends BaseListFragment {
             @Override
             public void run() {
                 Cursor cursor = getActivity().getContentResolver().query(Contract.Favorite.CONTENT_URI, null, null, null, Contract.Favorite.DEFAULT_SORT_ORDER);
-                cursor.moveToPosition(i);
+                if(cursor.moveToPosition(i)){
                 long l = cursor.getLong(cursor.getColumnIndexOrThrow(BaseColumns._ID));
-                cursor.close();
                 ContentValues cv = new ContentValues();
                 cv.put(Contract.Favorite.hasUnreadPosts, false);
 
                 getActivity().getContentResolver().update(ContentUris.withAppendedId(Contract.Favorite.CONTENT_URI, l), cv, null, null);
-
+				}
+				cursor.close();
             }
         });
     }
