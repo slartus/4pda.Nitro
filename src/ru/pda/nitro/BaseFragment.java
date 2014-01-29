@@ -29,7 +29,8 @@ public abstract class BaseFragment extends Fragment {
 
             @Override
             public void onClick(View p1) {
-                setProgress(true);
+                hideError();
+				setProgress(true);
 				getData();
             }
         });
