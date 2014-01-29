@@ -108,7 +108,7 @@ public abstract class TopicsListFragment extends BaseListFragment {
                     .setTitle(R.string.default_action)
                     .setCancelable(true)
                     .setMessage("Назначить действием по умолчанию?")
-                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
                             dialogInterface.dismiss();
@@ -116,7 +116,7 @@ public abstract class TopicsListFragment extends BaseListFragment {
                             showTopicActivity(itemId, topic, navigateAction);
                         }
                     })
-                    .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                    .setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
                             dialogInterface.dismiss();
