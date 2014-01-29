@@ -7,6 +7,7 @@ import android.text.TextUtils;
 
 import ru.pda.nitro.BaseActivity;
 import ru.pda.nitro.R;
+import android.view.*;
 
 /**
  * Created by slinkin on 21.01.14.
@@ -21,13 +22,13 @@ public class TopicActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.topic_layout);
-
-        if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.topic, new TopicView())
-                    .commit();
-        }
-
+		
+		if (savedInstanceState == null) {
+			getSupportFragmentManager().beginTransaction()
+			.add(R.id.topic, new TopicView())
+			.commit();
+			}
+        
         Intent intent = getIntent();
         if (intent != null) {
             Bundle extras = intent.getExtras();
@@ -36,8 +37,9 @@ public class TopicActivity extends BaseActivity {
                     setTitle(extras.getString(TOPIC_TITLE_KEY));
             }
         }
+		
+		
     }
-
 
     public static void show(Activity activity, CharSequence topicId,
                             CharSequence navigateAction) {

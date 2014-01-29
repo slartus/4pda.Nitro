@@ -116,6 +116,7 @@ public class NewsListFragment extends BaseListFragment implements FragmentLifecy
 
 			if (!isRefresh() && !isLoadmore() && getLocalData())
 			{
+				setLoading(false);				
 				return true;
 			}
 			else if (isRefresh() && !isLoadmore())

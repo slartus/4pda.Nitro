@@ -138,6 +138,7 @@ public class FavoritesListFragment extends TopicsListFragment implements OnScrol
 			}
 			
 			else
+				setLoading(false);
 				return true;
 		}
 		

@@ -203,10 +203,15 @@ public abstract class BaseListFragment extends BaseFragment
 			if (getActivity() != null)
 				setProgress(false);
 
+				if(!isLoading()){
+					setProgress(true);
+					refreshData();
+				}else{
 				
             setLoading(false);
             setLoadmore(false);
             loadMore = false;
+			}
 
         }
 
