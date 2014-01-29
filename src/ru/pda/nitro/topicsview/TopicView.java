@@ -163,6 +163,7 @@ public class TopicView extends Fragment
 	{
 
 		private CharSequence topicUrl = null;
+		private CharSequence m_Id;
 		private boolean attach = true;
 
 
@@ -234,7 +235,9 @@ public class TopicView extends Fragment
 			{
 				if (!TopicApi.isTopicUrl(url))
 					return false;
-
+					if(TopicApi.isTopicUrl(url) && TopicApi.getTopicId(url).equals(m_Id))
+				showTopic(TopicApi.normaTopicUrl(url));
+				else
 				showNewTab(TopicApi.normaTopicUrl(url));
 				return true;
 			}
@@ -272,14 +275,16 @@ public class TopicView extends Fragment
 			}
 			else if (bundle.containsKey(TopicActivity.TOPIC_URL_KEY))
 				topicUrl = bundle.getCharSequence(TopicActivity.TOPIC_URL_KEY);
-			return new TopicLoader(getActivity(), topicUrl);
+			
+				m_Id = TopicApi.getTopicId(topicUrl);
+				return new TopicLoader(getActivity(), topicUrl);
 		}
 
 		@Override
 		public void onLoadFinished(Loader<TopicResult> topicResultLoader, TopicResult topicResult)
 		{
-			//  if (getActivity() != null)
-			//     getActivity().setTitle(topicResult.getTitle());
+			  if (getActivity() != null)
+			     getActivity().setTitle(topicResult.getTitle());
 
 			if (topicResult != null && topicResult.getBody() != null)
 			{

@@ -290,10 +290,12 @@ containing a value of this type.
         public static final int navigate_getfirstpost=0x7f05000d;
         public static final int navigate_getlastpost=0x7f05000e;
         public static final int navigate_getnewpost=0x7f05000f;
+        public static final int no=0x7f050011;
         public static final int parol=0x7f050008;
         public static final int pull_to_refresh_pull_label=0x7f050003;
         public static final int pull_to_refresh_refreshing_label=0x7f050004;
         public static final int spb_default_speed=0x7f050002;
+        public static final int yes=0x7f050010;
     }
     public static final class style {
         public static final int ActionBarTabStyle=0x7f0b0003;
