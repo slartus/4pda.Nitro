@@ -311,6 +311,19 @@ public class TopicApi {
     }
 
     /**
+     * Возвращает идентификатор топика из ссылки на топик
+     * Для проверки, что ссылка - ссылка на топик смотри isTopicUrl
+     * @param topicUrl
+     * @return
+     */
+    public static CharSequence getTopicId(CharSequence topicUrl) {
+        Matcher m = Pattern.compile("showtopic=(\\d+)").matcher(topicUrl);
+        if (m.find())
+            return m.group(1);
+        return null;
+    }
+
+    /**
      * Является ли ссылка ссылкой на топик
      */
     public static Boolean isTopicUrl(CharSequence url) {
