@@ -59,11 +59,11 @@ public class Provider extends ContentProvider
 				break;
 			case GROUP:
 				qb.setTables(Database.GROUP_TABLE);
-				defaultSortOrder = Contract.Group.DEFAULT_SORT_ORDER;
+				defaultSortOrder = Contract.Groop.DEFAULT_SORT_ORDER;
 				break;
 			case GROUP_ID:
 				qb.setTables(Database.GROUP_TABLE);
-				defaultSortOrder = Contract.Group.DEFAULT_SORT_ORDER;
+				defaultSortOrder = Contract.Groop.DEFAULT_SORT_ORDER;
 				qb.appendWhere("_id=" + uri.getLastPathSegment());
 				break;
 
@@ -99,9 +99,9 @@ public class Provider extends ContentProvider
 			case FAVORITE_ID:
 				return Contract.Favorite.CONTENT_ITEM_TYPE;
 			case GROUP:
-				return Contract.Group.CONTENT_TYPE;
+				return Contract.Groop.CONTENT_TYPE;
 			case GROUP_ID:
-				return Contract.Group.CONTENT_ITEM_TYPE;
+				return Contract.Groop.CONTENT_ITEM_TYPE;
 				
 				default:
                 throw new IllegalArgumentException("Unknown URI " + uri);
@@ -206,8 +206,8 @@ public class Provider extends ContentProvider
 
         sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 		
-		sUriMatcher.addURI(Contract.AUTHORITY, "Group", GROUP);
-		sUriMatcher.addURI(Contract.AUTHORITY, "Group/#", GROUP_ID);
+		sUriMatcher.addURI(Contract.AUTHORITY, "Groop", GROUP);
+		sUriMatcher.addURI(Contract.AUTHORITY, "Groop/#", GROUP_ID);
 		
         sUriMatcher.addURI(Contract.AUTHORITY, "Favorite", FAVORITE);
 		sUriMatcher.addURI(Contract.AUTHORITY, "Favorite/#", FAVORITE_ID);

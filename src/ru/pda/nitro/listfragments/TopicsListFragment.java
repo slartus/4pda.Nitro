@@ -112,9 +112,9 @@ public abstract class TopicsListFragment extends BaseListFragment {
 				{
 					if(isAddGroup(topic)){
 						ContentValues cv = new ContentValues();
-						cv.put(Contract.Group.id, topic.getId().toString());
-						cv.put(Contract.Group.title, topic.getTitle().toString());
-						getActivity().getContentResolver().insert(Contract.Group.CONTENT_URI, cv);
+						cv.put(Contract.Groop.id, topic.getId().toString());
+						cv.put(Contract.Groop.title, topic.getTitle().toString());
+						getActivity().getContentResolver().insert(Contract.Groop.CONTENT_URI, cv);
 					}else
 					Toast.makeText(getActivity(), "Выбрана тема уже добавленна в группу!", Toast.LENGTH_SHORT).show();
 						
@@ -123,10 +123,10 @@ public abstract class TopicsListFragment extends BaseListFragment {
 	}
 	
 	private boolean isAddGroup(Topic topic){
-		Cursor cursor = getActivity().getContentResolver().query(Contract.Group.CONTENT_URI, null, null, null, Contract.Group.DEFAULT_SORT_ORDER);
+		Cursor cursor = getActivity().getContentResolver().query(Contract.Groop.CONTENT_URI, null, null, null, Contract.Groop.DEFAULT_SORT_ORDER);
 		if(cursor.moveToFirst()){
 			do{
-				if(cursor.getString(cursor.getColumnIndexOrThrow(Contract.Group.title)).equals(topic.getTitle())){
+				if(cursor.getString(cursor.getColumnIndexOrThrow(Contract.Groop.title)).equals(topic.getTitle())){
 					return false;
 				}
 			}while(cursor.moveToNext());

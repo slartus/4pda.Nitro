@@ -60,7 +60,7 @@ public class TopicView extends Fragment
 	}
 	
 	private void showGroup(){
-		Cursor cursor = getActivity().getContentResolver().query(Contract.Group.CONTENT_URI, null, null, null, Contract.Group.DEFAULT_SORT_ORDER);
+		Cursor cursor = getActivity().getContentResolver().query(Contract.Groop.CONTENT_URI, null, null, null, Contract.Groop.DEFAULT_SORT_ORDER);
 		final ActionBar actionBar = getActivity().getActionBar();
 		
 		if(cursor.moveToFirst()){
@@ -68,8 +68,8 @@ public class TopicView extends Fragment
 			
 			do{
 				addNewTab(
-				cursor.getString(cursor.getColumnIndexOrThrow(Contract.Group.title)), 
-				cursor.getString(cursor.getColumnIndexOrThrow(Contract.Group.id)),
+				cursor.getString(cursor.getColumnIndexOrThrow(Contract.Groop.title)), 
+				cursor.getString(cursor.getColumnIndexOrThrow(Contract.Groop.id)),
 				"" 
 				);
 				

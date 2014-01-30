@@ -9,7 +9,7 @@ public class GroupBrick extends BrickInfo
 {
 	public static final String NAME="group";
     public static final String TITLE="Группа";
-	public static final Uri URI = Contract.Group.CONTENT_URI;
+	public static final Uri URI = Contract.Groop.CONTENT_URI;
     public GroupBrick(SharedPreferences prefs) {
         super(NAME, TITLE, prefs.getBoolean("mainMenu_" + NAME, true), prefs.getString("mainFavorite_", NAME).equals(NAME)); }
 
