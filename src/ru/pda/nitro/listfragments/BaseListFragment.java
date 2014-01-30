@@ -23,6 +23,7 @@ import ru.pda.nitro.BaseFragment;
 import ru.pda.nitro.IRefreshActivity;
 import ru.pda.nitro.R;
 import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshAttacher;
+import ru.pda.nitro.*;
 
 
 /**
@@ -74,8 +75,6 @@ public abstract class BaseListFragment extends BaseFragment
         super.onActivityCreated(savedInstanceState);
         listView.setOnItemClickListener(this);
         listView.setOnCreateContextMenuListener(this);
-		
-		
     }
 
 	@Override
@@ -206,6 +205,7 @@ public abstract class BaseListFragment extends BaseFragment
 				if(!isLoading()){
 					setProgress(true);
 					refreshData();
+			
 				}else{
 				
             setLoading(false);

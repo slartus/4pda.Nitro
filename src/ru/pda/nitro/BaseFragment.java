@@ -8,6 +8,7 @@ import android.widget.LinearLayout;
 import android.widget.*;
 import uk.co.senab.actionbarpulltorefresh.library.*;
 import android.os.*;
+import android.support.v4.app.*;
 
 public abstract class BaseFragment extends Fragment {
     public LinearLayout linearProgress;
@@ -44,6 +45,14 @@ public abstract class BaseFragment extends Fragment {
 			});
         return v;
     }
+	
+	public static class RefreshMenu
+	{
+		public static void refreshActionBarMenu(FragmentActivity activity)
+		{
+			activity.invalidateOptionsMenu();
+		}
+	}
 	
 	public void setLoading(boolean loading) {
         this.loading = loading;

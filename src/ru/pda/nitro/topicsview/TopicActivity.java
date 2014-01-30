@@ -8,6 +8,8 @@ import android.text.TextUtils;
 import ru.pda.nitro.BaseActivity;
 import ru.pda.nitro.R;
 import android.view.*;
+import android.content.*;
+import android.net.*;
 
 /**
  * Created by slinkin on 21.01.14.
@@ -41,6 +43,15 @@ public class TopicActivity extends BaseActivity {
 		
 		
     }
+	
+	public static void show(Activity activity, Uri uri, CharSequence title, long l){
+		Intent intent = new Intent(activity.getApplicationContext(), TopicActivity.class); 
+		intent.putExtra("_uri", ContentUris.withAppendedId(uri,l).buildUpon().appendPath("Groop").build());
+	//	intent.putExtra("_uri", ContentUris.withAppendedId(uri,l));
+		intent.putExtra(TopicActivity.TOPIC_LIST_TITLE_KEY,title);
+		
+		activity.startActivity(intent);
+		}
 
     public static void show(Activity activity, CharSequence topicId,
                             CharSequence navigateAction) {
@@ -50,8 +61,8 @@ public class TopicActivity extends BaseActivity {
     public static void show(Activity activity, CharSequence topicId, CharSequence topicTitle, CharSequence topicListTitle,
                             CharSequence navigateAction) {
         Intent intent = new Intent(activity.getApplicationContext(), TopicActivity.class);
-
-        intent.putExtra(TOPIC_ID_KEY, topicId);
+		
+	 		intent.putExtra(TOPIC_ID_KEY, topicId);
         if (!TextUtils.isEmpty(navigateAction))
             intent.putExtra(NAVIGATE_ACTION_KEY, navigateAction);
         if (!TextUtils.isEmpty(topicTitle))

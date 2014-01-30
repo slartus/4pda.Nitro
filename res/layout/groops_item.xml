@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_height="wrap_content"
+	android:layout_width="match_parent"
+	android:orientation="horizontal">
+
+	<LinearLayout
+		android:layout_margin="5dp"
+		android:background="@drawable/card_bg_play"
+		android:layout_width="match_parent"
+		android:minHeight="50dp"
+		android:layout_height="wrap_content"
+		android:gravity="center_vertical"
+		android:orientation="vertical">
+
+		<TextView
+			android:textSize="18sp"
+			android:padding="10dp"
+			android:id="@+id/textView"
+			android:layout_height="wrap_content"
+			android:text="Text"
+			android:layout_width="wrap_content"/>
+
+	</LinearLayout>
+
+</LinearLayout>
+

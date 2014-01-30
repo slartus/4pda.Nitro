@@ -33,6 +33,9 @@ import ru.pda.nitro.adapters.TopicListAdapter;
 import ru.pda.nitro.database.Contract;
 import ru.pda.nitro.topicsview.TopicActivity;
 import android.widget.*;
+import android.widget.AdapterView.*;
+import android.net.*;
+import ru.pda.nitro.dialogs.*;
 
 
 /**
@@ -84,7 +87,10 @@ public abstract class TopicsListFragment extends BaseListFragment {
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
-        Topic topic = topics.get(getSelectedItem());
+        
+		AdapterContextMenuInfo info = (AdapterContextMenuInfo)
+			item.getMenuInfo();
+		Topic topic = topics.get(info.position);
 
         switch (item.getItemId()) {
             case R.id.navigate_getfirstpost:
@@ -97,13 +103,14 @@ public abstract class TopicsListFragment extends BaseListFragment {
                 prepareShowTopicActivity(getSelectedItem(), topic, TopicApi.NAVIGATE_VIEW_NEW_POST);
                 break;
 			case R.id.add_to_group:
-				addToGroup(topic);
+				
+				addToGroup(topic, ContentUris.withAppendedId(Contract.Groops.CONTENT_URI, 1).buildUpon().appendPath("Groop").build());
 				break;
         }
         return super.onContextItemSelected(item);
     }
 	
-	private void addToGroup(final Topic topic){
+	private void addToGroup(final Topic topic, final Uri uri){
 		handler = new Handler();
 		handler.post(new Runnable(){
 
@@ -111,10 +118,7 @@ public abstract class TopicsListFragment extends BaseListFragment {
 				public void run()
 				{
 					if(isAddGroup(topic)){
-						ContentValues cv = new ContentValues();
-						cv.put(Contract.Groop.id, topic.getId().toString());
-						cv.put(Contract.Groop.title, topic.getTitle().toString());
-						getActivity().getContentResolver().insert(Contract.Groop.CONTENT_URI, cv);
+						showGroopsDialog(topic);
 					}else
 					Toast.makeText(getActivity(), "Выбрана тема уже добавленна в группу!", Toast.LENGTH_SHORT).show();
 						
@@ -123,14 +127,17 @@ public abstract class TopicsListFragment extends BaseListFragment {
 	}
 	
 	private boolean isAddGroup(Topic topic){
+		
 		Cursor cursor = getActivity().getContentResolver().query(Contract.Groop.CONTENT_URI, null, null, null, Contract.Groop.DEFAULT_SORT_ORDER);
 		if(cursor.moveToFirst()){
 			do{
 				if(cursor.getString(cursor.getColumnIndexOrThrow(Contract.Groop.title)).equals(topic.getTitle())){
+					cursor.close();
 					return false;
 				}
 			}while(cursor.moveToNext());
 		}
+		cursor.close();
 		return true;
 	}
 
@@ -315,6 +322,21 @@ public abstract class TopicsListFragment extends BaseListFragment {
         editor.putString(getName() + ".navigate_action", navigateAction.toString());
         editor.commit();
     }
+	
+	void showGroopsDialog(Topic topic){
+		FragmentTransaction ft = getActivity().getFragmentManager().beginTransaction();
+        Fragment prev = getActivity().getFragmentManager().findFragmentByTag("dialog");
+        if (prev != null) {
+            ft.remove(prev);
+        }
+        ft.addToBackStack(null);
+
+
+        DialogFragment dialogFrag = GroopsDialogFragment.newInstance(topic.getId(), topic.getTitle());
+        dialogFrag.setTargetFragment(this, NAVIGATE_DIALOG_FRAGMENT);
+        dialogFrag.show(getFragmentManager().beginTransaction(), "dialog");
+		
+	}
 
     void showNavigateDialog(Topic topic) {
         FragmentTransaction ft = getActivity().getFragmentManager().beginTransaction();
@@ -390,5 +412,8 @@ public abstract class TopicsListFragment extends BaseListFragment {
             intent.putExtra(TOPIC_ID_KEY, topicId);
             return intent;
         }
+		
+		
     }
-}
+	
+	}

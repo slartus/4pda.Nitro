@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ActionBar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.DialogFragment;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
@@ -32,13 +33,10 @@ import ru.pda.nitro.listfragments.FavoritesListFragment;
 import ru.forpda.interfaces.forum.*;
 import android.graphics.*;
 import android.app.*;
+import ru.pda.nitro.dialogs.*;
 
 public class MainActivity extends BaseActivity
 {
-	public static ArrayList<Topic> topics;
-	public static ArrayList<News> news;
-	public static ArrayList<Forum> forums;
-	
 	ActionBarDrawerToggle mDrawerToggle;
 	private DrawerLayout mDrawerLayout ;
 	private ListView mDrawerList ;
@@ -50,6 +48,17 @@ public class MainActivity extends BaseActivity
 	private Fragment mContent;
 	private Handler handler;
 	private int current_position;
+	private static boolean groop_menu;
+
+	public static void setGroop_menu(boolean groop_menu)
+	{
+		MainActivity.groop_menu = groop_menu;
+	}
+
+	public static boolean isGroop_menu()
+	{
+		return groop_menu;
+	}
 	
 
 	@Override
@@ -262,12 +271,19 @@ public class MainActivity extends BaseActivity
 		ab.setTitle(mTitle);
 	}
 
+	@Override
+	public boolean onPrepareOptionsMenu(Menu menu)
+	{
+		menu.setGroupEnabled(100, isGroop_menu());
+		Toast.makeText(this, "prepage; " + isGroop_menu(), Toast.LENGTH_SHORT);
+		return super.onPrepareOptionsMenu(menu);
+	}
+
 	
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
 	{
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
@@ -278,6 +294,16 @@ public class MainActivity extends BaseActivity
        	if (mDrawerToggle.onOptionsItemSelected(item))
 		{
 			return true;
+		}
+		
+		switch(item.getItemId()){
+			case R.id.menu_finish:
+				this.finish();
+				break;
+			case R.id.menu_add_groops:
+				DialogFragment df = new AddGroopsDialogFragment();
+				df.show(getSupportFragmentManager(), null);
+				break;
 		}
 		
         return super.onOptionsItemSelected(item);

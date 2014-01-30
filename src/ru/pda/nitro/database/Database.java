@@ -11,11 +11,12 @@ import android.content.*;
 public class Database extends SQLiteOpenHelper
 {
 	private static final String DATABASE_NAME = "nitro.db";
-    private static final int DATABASE_VERSION = 7;
+    private static final int DATABASE_VERSION = 11;
 	
 	static final String NEWS_TABLE = "News";
     static final String FAVORITE_TABLE = "Favorite";
-	static final String GROUP_TABLE = "Groop";
+	static final String GROOP_TABLE = "Groop";
+	static final String GROOPS_TABLE = "Группы";
 	
 
     public Database(Context context)
@@ -25,9 +26,16 @@ public class Database extends SQLiteOpenHelper
 
     @Override
     public void onCreate(SQLiteDatabase db)
+	
     {
-		db.execSQL("CREATE TABLE " + GROUP_TABLE + " ("
+		db.execSQL("CREATE TABLE " + GROOPS_TABLE + " ("
 				   + BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+				  	+ Contract.Groops.title + " TEXT"
+				   + ")");
+				   
+		db.execSQL("CREATE TABLE " + GROOP_TABLE + " ("
+				   + BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+				   + Contract.Groop.groop + " TEXT " + "REFERENCES " + GROOPS_TABLE + "(" + BaseColumns._ID + ")" + ","
 				   + Contract.Groop.id + " TEXT,"
 				   + Contract.Groop.title + " TEXT"
 				   + ")");
@@ -71,7 +79,8 @@ public class Database extends SQLiteOpenHelper
 		LocalDataHelper.getLocalNews(cursor);
 		cursor.close();
 		*/
-		db.execSQL("DROP TABLE IF EXISTS " + GROUP_TABLE);
+		db.execSQL("DROP TABLE IF EXISTS " + GROOP_TABLE);
+		db.execSQL("DROP TABLE IF EXISTS " + GROOPS_TABLE);
 		
 		db.execSQL("DROP TABLE IF EXISTS " + FAVORITE_TABLE);
 		db.execSQL("DROP TABLE IF EXISTS " + NEWS_TABLE);

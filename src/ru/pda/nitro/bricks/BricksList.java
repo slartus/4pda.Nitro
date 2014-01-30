@@ -13,7 +13,7 @@ public class BricksList {
      */
     public static ArrayList<BrickInfo> getBricks(SharedPreferences prefs) {
         ArrayList<BrickInfo> res = new ArrayList<BrickInfo>();
-		res.add(new GroupBrick(prefs));
+		res.add(new GroopsBrick(prefs));
         res.add(new NewsBrick(prefs));
         res.add(new FavoritesBrick(prefs));
         res.add(new ForumsBrick(prefs));
