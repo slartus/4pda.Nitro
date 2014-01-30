@@ -27,6 +27,8 @@ import ru.pda.nitro.listfragments.*;
 import android.view.*;
 import android.widget.*;
 import android.view.View.*;
+import ru.pda.nitro.database.*;
+import android.database.*;
 
 
 /**
@@ -51,9 +53,32 @@ public class TopicView extends Fragment
 		ab.setDisplayHomeAsUpEnabled(true);
 		ab.setDisplayShowHomeEnabled(true);
 		ab.setDisplayShowTitleEnabled(true);
-		
+		if(getActivity().getIntent().getExtras() != null)
 		showTab(getActivity().getIntent().getStringExtra(TopicActivity.TOPIC_TITLE_KEY), getActivity().getIntent().getStringExtra(TopicActivity.TOPIC_URL_KEY), DEFAULT_TAG);
+		else
+			showGroup();
+	}
+	
+	private void showGroup(){
+		Cursor cursor = getActivity().getContentResolver().query(Contract.Group.CONTENT_URI, null, null, null, Contract.Group.DEFAULT_SORT_ORDER);
+		final ActionBar actionBar = getActivity().getActionBar();
 		
+		if(cursor.moveToFirst()){
+				actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+			
+			do{
+				addNewTab(
+				cursor.getString(cursor.getColumnIndexOrThrow(Contract.Group.title)), 
+				cursor.getString(cursor.getColumnIndexOrThrow(Contract.Group.id)),
+				"" 
+				);
+				
+			}while(cursor.moveToNext());
+			
+			cursor.close();
+		}else
+		cursor.close();
+		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
 	}
 
 	public class TabListener<T extends Fragment> implements ActionBar.TabListener

@@ -192,10 +192,11 @@ containing a value of this type.
     }
     public static final class id {
         public static final int action_settings=0x7f060035;
+        public static final int add_to_group=0x7f060039;
         public static final int buttonErrorOk=0x7f060012;
         public static final int buttonErrorRefresh=0x7f060013;
         public static final int buttonLogin=0x7f060019;
-        public static final int close_tab=0x7f060039;
+        public static final int close_tab=0x7f06003a;
         public static final int container=0x7f06000a;
         public static final int content_frame=0x7f06000c;
         public static final int drawer_layout=0x7f06000b;

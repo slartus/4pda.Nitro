@@ -11,10 +11,12 @@ import android.content.*;
 public class Database extends SQLiteOpenHelper
 {
 	private static final String DATABASE_NAME = "nitro.db";
-    private static final int DATABASE_VERSION = 5;
+    private static final int DATABASE_VERSION = 6;
 	
 	static final String NEWS_TABLE = "News";
     static final String FAVORITE_TABLE = "Favorite";
+	static final String GROUP_TABLE = "Group";
+	
 
     public Database(Context context)
     {
@@ -24,6 +26,11 @@ public class Database extends SQLiteOpenHelper
     @Override
     public void onCreate(SQLiteDatabase db)
     {
+		db.execSQL("CREATE TABLE " + GROUP_TABLE + " ("
+				   + BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+				   + Contract.Group.id + " TEXT,"
+				   + Contract.Group.title + " TEXT"
+				   + ")");
 
 		db.execSQL("CREATE TABLE " + FAVORITE_TABLE + " ("
 				   + BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
@@ -64,6 +71,8 @@ public class Database extends SQLiteOpenHelper
 		LocalDataHelper.getLocalNews(cursor);
 		cursor.close();
 		*/
+		db.execSQL("DROP TABLE IF EXISTS " + GROUP_TABLE);
+		
 		db.execSQL("DROP TABLE IF EXISTS " + FAVORITE_TABLE);
 		db.execSQL("DROP TABLE IF EXISTS " + NEWS_TABLE);
 		onCreate(db);

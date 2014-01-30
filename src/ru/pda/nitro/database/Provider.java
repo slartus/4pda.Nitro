@@ -17,6 +17,9 @@ public class Provider extends ContentProvider
 	private static final int NEWS_ID = 2;
 	private static final int FAVORITE = 3;
 	private static final int FAVORITE_ID = 4;
+	private static final int GROUP = 5;
+	private static final int GROUP_ID = 6;
+	
 
     private static final UriMatcher sUriMatcher;
     private Database mOpenHelper;
@@ -54,6 +57,15 @@ public class Provider extends ContentProvider
 				defaultSortOrder = Contract.Favorite.DEFAULT_SORT_ORDER;
 				qb.appendWhere("_id=" + uri.getLastPathSegment());
 				break;
+			case GROUP:
+				qb.setTables(Database.GROUP_TABLE);
+				defaultSortOrder = Contract.Group.DEFAULT_SORT_ORDER;
+				break;
+			case GROUP_ID:
+				qb.setTables(Database.GROUP_TABLE);
+				defaultSortOrder = Contract.Group.DEFAULT_SORT_ORDER;
+				qb.appendWhere("_id=" + uri.getLastPathSegment());
+				break;
 
             default:
                 throw new IllegalArgumentException("Unknown URI " + uri);
@@ -86,6 +98,11 @@ public class Provider extends ContentProvider
 				return Contract.Favorite.CONTENT_TYPE;
 			case FAVORITE_ID:
 				return Contract.Favorite.CONTENT_ITEM_TYPE;
+			case GROUP:
+				return Contract.Group.CONTENT_TYPE;
+			case GROUP_ID:
+				return Contract.Group.CONTENT_ITEM_TYPE;
+				
 				default:
                 throw new IllegalArgumentException("Unknown URI " + uri);
         }
@@ -103,6 +120,9 @@ public class Provider extends ContentProvider
 				break;
 			case FAVORITE:
 				tableName = Database.FAVORITE_TABLE;
+				break;
+			case GROUP:
+				tableName = Database.GROUP_TABLE;
 				break;
             default:
                 throw new IllegalArgumentException("Unknown URI " + uri);
@@ -140,6 +160,16 @@ public class Provider extends ContentProvider
 			case FAVORITE:
 				tableName = Database.FAVORITE_TABLE;
 				break;
+				
+			case GROUP_ID:
+				tableName = Database.GROUP_TABLE;
+				selection = "_id=" + uri.getLastPathSegment() + (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : "");
+				break;
+
+			case GROUP:
+				tableName = Database.GROUP_TABLE;
+				break;
+				
 			
             default:
                 throw new IllegalArgumentException("Unknown URI " + uri);
@@ -175,7 +205,10 @@ public class Provider extends ContentProvider
     static {
 
         sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
-
+		
+		sUriMatcher.addURI(Contract.AUTHORITY, "Group", GROUP);
+		sUriMatcher.addURI(Contract.AUTHORITY, "Group/#", GROUP_ID);
+		
         sUriMatcher.addURI(Contract.AUTHORITY, "Favorite", FAVORITE);
 		sUriMatcher.addURI(Contract.AUTHORITY, "Favorite/#", FAVORITE_ID);
 		sUriMatcher.addURI(Contract.AUTHORITY, "News", NEWS);

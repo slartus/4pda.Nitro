@@ -32,6 +32,7 @@ import ru.pda.nitro.R;
 import ru.pda.nitro.adapters.TopicListAdapter;
 import ru.pda.nitro.database.Contract;
 import ru.pda.nitro.topicsview.TopicActivity;
+import android.widget.*;
 
 
 /**
@@ -95,9 +96,43 @@ public abstract class TopicsListFragment extends BaseListFragment {
             case R.id.navigate_getnewpost:
                 prepareShowTopicActivity(getSelectedItem(), topic, TopicApi.NAVIGATE_VIEW_NEW_POST);
                 break;
+			case R.id.add_to_group:
+				addToGroup(topic);
+				break;
         }
         return super.onContextItemSelected(item);
     }
+	
+	private void addToGroup(final Topic topic){
+		handler = new Handler();
+		handler.post(new Runnable(){
+
+				@Override
+				public void run()
+				{
+					if(isAddGroup(topic)){
+						ContentValues cv = new ContentValues();
+						cv.put(Contract.Group.id, topic.getId().toString());
+						cv.put(Contract.Group.title, topic.getTitle().toString());
+						getActivity().getContentResolver().insert(Contract.Group.CONTENT_URI, cv);
+					}else
+					Toast.makeText(getActivity(), "Выбрана тема уже добавленна в группу!", Toast.LENGTH_SHORT).show();
+						
+				}
+			});
+	}
+	
+	private boolean isAddGroup(Topic topic){
+		Cursor cursor = getActivity().getContentResolver().query(Contract.Group.CONTENT_URI, null, null, null, Contract.Group.DEFAULT_SORT_ORDER);
+		if(cursor.moveToFirst()){
+			do{
+				if(cursor.getString(cursor.getColumnIndexOrThrow(Contract.Group.title)).equals(topic.getTitle())){
+					return false;
+				}
+			}while(cursor.moveToNext());
+		}
+		return true;
+	}
 
     private void prepareShowTopicActivity(final int itemId, final Topic topic, final CharSequence navigateAction) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(App.getInstance());

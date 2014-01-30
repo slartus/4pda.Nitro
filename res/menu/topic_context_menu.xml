@@ -11,4 +11,8 @@
         android:id="@+id/navigate_getnewpost"
         android:title="@string/navigate_getnewpost" />
 
+	<item
+        android:id="@+id/add_to_group"
+        android:title="Добавить в группу" />
+	
 </menu>
