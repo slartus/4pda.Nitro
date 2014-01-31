@@ -103,14 +103,13 @@ public abstract class TopicsListFragment extends BaseListFragment {
                 prepareShowTopicActivity(getSelectedItem(), topic, TopicApi.NAVIGATE_VIEW_NEW_POST);
                 break;
 			case R.id.add_to_group:
-				
-				addToGroup(topic, ContentUris.withAppendedId(Contract.Groops.CONTENT_URI, 1).buildUpon().appendPath("Groop").build());
+				addToGroup(topic);
 				break;
         }
         return super.onContextItemSelected(item);
     }
 	
-	private void addToGroup(final Topic topic, final Uri uri){
+	private void addToGroup(final Topic topic){
 		handler = new Handler();
 		handler.post(new Runnable(){
 

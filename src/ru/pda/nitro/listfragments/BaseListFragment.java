@@ -24,6 +24,7 @@ import ru.pda.nitro.IRefreshActivity;
 import ru.pda.nitro.R;
 import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshAttacher;
 import ru.pda.nitro.*;
+import ru.pda.nitro.bricks.*;
 
 
 /**
@@ -75,6 +76,7 @@ public abstract class BaseListFragment extends BaseFragment
         super.onActivityCreated(savedInstanceState);
         listView.setOnItemClickListener(this);
         listView.setOnCreateContextMenuListener(this);
+		groupMenuVisible();
     }
 
 	@Override
@@ -132,6 +134,12 @@ public abstract class BaseListFragment extends BaseFragment
 			});
         return footer;
     }
+	
+	public void groupMenuVisible(){
+		BaseState.setGroop_menu(GroopsBrick.NAME.equals(getName()) ? true : false);
+		
+		RefreshMenu.refreshActionBarMenu(getActivity());
+	}
 
 
     public void setProgressMore(boolean show)
@@ -202,10 +210,9 @@ public abstract class BaseListFragment extends BaseFragment
 			if (getActivity() != null)
 				setProgress(false);
 
-				if(!isLoading()){
+				if(!isLoading() && checkStatus()){
 					setProgress(true);
 					refreshData();
-			
 				}else{
 				
             setLoading(false);
@@ -217,6 +224,17 @@ public abstract class BaseListFragment extends BaseFragment
 
 
     }
+	
+	private boolean checkStatus(){
+		if(NewsBrick.NAME.equals(getName()) && BaseState.isRefresh_news()){
+			BaseState.setRefresh_news(false);
+			return true;
+		}else if(FavoritesBrick.NAME.equals(getName()) && BaseState.isRefresh_favorite()){
+			BaseState.setRefresh_favorite(false);
+			return true;
+		}
+		return false;
+	}
 
     public void deleteAllLocalData(Uri mUri)
 	{

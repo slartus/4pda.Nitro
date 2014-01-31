@@ -34,6 +34,7 @@ import ru.forpda.interfaces.forum.*;
 import android.graphics.*;
 import android.app.*;
 import ru.pda.nitro.dialogs.*;
+import ru.pda.nitro.bricks.*;
 
 public class MainActivity extends BaseActivity
 {
@@ -48,17 +49,6 @@ public class MainActivity extends BaseActivity
 	private Fragment mContent;
 	private Handler handler;
 	private int current_position;
-	private static boolean groop_menu;
-
-	public static void setGroop_menu(boolean groop_menu)
-	{
-		MainActivity.groop_menu = groop_menu;
-	}
-
-	public static boolean isGroop_menu()
-	{
-		return groop_menu;
-	}
 	
 
 	@Override
@@ -247,6 +237,7 @@ public class MainActivity extends BaseActivity
 
 	private void selectItem(final int position, final BrickInfo item)
 	{
+		setTitle(item.getTitle());
 		mDrawerLayout.closeDrawer(frameDrawer);
 		handler = new Handler();
 		handler.postDelayed(new Runnable(){
@@ -256,9 +247,7 @@ public class MainActivity extends BaseActivity
 				{
 					current_position = position;
 					setContent(item.createFragment(), true);
-					mDrawerList.setItemChecked(position, false);
-					setTitle(item.getTitle());
-					
+					mDrawerList.setItemChecked(position, false);	
 				}
 			}, 1000);
 			
@@ -274,8 +263,8 @@ public class MainActivity extends BaseActivity
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu)
 	{
-		menu.setGroupEnabled(100, isGroop_menu());
-		Toast.makeText(this, "prepage; " + isGroop_menu(), Toast.LENGTH_SHORT);
+		menu.setGroupVisible(R.id.group_groops, BaseState.isGroop_menu());
+		
 		return super.onPrepareOptionsMenu(menu);
 	}
 
@@ -298,7 +287,7 @@ public class MainActivity extends BaseActivity
 		
 		switch(item.getItemId()){
 			case R.id.menu_finish:
-				this.finish();
+				finish();
 				break;
 			case R.id.menu_add_groops:
 				DialogFragment df = new AddGroopsDialogFragment();
