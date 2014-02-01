@@ -1,9 +1,24 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="ru.pda.application.MainActivity" >
-    
+	<group android:id = "@+id/group_remove_groops" >
+
+		<item android:id="@+id/menu_remove_groops"
+			android:title="Удалить из группы"
+			android:icon="@drawable/ic_action_discard"
+			android:showAsAction="always" />
+
+	</group>
+	<group android:id = "@+id/group_add_groops" >
+
+		<item android:id="@+id/menu_add_groops"
+			android:title="Добавить в группу"
+			android:icon="@drawable/ic_action_new"
+			android:showAsAction="always" />
+
+	</group>
     <item android:id="@+id/close_tab"
-		android:icon="@drawable/ic_action_cancel"
+		android:icon="@drawable/ic_action_remove"
         android:title="@string/close_tab"
         android:showAsAction="always" />
 </menu>

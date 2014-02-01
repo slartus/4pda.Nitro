@@ -103,43 +103,13 @@ public abstract class TopicsListFragment extends BaseListFragment {
                 prepareShowTopicActivity(getSelectedItem(), topic, TopicApi.NAVIGATE_VIEW_NEW_POST);
                 break;
 			case R.id.add_to_group:
-				addToGroup(topic);
+				showGroopsDialog(topic);
 				break;
         }
         return super.onContextItemSelected(item);
     }
 	
-	private void addToGroup(final Topic topic){
-		handler = new Handler();
-		handler.post(new Runnable(){
-
-				@Override
-				public void run()
-				{
-					if(isAddGroup(topic)){
-						showGroopsDialog(topic);
-					}else
-					Toast.makeText(getActivity(), "Выбрана тема уже добавленна в группу!", Toast.LENGTH_SHORT).show();
-						
-				}
-			});
-	}
 	
-	private boolean isAddGroup(Topic topic){
-		
-		Cursor cursor = getActivity().getContentResolver().query(Contract.Groop.CONTENT_URI, null, null, null, Contract.Groop.DEFAULT_SORT_ORDER);
-		if(cursor.moveToFirst()){
-			do{
-				if(cursor.getString(cursor.getColumnIndexOrThrow(Contract.Groop.title)).equals(topic.getTitle())){
-					cursor.close();
-					return false;
-				}
-			}while(cursor.moveToNext());
-		}
-		cursor.close();
-		return true;
-	}
-
     private void prepareShowTopicActivity(final int itemId, final Topic topic, final CharSequence navigateAction) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(App.getInstance());
         String savedNavigateAction = prefs.getString(getName() + ".navigate_action", null);

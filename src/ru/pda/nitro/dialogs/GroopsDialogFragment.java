@@ -20,6 +20,7 @@ public class GroopsDialogFragment extends DialogFragment
 	private Cursor cursor;
 	public static final String GROOPS_ID_KEY = "ru.pda.nitro.dialogs.GroopsDialogFragment.GROOPS_ID_KEY";
 	public static final String GROOPS_TITLE_KEY = "ru.pda.nitro.dialogs.GroopsDialogFragment.GROOPS_TITLE_KEY";
+	private static long topicBaseId;
 	
 	
 	public static GroopsDialogFragment newInstance(CharSequence topicId, CharSequence topicTitle) {
@@ -59,16 +60,53 @@ public class GroopsDialogFragment extends DialogFragment
 		@Override
 		public void onClick(DialogInterface p1, int p2)
 		{
-			cursor.moveToPosition(p2);
-			long l = cursor.getLong(cursor.getColumnIndexOrThrow(BaseColumns._ID));
-			ContentValues cv = new ContentValues();
-			cv.put(Contract.Groop.id, getArguments().getCharSequence(GROOPS_ID_KEY).toString());
-			cv.put(Contract.Groop.title, getArguments().getCharSequence(GROOPS_TITLE_KEY).toString());
-			getActivity().getContentResolver().insert(ContentUris.withAppendedId(Contract.Groops.CONTENT_URI, l).buildUpon().appendPath("Groop").build(), cv);
-			
+			addToGroup(getArguments().getCharSequence(GROOPS_ID_KEY), p2);			
 		}
 	
 	};
+	
+	private void addToGroup(final CharSequence id,final int position){
+	 	Handler handler = new Handler();
+		handler.post(new Runnable(){
+
+				@Override
+				public void run()
+				{
+					if(isAddGroup(getActivity(),id) < 0){
+						saveToSelectGroup(position);
+					}else{
+						Toast.makeText(getActivity(), "Выбрана тема уже добавленна в группу!", Toast.LENGTH_SHORT).show();
+					}
+					
+				}
+			});
+	}
+	
+	public static long isAddGroup(Activity activity, CharSequence topicId){
+		Cursor cursor = activity.getContentResolver().query(Contract.Groop.CONTENT_URI, null, null, null, Contract.Groop.DEFAULT_SORT_ORDER);
+		if(cursor.moveToFirst()){
+			do{
+				if(cursor.getString(cursor.getColumnIndexOrThrow(Contract.Groop.id)).equals(topicId)){
+					topicBaseId = cursor.getLong(cursor.getColumnIndexOrThrow(BaseColumns._ID));
+					cursor.close();
+					return topicBaseId;
+				}
+			}while(cursor.moveToNext());
+		}
+		cursor.close();
+		return -1;
+	}
+	
+	private void saveToSelectGroup(int position){
+		cursor.moveToPosition(position);
+		long l = cursor.getLong(cursor.getColumnIndexOrThrow(BaseColumns._ID));
+		ContentValues cv = new ContentValues();
+		cv.put(Contract.Groop.id, getArguments().getCharSequence(GROOPS_ID_KEY).toString());
+		cv.put(Contract.Groop.title, getArguments().getCharSequence(GROOPS_TITLE_KEY).toString());
+		getActivity().getContentResolver().insert(ContentUris.withAppendedId(Contract.Groops.CONTENT_URI, l).buildUpon().appendPath("Groop").build(), cv);
+		
+	}
+	
 
 	@Override
 	public void onDestroy()

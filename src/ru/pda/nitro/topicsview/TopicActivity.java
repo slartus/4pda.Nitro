@@ -20,7 +20,8 @@ public class TopicActivity extends BaseActivity {
     public static final String NAVIGATE_ACTION_KEY = "ru.pda.nitro.topicsview.NAVIGATE_ACTION_KEY";
     public static final String TOPIC_TITLE_KEY = "ru.pda.nitro.topicsview.TOPIC_TITLE_KEY";
 	public static final String TOPIC_LIST_TITLE_KEY = "ru.pda.nitro.topicsview.TOPIC_LIST_TITLE_KEY";
-
+	public static final String TOPIC_GROOP_URI_KEY = "ru.pda.nitro.topicsview.TOPIC_GROOP_URI_KEY";
+	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,8 +47,7 @@ public class TopicActivity extends BaseActivity {
 	
 	public static void show(Activity activity, Uri uri, CharSequence title, long l){
 		Intent intent = new Intent(activity.getApplicationContext(), TopicActivity.class); 
-		intent.putExtra("_uri", ContentUris.withAppendedId(uri,l).buildUpon().appendPath("Groop").build());
-	//	intent.putExtra("_uri", ContentUris.withAppendedId(uri,l));
+		intent.putExtra(TopicActivity.TOPIC_GROOP_URI_KEY, uri);
 		intent.putExtra(TopicActivity.TOPIC_LIST_TITLE_KEY,title);
 		
 		activity.startActivity(intent);

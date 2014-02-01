@@ -40,29 +40,33 @@ public class GroopsListFragment extends BaseListFragment implements LoaderManage
 		mAdapter = new SetDetailCursorAdapter(getActivity(), null, 0);
 		listView.setAdapter(mAdapter);
 		registerForContextMenu(listView);
-		addTestGroops();
 		getLoaderManager().restartLoader(0, null, this);
 		setProgress(false);
 		
 	}
 	
-	private void addTestGroops(){
-		Cursor cursor = getActivity().getContentResolver().query(getUri(), null, null, null, Contract.Groops.DEFAULT_SORT_ORDER);
-		if(!cursor.moveToFirst()){
-		ContentValues cv = new ContentValues();
-		cv.put(Contract.Groops.title, "Тестовая группа");
-		getActivity().getContentResolver().insert(getUri(), cv);
-		}
-	cursor.close();
-	} 
-	
 	@Override
-    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+    public void onItemClick(AdapterView<?> adapterView, View view, final int i, final long l) {
         if (l < 0) return;
-		final Cursor cursor = (Cursor) mAdapter.getItem(i);
-		final String title = cursor.getString(cursor.getColumnIndexOrThrow(Contract.Groops.title));
-		TopicActivity.show(getActivity(), getUri(), title, l);
-	
+		handler = new Handler();
+		handler.post(new Runnable(){
+
+				@Override
+				public void run()
+				{
+					final Cursor cursor = (Cursor) mAdapter.getItem(i);
+					final String title = cursor.getString(cursor.getColumnIndexOrThrow(Contract.Groops.title));
+					Uri mUri = ContentUris.withAppendedId(getUri(),l).buildUpon().appendPath("Groop").build();
+					final Cursor groopCursor = getActivity().getContentResolver().query(mUri, null, null, null, null);
+					if(groopCursor.moveToFirst())
+						TopicActivity.show(getActivity(), mUri, title, l);
+					else
+						Toast.makeText(getActivity(), "В этой группе нет тем.", Toast.LENGTH_SHORT).show();
+
+					groopCursor.close();
+				}
+			});
+		
 		}
 	  
 	public void onCreateContextMenu(android.view.ContextMenu contextMenu, android.view.View view,
@@ -93,6 +97,7 @@ public class GroopsListFragment extends BaseListFragment implements LoaderManage
 				dialogFragment = new DeleteDialogFragment();
 				args = new Bundle();
 				args.putParcelable("_uri", ContentUris.withAppendedId(Contract.Groops.CONTENT_URI, info.id));
+				args.putLong("_id", info.id);
 				dialogFragment.setArguments(args);
 				dialogFragment.show(getActivity().getSupportFragmentManager(), null);
 				break;

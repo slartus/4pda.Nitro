@@ -19,6 +19,7 @@ public class Provider extends ContentProvider
 	private static final int FAVORITE_ID = 4;
 	
 	private static final int GROOP = 9;
+	private static final int GROOP_ID = 10;
 	
 	private static final int GROOPS = 5;
 	private static final int GROOPS_ID = 6;
@@ -172,6 +173,10 @@ public class Provider extends ContentProvider
 			case GROOP:	
 				tableName = Database.GROOP_TABLE;
 				break;
+			case GROOP_ID:
+				tableName = Database.GROOP_TABLE;
+				selection = "_id=" + uri.getLastPathSegment() + (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : "");
+				break;
 			case GROOPS_ID_GROOP_ID:
 				tableName = Database.GROOP_TABLE;
 				selection = Contract.Groop.groop + "=" + uri.getPathSegments().get(1) + (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : "");
@@ -224,6 +229,8 @@ public class Provider extends ContentProvider
         sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 		
 		sUriMatcher.addURI(Contract.AUTHORITY, "Groop", GROOP);
+		sUriMatcher.addURI(Contract.AUTHORITY, "Groop/#", GROOP_ID);
+		
 		
 		sUriMatcher.addURI(Contract.AUTHORITY, "Группы", GROOPS);
 		sUriMatcher.addURI(Contract.AUTHORITY, "Группы/#", GROOPS_ID);

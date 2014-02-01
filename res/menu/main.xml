@@ -2,9 +2,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="ru.pda.application.MainActivity" >
     <group android:id = "@+id/group_groops" >
+		
 		<item android:id="@+id/menu_add_groops"
 			android:title="Добавить группу"
-			android:icon="@android:drawable/ic_menu_add"
+			android:icon="@drawable/ic_action_new"
 			android:showAsAction="always" />
 
 	</group>
@@ -12,7 +13,23 @@
 		android:id="@+id/menu_finish"
         android:title="Закрыть"
         android:orderInCategory="200"
-		android:icon="@drawable/ic_action_cancel"
+		android:icon="@drawable/ic_action_remove"
         android:showAsAction="always" />
+	<!--item android:id="@+id/file"
+		android:icon="@drawable/ic_action_overflow"
+		android:showAsAction="always"
+		android:title="Меню" >
+        
+        <menu>
+			<item
+				android:id="@+id/refresh"
+				android:icon="@drawable/ic_action_refresh"
+				android:title="Обновить" />
+			<item
+				android:id="@+id/share"
+				android:icon="@drawable/ic_action_share"
+				android:title="Поделиться" />
+        </menu>
+    </item-->
 	
 </menu>

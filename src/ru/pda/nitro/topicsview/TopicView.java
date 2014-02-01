@@ -32,6 +32,10 @@ import android.database.*;
 import android.util.*;
 import android.os.*;
 import android.net.*;
+import android.provider.*;
+import android.content.*;
+import android.support.v4.app.*;
+import ru.pda.nitro.dialogs.*;
 
 
 /**
@@ -39,13 +43,20 @@ import android.net.*;
  */
 public class TopicView extends Fragment
 {
+	private final static String TOPIC_BASEID_KEY = "ru.pda.nitro.topicsview.TopicView.TOPIC_BASEID_KEY";
 	private final String DEFAULT_TAG = "tag";
 	private Handler handler;
-	
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+	private Uri mUri;
+	private boolean groop = false;
+
+	public void setGroop(boolean menuGroop)
 	{
-		return inflater.inflate(R.layout.topic_layout, container, false);
+		this.groop = menuGroop;
+	}
+
+	public boolean isGroop()
+	{
+		return groop;
 	}
 
 
@@ -64,6 +75,7 @@ public class TopicView extends Fragment
 	}
 	
 	private void showGroup(){
+		setGroop(true);
 		handler = new Handler();
 		handler.post(new Runnable(){
 
@@ -71,7 +83,7 @@ public class TopicView extends Fragment
 				public void run()
 				{
 				
-					Uri mUri = getActivity().getIntent().getParcelableExtra("_uri");
+					mUri = getActivity().getIntent().getParcelableExtra(TopicActivity.TOPIC_GROOP_URI_KEY);
 					Cursor cursor = getActivity().getContentResolver().query(mUri, null, null, null, Contract.Groop.DEFAULT_SORT_ORDER);
 
 					if(cursor.moveToFirst()){
@@ -79,10 +91,11 @@ public class TopicView extends Fragment
 						actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
 						do{
-							CharSequence id = cursor.getString(cursor.getColumnIndexOrThrow(Contract.Groop.id));
+							CharSequence topicId = cursor.getString(cursor.getColumnIndexOrThrow(Contract.Groop.id));
 							String text =	cursor.getString(cursor.getColumnIndexOrThrow(Contract.Groop.title));
+							long baseId = cursor.getLong(cursor.getColumnIndexOrThrow(BaseColumns._ID));
 
-							addNewTab(text, null, id, id.toString()); 
+							addNewTab(text, null, topicId, baseId, topicId.toString()); 
 
 						}while(cursor.moveToNext());
 				
@@ -100,13 +113,15 @@ public class TopicView extends Fragment
 		private final Activity mActivity;
 		private final CharSequence topicUrl;
 		private final CharSequence topicId;
-		private String mTag;
+		private final String mTag;
+		private final long baseId;
 
-		public TabListener(Activity activity, CharSequence url, CharSequence id, String tag)
+		public TabListener(Activity activity, CharSequence url, CharSequence id, long lid, String tag)
 		{
 			mActivity = activity;
 			topicUrl = url;
 			topicId = id;
+			baseId = lid;
 			mTag = tag;
 		}
 
@@ -125,6 +140,7 @@ public class TopicView extends Fragment
 				if(topicId != null){
 				args.putCharSequence(TopicActivity.TOPIC_ID_KEY, topicId);
 				args.putCharSequence(TopicActivity.NAVIGATE_ACTION_KEY, TopicApi.NAVIGATE_VIEW_NEW_POST);
+				args.putLong(TOPIC_BASEID_KEY, baseId);
 				}
 				
 
@@ -165,7 +181,7 @@ public class TopicView extends Fragment
 		}
 	}
 
-	private void addNewTab(String text, CharSequence url, CharSequence id, String tag)
+	private void addNewTab(String text, CharSequence topicUrl, CharSequence topicId, long baseId, String tag)
 	{ 
 		final ActionBar actionBar = getActivity().getActionBar(); 
 
@@ -173,7 +189,7 @@ public class TopicView extends Fragment
 			.addTab(actionBar.newTab() 
 					.setText(text)
 					.setTag(tag)
-					.setTabListener(new TabListener(getActivity(), url, id, tag)));
+					.setTabListener(new TabListener(getActivity(), topicUrl, topicId, baseId, tag)));
 	}
 
 	private void showTab(String text, CharSequence url, CharSequence id, String tag)
@@ -190,7 +206,7 @@ public class TopicView extends Fragment
 				return; 
 			} 
 		} 
-		addNewTab(text, url, id, tag); 
+		addNewTab(text, url, id, -1, tag); 
 		actionBar.setSelectedNavigationItem(actionBar.getNavigationItemCount() - 1);
 	}
 
@@ -207,14 +223,29 @@ public class TopicView extends Fragment
 	}
 	}
 	
+	private void removeFromGroup(long id){
+		getActivity().getContentResolver().delete(ContentUris.withAppendedId(mUri, id), null, null);
+		closeTab();
+	}
+	
+	private void showGroopsDialog(CharSequence title, CharSequence id){
+
+        DialogFragment dialogFrag = GroopsDialogFragment.newInstance(id, title);
+        dialogFrag.show(getFragmentManager().beginTransaction(), "dialog");
+
+	}
+	
 
 	public class Topic extends BaseFragment
 	implements LoaderManager.LoaderCallbacks<TopicResult>/* , FragmentLifecycle*/
 	{
 
 		private CharSequence topicUrl = null;
-		private CharSequence m_Id;
+		private CharSequence topicTitle = null;
+		private CharSequence topicId;
+		private long topicBaseId = -1;
 		private Bundle bundle = null;
+		
 		
 		@Override
 		public void onActivityCreated(Bundle savedInstanceState)
@@ -286,7 +317,7 @@ public class TopicView extends Fragment
 			{
 				if (!TopicApi.isTopicUrl(url))
 					return false;
-				if (TopicApi.isTopicUrl(url) && TopicApi.getTopicId(url).equals(m_Id))
+				if (TopicApi.isTopicUrl(url) && TopicApi.getTopicId(url).equals(topicId))
 					showTopic(TopicApi.normaTopicUrl(url));
 				else
 					showNewTab(TopicApi.normaTopicUrl(url));
@@ -327,7 +358,9 @@ public class TopicView extends Fragment
 			else if (bundle.containsKey(TopicActivity.TOPIC_URL_KEY))
 				topicUrl = bundle.getCharSequence(TopicActivity.TOPIC_URL_KEY);
 
-			m_Id = TopicApi.getTopicId(topicUrl);
+			topicId = TopicApi.getTopicId(topicUrl);
+			RefreshMenu.refreshActionBarMenu(getActivity());
+			
 			return new TopicLoader(getActivity(), topicUrl);
 		}
 
@@ -337,7 +370,7 @@ public class TopicView extends Fragment
 			
 			if(getActivity() != null){
 				if(topicResult != null){
-				
+					topicTitle = topicResult.getTitle().toString();
 			final ActionBar actionBar = getActivity().getActionBar();
 			
 				for (int index = 0; index < actionBar.getNavigationItemCount(); index++)
@@ -349,7 +382,7 @@ public class TopicView extends Fragment
 					}
 					if (tag.equals(topicUrl)) 
 					{ 
-						actionBar.getTabAt(index).setText(topicResult.getTitle().toString());
+						actionBar.getTabAt(index).setText(topicTitle);
 					} 
 				}
 
@@ -368,14 +401,59 @@ public class TopicView extends Fragment
 			setLoading(false);
 			setProgress(false);
 			
+			RefreshMenu.refreshActionBarMenu(getActivity());
+				
 			}
 		}
+		
+/*		private void copyText(String url)
+	{
+		int sdk = android.os.Build.VERSION.SDK_INT;
+		if (sdk < android.os.Build.VERSION_CODES.HONEYCOMB)
+		{
+			android.text.ClipboardManager clipboard = (android.text.ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+			clipboard.setText(url);
+		}
+		else
+		{
+			android.content.ClipboardManager clipboard = (android.content.ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE); 
+			android.content.ClipData clip = android.content.ClipData.newPlainText("url", url);
+			clipboard.setPrimaryClip(clip);
+		}
+		//	if (toast_text != null)
+		//	Toast.makeText(context, toast_text, Toast.LENGTH_SHORT).show();
+	}*/
+
 
 		@Override
 		public void onLoaderReset(Loader<TopicResult> topicResultLoader)
 		{
 
 		}
+
+		@Override
+		public void onPrepareOptionsMenu(Menu menu)
+		{
+			super.onPrepareOptionsMenu(menu);
+			
+			menu.setGroupVisible(R.id.group_add_groops,false);
+			menu.setGroupVisible(R.id.group_remove_groops, false);
+			topicBaseId = GroopsDialogFragment.isAddGroup(getActivity(),topicId);
+			
+			if(isGroop()){
+				if(topicBaseId > 0 && mUri != null){
+			menu.setGroupVisible(R.id.group_add_groops,false);
+			menu.setGroupVisible(R.id.group_remove_groops, true);
+			}else{
+				menu.setGroupVisible(R.id.group_add_groops,true);
+				menu.setGroupVisible(R.id.group_remove_groops, false);	
+			}
+			}else if(topicTitle != null && topicBaseId < 0){
+					menu.setGroupVisible(R.id.group_add_groops,true);
+			}
+		}
+		
+		
 
 		@Override
 		public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -393,6 +471,12 @@ public class TopicView extends Fragment
 					break;
 				case R.id.close_tab:
 					closeTab();
+					break;
+				case R.id.menu_remove_groops:
+					removeFromGroup(topicBaseId);
+					break;
+				case R.id.menu_add_groops:
+					showGroopsDialog(topicTitle, topicId);
 					break;
 			}
 			return super.onOptionsItemSelected(item);
