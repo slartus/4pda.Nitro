@@ -45,7 +45,7 @@ public class TopicView extends Fragment
 {
 	private final static String TOPIC_BASEID_KEY = "ru.pda.nitro.topicsview.TopicView.TOPIC_BASEID_KEY";
 	private final String DEFAULT_TAG = "tag";
-	private Handler handler;
+	private Handler handler = new Handler();
 	private Uri mUri;
 	private boolean groop = false;
 
@@ -76,7 +76,6 @@ public class TopicView extends Fragment
 	
 	private void showGroup(){
 		setGroop(true);
-		handler = new Handler();
 		handler.post(new Runnable(){
 
 				@Override
@@ -115,6 +114,7 @@ public class TopicView extends Fragment
 		private final CharSequence topicId;
 		private final String mTag;
 		private final long baseId;
+		
 
 		public TabListener(Activity activity, CharSequence url, CharSequence id, long lid, String tag)
 		{
@@ -217,7 +217,7 @@ public class TopicView extends Fragment
 		if (actionBar.getTabCount() > 1)
 			actionBar.removeTab(actionBar.getSelectedTab()); 
 			else{
-			actionBar.removeTab(actionBar.getSelectedTab()); 
+		//	actionBar.removeTab(actionBar.getSelectedTab()); 
 			getActivity().finish();
 				}
 	}
@@ -225,7 +225,7 @@ public class TopicView extends Fragment
 	
 	private void removeFromGroup(long id){
 		getActivity().getContentResolver().delete(ContentUris.withAppendedId(mUri, id), null, null);
-		closeTab();
+//		closeTab();
 	}
 	
 	private void showGroopsDialog(CharSequence title, CharSequence id){
@@ -245,7 +245,7 @@ public class TopicView extends Fragment
 		private CharSequence topicId;
 		private long topicBaseId = -1;
 		private Bundle bundle = null;
-		
+		private TopicChangeFavoriteTask taskChangeFavorite;
 		
 		@Override
 		public void onActivityCreated(Bundle savedInstanceState)
@@ -406,24 +406,6 @@ public class TopicView extends Fragment
 			}
 		}
 		
-/*		private void copyText(String url)
-	{
-		int sdk = android.os.Build.VERSION.SDK_INT;
-		if (sdk < android.os.Build.VERSION_CODES.HONEYCOMB)
-		{
-			android.text.ClipboardManager clipboard = (android.text.ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
-			clipboard.setText(url);
-		}
-		else
-		{
-			android.content.ClipboardManager clipboard = (android.content.ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE); 
-			android.content.ClipData clip = android.content.ClipData.newPlainText("url", url);
-			clipboard.setPrimaryClip(clip);
-		}
-		//	if (toast_text != null)
-		//	Toast.makeText(context, toast_text, Toast.LENGTH_SHORT).show();
-	}*/
-
 
 		@Override
 		public void onLoaderReset(Loader<TopicResult> topicResultLoader)
@@ -435,22 +417,23 @@ public class TopicView extends Fragment
 		public void onPrepareOptionsMenu(Menu menu)
 		{
 			super.onPrepareOptionsMenu(menu);
+			menu.findItem(R.id.menu_add_groops).setVisible(false);
+			menu.findItem(R.id.menu_remove_groops).setVisible(false);
 			
-			menu.setGroupVisible(R.id.group_add_groops,false);
-			menu.setGroupVisible(R.id.group_remove_groops, false);
 			topicBaseId = GroopsDialogFragment.isAddGroup(getActivity(),topicId);
 			
 			if(isGroop()){
 				if(topicBaseId > 0 && mUri != null){
-			menu.setGroupVisible(R.id.group_add_groops,false);
-			menu.setGroupVisible(R.id.group_remove_groops, true);
+					menu.findItem(R.id.menu_add_groops).setVisible(false);
+					menu.findItem(R.id.menu_remove_groops).setVisible(true);
+					
 			}else{
-				menu.setGroupVisible(R.id.group_add_groops,true);
-				menu.setGroupVisible(R.id.group_remove_groops, false);	
+				menu.findItem(R.id.menu_add_groops).setVisible(true);
+				menu.findItem(R.id.menu_remove_groops).setVisible(false);
 			}
 			}else if(topicTitle != null && topicBaseId < 0){
-					menu.setGroupVisible(R.id.group_add_groops,true);
-			}
+				menu.findItem(R.id.menu_add_groops).setVisible(true);
+				}
 		}
 		
 		
@@ -478,9 +461,22 @@ public class TopicView extends Fragment
 				case R.id.menu_add_groops:
 					showGroopsDialog(topicTitle, topicId);
 					break;
+				case R.id.add_to_favorite:
+					changeFavorite(true);
+					break;
+				case R.id.remove_from_favorite:
+					changeFavorite(false);
+					break;
+				
 			}
 			return super.onOptionsItemSelected(item);
 		}
+		
+		private void changeFavorite(boolean status){
+			taskChangeFavorite = new TopicChangeFavoriteTask(getActivity(), topicId, status);
+			taskChangeFavorite.execute();
+		}
+		
 		
 		@Override
 		public void onResume()

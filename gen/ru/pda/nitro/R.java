@@ -195,11 +195,12 @@ containing a value of this type.
         public static final int tap_button=0x7f020041;
     }
     public static final class id {
+        public static final int add_to_favorite=0x7f060044;
         public static final int add_to_group=0x7f06003f;
         public static final int buttonErrorOk=0x7f060013;
         public static final int buttonErrorRefresh=0x7f060014;
         public static final int buttonLogin=0x7f06001a;
-        public static final int close_tab=0x7f060043;
+        public static final int close_tab=0x7f060040;
         public static final int container=0x7f06000a;
         public static final int content_frame=0x7f06000c;
         public static final int context_delete_groop=0x7f060038;
@@ -208,9 +209,7 @@ containing a value of this type.
         public static final int editTextLogin=0x7f060018;
         public static final int editTextParol=0x7f060019;
         public static final int frameDraver=0x7f06000d;
-        public static final int group_add_groops=0x7f060042;
         public static final int group_groops=0x7f060039;
-        public static final int group_remove_groops=0x7f060040;
         public static final int imageImage=0x7f06001c;
         public static final int imageView=0x7f060032;
         public static final int imageViewTab=0x7f060008;
@@ -226,11 +225,13 @@ containing a value of this type.
         public static final int lnrTop=0x7f060027;
         public static final int menu_add_groops=0x7f06003a;
         public static final int menu_finish=0x7f06003b;
-        public static final int menu_remove_groops=0x7f060041;
+        public static final int menu_remove_groops=0x7f060042;
+        public static final int more_overflow=0x7f060041;
         public static final int name=0x7f060010;
         public static final int navigate_getfirstpost=0x7f06003c;
         public static final int navigate_getlastpost=0x7f06003d;
         public static final int navigate_getnewpost=0x7f06003e;
+        public static final int options=0x7f060043;
         public static final int pager=0x7f060036;
         public static final int progressBar=0x7f060025;
         public static final int progressMore=0x7f060016;
@@ -239,6 +240,7 @@ containing a value of this type.
         public static final int ptr_text=0x7f060006;
         public static final int ptr_text_opaque_bg=0x7f060005;
         public static final int relativeMore=0x7f060015;
+        public static final int remove_from_favorite=0x7f060045;
         public static final int row_title=0x7f060033;
         public static final int spb_interpolator_accelerate=0x7f060000;
         public static final int spb_interpolator_acceleratedecelerate=0x7f060002;

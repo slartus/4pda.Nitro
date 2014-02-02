@@ -36,6 +36,8 @@ import android.widget.*;
 import android.widget.AdapterView.*;
 import android.net.*;
 import ru.pda.nitro.dialogs.*;
+import ru.pda.nitro.bricks.*;
+import ru.pda.nitro.*;
 
 
 /**
@@ -67,9 +69,10 @@ public abstract class TopicsListFragment extends BaseListFragment {
             showNavigateDialog(topic);
             return;
         }
-
+		
         showTopicActivity(i, topic, navigateAction);
     }
+	
 
     public void setSelectedItem(int selectedItem) {
         this.selectedItem = selectedItem;

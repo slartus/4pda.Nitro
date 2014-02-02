@@ -3,8 +3,30 @@ package ru.pda.nitro;
 public class BaseState
 {
 	private static boolean groop_menu = false;
-	private static  boolean refresh_favorite = true;
+	private static boolean refresh_favorite = true;
 	private static boolean refresh_news = true;
+	private static boolean favorite;
+	private static boolean subscribe;
+
+	public static void setSubscribe(boolean subscribe)
+	{
+		BaseState.subscribe = subscribe;
+	}
+
+	public static boolean isSubscribe()
+	{
+		return subscribe;
+	}
+
+	public static void setFavorite(boolean favorite)
+	{
+		BaseState.favorite = favorite;
+	}
+
+	public static boolean isFavorite()
+	{
+		return favorite;
+	}
 
 	public static void setRefresh_news(boolean refresh_news)
 	{
