@@ -223,17 +223,7 @@ public class TopicView extends Fragment
 	}
 	}
 	
-	private void removeFromGroup(long id){
-		getActivity().getContentResolver().delete(ContentUris.withAppendedId(mUri, id), null, null);
-//		closeTab();
-	}
 	
-	private void showGroopsDialog(CharSequence title, CharSequence id){
-
-        DialogFragment dialogFrag = GroopsDialogFragment.newInstance(id, title);
-        dialogFrag.show(getFragmentManager().beginTransaction(), "dialog");
-
-	}
 	
 
 	public class Topic extends BaseFragment
@@ -243,7 +233,6 @@ public class TopicView extends Fragment
 		private CharSequence topicUrl = null;
 		private CharSequence topicTitle = null;
 		private CharSequence topicId;
-		private long topicBaseId = -1;
 		private Bundle bundle = null;
 		
 		@Override
@@ -412,28 +401,12 @@ public class TopicView extends Fragment
 
 		}
 
-		@Override
+	/*	@Override
 		public void onPrepareOptionsMenu(Menu menu)
 		{
 			super.onPrepareOptionsMenu(menu);
-			menu.findItem(R.id.menu_add_groops).setVisible(false);
-			menu.findItem(R.id.menu_remove_groops).setVisible(false);
-			
-			topicBaseId = GroopsDialogFragment.isAddGroup(getActivity(),topicId);
-			
-			if(isGroop()){
-				if(topicBaseId > 0 && mUri != null){
-					menu.findItem(R.id.menu_add_groops).setVisible(false);
-					menu.findItem(R.id.menu_remove_groops).setVisible(true);
-					
-			}else{
-				menu.findItem(R.id.menu_add_groops).setVisible(true);
-				menu.findItem(R.id.menu_remove_groops).setVisible(false);
-			}
-			}else if(topicTitle != null && topicBaseId < 0){
-				menu.findItem(R.id.menu_add_groops).setVisible(true);
-				}
-		}
+		
+		}*/
 		
 		
 
@@ -454,12 +427,6 @@ public class TopicView extends Fragment
 				case R.id.close_tab:
 					closeTab();
 					break;
-				case R.id.menu_remove_groops:
-					removeFromGroup(topicBaseId);
-					break;
-				case R.id.menu_add_groops:
-					showGroopsDialog(topicTitle, topicId);
-					break;
 				case R.id.options:
 					showThemeOptionsDialog(topicId);
 					break;
@@ -469,7 +436,7 @@ public class TopicView extends Fragment
 		}
 		
 		public void showThemeOptionsDialog(CharSequence topicId){
-			DialogFragment dialog = new ThemeOptionsDialogFragment().newInstance(topicId);
+			DialogFragment dialog = new ThemeOptionsDialogFragment().newInstance(topicId, topicTitle);
 			dialog.show(getFragmentManager().beginTransaction(), "dialog");
 		}
 		

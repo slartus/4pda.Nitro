@@ -15,14 +15,12 @@ import android.net.*;
 import android.provider.*;
 import android.support.v4.app.DialogFragment;
 
-public class GroopsDialogFragment extends DialogFragment
+public class GroopsDialogFragment extends BaseDialogFragment
 {
 	private Cursor cursor;
 	public static final String GROOPS_ID_KEY = "ru.pda.nitro.dialogs.GroopsDialogFragment.GROOPS_ID_KEY";
 	public static final String GROOPS_TITLE_KEY = "ru.pda.nitro.dialogs.GroopsDialogFragment.GROOPS_TITLE_KEY";
 	private static long topicBaseId;
-	
-	
 	public static GroopsDialogFragment newInstance(CharSequence topicId, CharSequence topicTitle) {
 		GroopsDialogFragment f = new GroopsDialogFragment();
 
@@ -40,7 +38,9 @@ public class GroopsDialogFragment extends DialogFragment
 	{
         super.onCreate(savedInstanceState);
 		cursor = getActivity().getContentResolver().query(Contract.Groops.CONTENT_URI, null, null, null, Contract.Groops.DEFAULT_SORT_ORDER);
-	
+		setTopicId(getArguments().getCharSequence(GROOPS_ID_KEY));
+		setTopicTitle(getArguments().getCharSequence(GROOPS_TITLE_KEY));
+		
     }
 
     @Override
@@ -59,19 +59,23 @@ public class GroopsDialogFragment extends DialogFragment
 		@Override
 		public void onClick(DialogInterface p1, int p2)
 		{
-			addToGroup(getArguments().getCharSequence(GROOPS_ID_KEY), p2);			
+			if(getTopicId() != null && getTopicTitle() != null)
+			addToGroup(p2);	
+			else{
+			Toast.makeText(getActivity(), "Ошибка!", Toast.LENGTH_SHORT).show();
+			}
 		}
 	
 	};
 	
-	private void addToGroup(final CharSequence id,final int position){
+	private void addToGroup(final int position){
 	 	Handler handler = new Handler();
 		handler.post(new Runnable(){
 
 				@Override
 				public void run()
 				{
-					if(isAddGroup(getActivity(),id) < 0){
+					if(isAddGroup(getActivity(),getTopicId()) < 0){
 						saveToSelectGroup(position);
 					}else{
 						Toast.makeText(getActivity(), "Выбрана тема уже добавленна в группу!", Toast.LENGTH_SHORT).show();
@@ -100,11 +104,12 @@ public class GroopsDialogFragment extends DialogFragment
 		cursor.moveToPosition(position);
 		long l = cursor.getLong(cursor.getColumnIndexOrThrow(BaseColumns._ID));
 		ContentValues cv = new ContentValues();
-		cv.put(Contract.Groop.id, getArguments().getCharSequence(GROOPS_ID_KEY).toString());
-		cv.put(Contract.Groop.title, getArguments().getCharSequence(GROOPS_TITLE_KEY).toString());
+		cv.put(Contract.Groop.id, getTopicId().toString());
+		cv.put(Contract.Groop.title, getTopicTitle().toString());
 		getActivity().getContentResolver().insert(ContentUris.withAppendedId(Contract.Groops.CONTENT_URI, l).buildUpon().appendPath("Groop").build(), cv);
+		Toast.makeText(getActivity(), "Тема успешно добавленна в группу", Toast.LENGTH_SHORT).show();
 		
-	}
+		}
 	
 
 	@Override

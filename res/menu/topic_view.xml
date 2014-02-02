@@ -14,12 +14,7 @@
 		android:title="Дополнитеньно" >
 
 		<menu>
-			<item 
-				android:id="@+id/menu_remove_groops"
-				android:title="Удалить из группы"/>
-			<item android:id="@+id/menu_add_groops"
-				android:title="Добавить в группу"/>
-
+			
 			<item
 				android:id="@+id/options"
 				android:title="@string/theme_options" >

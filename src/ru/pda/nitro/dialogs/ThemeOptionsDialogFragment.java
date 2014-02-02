@@ -19,19 +19,19 @@ import ru.pda.nitro.R;
 import ru.forpda.api.*;
 import ru.pda.nitro.*;
 
-public class ThemeOptionsDialogFragment extends DialogFragment
+public class ThemeOptionsDialogFragment extends BaseDialogFragment
 {
-	private Cursor cursor;
 	public static final String THEME_OPTIONS_ID_KEY = "ru.pda.nitro.dialogs.ThemeOptionsDialogFragment.THEME_OPTIONS_ID_KEY";
-
+	public static final String THEME_OPTIONS_TITLE_KEY = "ru.pda.nitro.dialogs.ThemeOptionsDialogFragment.THEME_OPTIONS_TITLE_KEY";
 	
 
-	public static ThemeOptionsDialogFragment newInstance(CharSequence topicId) {
+	public static ThemeOptionsDialogFragment newInstance(CharSequence topicId, CharSequence topicTitle) {
 		ThemeOptionsDialogFragment f = new ThemeOptionsDialogFragment();
 
 		// Supply num input as an argument.
 		Bundle args = new Bundle();
 		args.putCharSequence(THEME_OPTIONS_ID_KEY, topicId);
+		args.putCharSequence(THEME_OPTIONS_TITLE_KEY, topicTitle);
 		f.setArguments(args);
 
 		return f;
@@ -41,14 +41,14 @@ public class ThemeOptionsDialogFragment extends DialogFragment
     public void onCreate(Bundle savedInstanceState)
 	{
         super.onCreate(savedInstanceState);
-		cursor = getActivity().getContentResolver().query(Contract.Groops.CONTENT_URI, null, null, null, Contract.Groops.DEFAULT_SORT_ORDER);
-
+		setTopicId(getArguments().getCharSequence(THEME_OPTIONS_ID_KEY));
+		setTopicTitle(getArguments().getCharSequence(THEME_OPTIONS_TITLE_KEY));
     }
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState)
 	{
-		String[] data = {"Добавить в избранное", "Удалить из избранного", "Подписаться", "Отписаться"};
+		String[] data = {"Добавить в избранное", "Удалить из избранного", "Подписаться", "Отписаться", "Добавить в группу", "Удалить из группы"};
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),	android.R.layout.simple_list_item_1, data);
 		builder.setAdapter(adapter, myClickListener);
@@ -63,34 +63,48 @@ public class ThemeOptionsDialogFragment extends DialogFragment
 		{
 			switch(p2){
 			case 0:
-				TopicChangeStatusTask.changeStatus(getActivity(), TopicChangeStatusTask.ADD_TO_FAVORITE_KEY, getArguments().getCharSequence(THEME_OPTIONS_ID_KEY), null, null);
+				TopicChangeStatusTask.changeStatus(getActivity(), TopicChangeStatusTask.ADD_TO_FAVORITE_KEY, getTopicId(), null, null);
 				break;
 			case 1:
-				TopicChangeStatusTask.changeStatus(getActivity(), TopicChangeStatusTask.REMOVE_FROM_FAVORITE_KEY, getArguments().getCharSequence(THEME_OPTIONS_ID_KEY), null, null);
+				TopicChangeStatusTask.changeStatus(getActivity(), TopicChangeStatusTask.REMOVE_FROM_FAVORITE_KEY, getTopicId(), null, null);
 				break;
 			case 2:
 				showSelectEmailIdDialog();
 				break;
 			case 3:
-				TopicChangeStatusTask.changeStatus(getActivity(), TopicChangeStatusTask.UN_SUBSCRIBE_KEY, getArguments().getCharSequence(THEME_OPTIONS_ID_KEY), null, null);
+				TopicChangeStatusTask.changeStatus(getActivity(), TopicChangeStatusTask.UN_SUBSCRIBE_KEY, getTopicId(), null, null);
+				break;
+			case 4:
+				showGroopsDialog(getTopicId(), getTopicTitle());
+				break;
+			case 5:
+				removeFromGroup();
 				break;
 			}
 		}
 
 	};
+	
+	private void removeFromGroup(){
+		
+		long id = GroopsDialogFragment.isAddGroup(getActivity(), getTopicId());
+		if(id > 0){
+			getActivity().getContentResolver().delete(ContentUris.withAppendedId(Contract.Groop.CONTENT_URI, id), null,null);
+			Toast.makeText(getActivity(), "Тема удалена из группы", Toast.LENGTH_SHORT).show();	
+	}
+	}
+
+	private void showGroopsDialog(CharSequence topicId, CharSequence topicTitle){
+
+        DialogFragment dialogFrag = GroopsDialogFragment.newInstance(topicId, topicTitle);
+        dialogFrag.show(getFragmentManager().beginTransaction(), "dialog");
+
+	}
 
 	private void showSelectEmailIdDialog(){
-		DialogFragment dialog = new SelectEmailId().newInstance(getArguments().getCharSequence(THEME_OPTIONS_ID_KEY));
+		DialogFragment dialog = new SelectEmailId().newInstance(getTopicId());
 		dialog.show(getFragmentManager().beginTransaction(), "dislogs");
 	}
-
-	@Override
-	public void onDestroy()
-	{
-		super.onDestroy();
-		cursor.close();
-	}
-
 	
 	public static class SelectEmailId extends DialogFragment{
 

@@ -106,17 +106,14 @@ public abstract class TopicsListFragment extends BaseListFragment {
             case R.id.navigate_getnewpost:
                 prepareShowTopicActivity(getSelectedItem(), topic, TopicApi.NAVIGATE_VIEW_NEW_POST);
                 break;
-			case R.id.add_to_group:
-				showGroopsDialog(topic);
-				break;
 			case R.id.options:
-				showThemeOptionsDialog(topic.getId());
+				showThemeOptionsDialog(topic.getId(), topic.getTitle());
 				break;
         }
         return super.onContextItemSelected(item);
     }
-	public void showThemeOptionsDialog(CharSequence topicId){
-		DialogFragment dialog = new ThemeOptionsDialogFragment().newInstance(topicId);
+	public void showThemeOptionsDialog(CharSequence topicId, CharSequence topicTitle){
+		DialogFragment dialog = new ThemeOptionsDialogFragment().newInstance(topicId, topicTitle);
 		dialog.show(getFragmentManager().beginTransaction(), "dialog");
 	}
 	
@@ -301,21 +298,6 @@ public abstract class TopicsListFragment extends BaseListFragment {
         editor.putString(getName() + ".navigate_action", navigateAction.toString());
         editor.commit();
     }
-	
-	void showGroopsDialog(Topic topic){
-		FragmentTransaction ft = getActivity().getFragmentManager().beginTransaction();
-        Fragment prev = getActivity().getFragmentManager().findFragmentByTag("dialog");
-        if (prev != null) {
-            ft.remove(prev);
-        }
-        ft.addToBackStack(null);
-
-
-        DialogFragment dialogFrag = GroopsDialogFragment.newInstance(topic.getId(), topic.getTitle());
-        dialogFrag.setTargetFragment(this, NAVIGATE_DIALOG_FRAGMENT);
-        dialogFrag.show(getFragmentManager().beginTransaction(), "dialog");
-		
-	}
 
     void showNavigateDialog(Topic topic) {
         FragmentTransaction ft = getActivity().getFragmentManager().beginTransaction();
