@@ -7,6 +7,18 @@ public class BaseState
 	private static boolean refresh_news = true;
 	private static boolean favorite;
 	private static boolean subscribe;
+	
+	private static CharSequence mTitle ;
+
+	public static void setMTitle(CharSequence mTitle)
+	{
+		BaseState.mTitle = mTitle;
+	}
+
+	public static CharSequence getMTitle()
+	{
+		return mTitle;
+	}
 
 	public static void setSubscribe(boolean subscribe)
 	{

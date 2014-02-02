@@ -10,7 +10,7 @@ import android.widget.*;
 import ru.forpda.interfaces.*;
 import android.util.*;
 
-public class TopicChangeStatusTask extends AsyncTask<Void, Void, ResultInfo>
+public class TopicThemeOptionsTask extends AsyncTask<Void, Void, ResultInfo>
 {
 	public static final int ADD_TO_FAVORITE_KEY = 1;
 	public static final int REMOVE_FROM_FAVORITE_KEY = 2;
@@ -24,7 +24,7 @@ public class TopicChangeStatusTask extends AsyncTask<Void, Void, ResultInfo>
 	private Context context;
 	private int position;
 
-	public TopicChangeStatusTask(Context context, int position, CharSequence topicId, CharSequence autchKey, String emailTupe)
+	public TopicThemeOptionsTask(Context context, int position, CharSequence topicId, CharSequence autchKey, String emailTupe)
 	{
 		this.topicId = topicId;
 		this.emailType = emailTupe;
@@ -35,7 +35,7 @@ public class TopicChangeStatusTask extends AsyncTask<Void, Void, ResultInfo>
 	}
 	
 	public static void changeStatus(Context context, int position, CharSequence topicId, CharSequence autchKey, String emailTupe){
-	    TopicChangeStatusTask	taskChangeFavorite = new TopicChangeStatusTask(context,position, topicId, autchKey, emailTupe);
+	    TopicThemeOptionsTask	taskChangeFavorite = new TopicThemeOptionsTask(context,position, topicId, autchKey, emailTupe);
 		taskChangeFavorite.execute();
 	}
 
@@ -43,10 +43,7 @@ public class TopicChangeStatusTask extends AsyncTask<Void, Void, ResultInfo>
 	protected void onPreExecute()
 	{
 		super.onPreExecute();
-		progressDialog = new ProgressDialog(context);
-		progressDialog.setMessage("Выполнение запроса");
-		progressDialog.setCancelable(false);
-		progressDialog.show();
+		setToast("Добавление...");
 	}
 
 
@@ -85,33 +82,10 @@ public class TopicChangeStatusTask extends AsyncTask<Void, Void, ResultInfo>
 	protected void onPostExecute(ResultInfo result)
 	{
 		super.onPostExecute(result);
-		progressDialog.dismiss();
-		String message = null;
 		if (result != null)
 		{
-
-			switch (position)
-			{
-				case ADD_TO_FAVORITE_KEY:
-					message = result.getMessage();
-					break;
-				case REMOVE_FROM_FAVORITE_KEY:
-					if (result.isSuccess())
-						message = "Тема успешно удалена из избранного";
-					else
-						message = "Выбраная тема не найденна в избранном";
-					break;
-				case SUBSCRIBE_KEY:
-					message = "Подписка выполнена успешно";
-					break;
-				case UN_SUBSCRIBE_KEY:
-					if (result.isSuccess())
-						message = "Отписка выполнена успешно";
-					else
-						message = result.getMessage();
-					break;
-			}
-			setToast(message);
+			if(!result.isSuccess())
+				setToast("Не удалось добавить");
 		}
 		else		
 			setToast("Ошибка подключения");

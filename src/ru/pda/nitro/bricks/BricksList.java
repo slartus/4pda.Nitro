@@ -2,6 +2,8 @@ package ru.pda.nitro.bricks;
 
 import java.util.ArrayList;
 import android.content.*;
+import ru.pda.nitro.profile.*;
+import ru.pda.nitro.bricks.BricksProfile.*;
 
 /**
  * Created by slartus on 12.01.14.
@@ -21,4 +23,17 @@ public class BricksList {
 		return res;
 		
     }
+	
+	public static ArrayList<BrickInfo> getLoginMenu(){
+		ArrayList<BrickInfo> res = new ArrayList<BrickInfo>();
+		res.add(new LoginBrick());
+		return res;
+	}
+	
+	public static ArrayList<BrickInfo> getLogoutMenu(){
+		ArrayList<BrickInfo> res = new ArrayList<BrickInfo>();
+		res.add(new ProfileBrick());
+		res.add(new LogoutBrick());
+		return res;
+	}
 }

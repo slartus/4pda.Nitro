@@ -16,6 +16,7 @@ import ru.forpda.http.AdvCookieStore;
 import ru.forpda.http.HttpHelper;
 import ru.forpda.http.HttpSupport;
 import ru.forpda.http.SimpleCookie;
+import android.util.*;
 
 
 /**
@@ -114,6 +115,7 @@ public class UserProfile {
                 } else if ("member_id".equals(cookie.getName())) {
                     memberIdCookie = cookie;
                 }
+				Log.e("nitro", "nik: " + mUser + " token: " + mK + " id: "+ mUserId);
             }
 
             if (!TextUtils.isEmpty(mUser)

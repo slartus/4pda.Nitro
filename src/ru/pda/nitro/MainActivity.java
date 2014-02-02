@@ -42,14 +42,13 @@ public class MainActivity extends BaseActivity
 	private DrawerLayout mDrawerLayout ;
 	private ListView mDrawerList ;
 	private FrameLayout frameDrawer;
-	private CharSequence mTitle ;
+	
 	private MenuAdapter mAdapter;
 	private ArrayList<BrickInfo> menus;
 	private UserProfile profile;
 	private Fragment mContent;
 	private Handler handler;
-	private int current_position;
-	
+	private boolean replace = false;
 
 	@Override
     protected void onCreate(Bundle savedInstanceState)
@@ -58,11 +57,12 @@ public class MainActivity extends BaseActivity
         setContentView(R.layout.content_frame_drawer);
 
 		profile = new UserProfile();
+		profile.checkLogin();
 		
 		ab.setDisplayHomeAsUpEnabled(true);
 		ab.setDisplayShowHomeEnabled(true);
 
-		mTitle = getTitle();
+		BaseState.setMTitle(getTitle());
 		mDrawerLayout = (DrawerLayout) findViewById(R .id. drawer_layout);
 		mDrawerList = (ListView) findViewById(R .id. left_drawer);
 		frameDrawer = (FrameLayout)findViewById(R.id.frameDraver);
@@ -71,12 +71,14 @@ public class MainActivity extends BaseActivity
 		mAdapter = new MenuAdapter(this, R.layout.row, menus);
 		getMenu();
 		
+		mDrawerList.addHeaderView(mainMenuHeader());
 		mDrawerList.setAdapter(mAdapter);
 		mDrawerList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener(){
 
 				@Override
 				public boolean onItemLongClick(AdapterView<?> p1, View p2, int p3, long p4)
 				{
+					if(!replace)
 					startDeleteMode();
 					return false;
 				}
@@ -88,7 +90,7 @@ public class MainActivity extends BaseActivity
 												  R .drawable.ic_drawer_white , R.string.app_menu , R.string.app_name) {
 			public void onDrawerClosed(View view)
 			{
-				ab. setTitle(mTitle);
+				ab. setTitle(BaseState.getMTitle());
 				//	invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
 				mAdapter.notifyDataSetChanged();
 
@@ -102,7 +104,6 @@ public class MainActivity extends BaseActivity
 		};
 		mDrawerLayout.setLongClickable(true);
 		mDrawerLayout.setDrawerListener(mDrawerToggle);
-		
 		if (savedInstanceState == null)
 		{
 			handler = new Handler();
@@ -114,10 +115,40 @@ public class MainActivity extends BaseActivity
 						setDefaultContent();
 					}
 				});
-        }
-		
+		}
 
     }
+	
+	private View mainMenuHeader(){
+		View header = getLayoutInflater().inflate(R.layout.main_menu_header, null, false);
+	//	ImageView linear = (L)header.findViewById(R.id.linearLayoutHeader);
+		final ImageView imageNavigation = (ImageView)header.findViewById(R.id.imageViewNavigation);
+		final TextView nickname = (TextView)header.findViewById(R.id.textViewNick);
+		imageNavigation.setOnClickListener(new OnClickListener(){
+		
+				@Override
+				public void onClick(View p1)
+				{
+					if(profile.isLogined())
+						nickname.setText(profile.getLogin());
+					if(!replace && !DeleteMode){
+						imageNavigation.setImageResource(R.drawable.ic_action_collapse);
+					if(profile.getLogin().equals("гость") | profile.getLogin().equals("")){
+						getLoginMenu();
+					}else{
+						getLogOutMenu();
+					}
+					replace = true;
+					}else{
+						imageNavigation.setImageResource(R.drawable.ic_action_expand);
+						getMenu();
+						replace = false;
+					}
+				}
+			});
+		nickname.setText(profile.getLogin());
+		return header;
+	}
 
 	@Override
 	protected void onPostCreate(Bundle savedInstanceState)
@@ -137,9 +168,9 @@ public class MainActivity extends BaseActivity
 		if(profile.isLogined()){
 			mContent = menus.get(getPosition()).createFragment();
 		}else{
-			mContent = new PlaceholderFragment();
+			mContent = menus.get(1).createFragment();
 		}
-		setContent(mContent, false);
+		setContent(mContent);
 	}
 	
 	private int getPosition(){
@@ -147,8 +178,7 @@ public class MainActivity extends BaseActivity
 		for(int i = 0; i < menus.size(); i++){
 			
 			if(menus.get(i).getName().equals(prefs.getString("mainFavorite_", "favorites"))){
-				setTitle(menus.get(i).getTitle());
-				current_position = i;
+				BaseState.setMTitle( menus.get(i).getTitle());
 			return i;
 			}
 		}
@@ -161,17 +191,17 @@ public class MainActivity extends BaseActivity
 
 		public void onItemClick(AdapterView <?> parent , View view , int position, long id)
 		{
-			BrickInfo item = mAdapter.getItem(position);
+			BrickInfo item = mAdapter.getItem(position - 1);
 
 			if (!DeleteMode) {
-				if (mTitle.equals(item.getTitle()))
+				if (BaseState.getMTitle().equals(item.getTitle()))
 				{
 					mDrawerLayout.closeDrawer(frameDrawer);
 					mDrawerList.setItemChecked(position, false);
 				}
 				else
 				{
-					selectItem(position, item);
+					selectItem(position - 1, item);
 				}
 			}
 
@@ -227,7 +257,7 @@ public class MainActivity extends BaseActivity
     }
 
 
-	private void setContent(Fragment fragment, boolean back){
+	private void setContent(Fragment fragment){
 
 		getSupportFragmentManager()
 			.beginTransaction()
@@ -237,7 +267,7 @@ public class MainActivity extends BaseActivity
 
 	private void selectItem(final int position, final BrickInfo item)
 	{
-		setTitle(item.getTitle());
+		BaseState.setMTitle(item.getTitle());
 		mDrawerLayout.closeDrawer(frameDrawer);
 		handler = new Handler();
 		handler.postDelayed(new Runnable(){
@@ -245,20 +275,20 @@ public class MainActivity extends BaseActivity
 				@Override
 				public void run()
 				{
-					current_position = position;
-					setContent(item.createFragment(), true);
+					
+					setContent(item.createFragment());
 					mDrawerList.setItemChecked(position, false);	
 				}
 			}, 1000);
 			
 			}
 
-	@Override
+/*	@Override
 	public void setTitle(CharSequence title)
 	{
 		mTitle = title ;
 		ab.setTitle(mTitle);
-	}
+	}*/
 
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu)
@@ -303,8 +333,24 @@ public class MainActivity extends BaseActivity
 	 */
 		
 	 private void getMenu(){
+		 menus.clear();
 		 SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 		 menus = BricksList.getBricks(prefs);
+		 setAdapter(menus);
+	 }
+	 
+	 private void getLogOutMenu(){
+		 menus.clear();
+		 menus = BricksList.getLogoutMenu();
+		 setAdapter(menus);
+	 }
+	private void getLoginMenu(){
+		menus.clear();
+		menus = BricksList.getLoginMenu();
+		setAdapter(menus);
+	}
+	 
+	 private void setAdapter(ArrayList<BrickInfo> menus){
 		 mAdapter.setData(menus);
 		 mAdapter.notifyDataSetChanged();
 	 }
@@ -399,7 +445,7 @@ public class MainActivity extends BaseActivity
 
 			holder.text.setText(item.getTitle());
 			holder.text.setTypeface(face);
-			 if (current_position == position)
+			 if (BaseState.getMTitle().equals(item.getTitle()))
 			 {
 			 holder.text.setTypeface(current_face);
 			 }
@@ -415,108 +461,6 @@ public class MainActivity extends BaseActivity
 			public LinearLayout linear;
 		}
     }
-    /**
-     * A placeholder fragment containing a simple view.
-     */
-    public static class PlaceholderFragment extends Fragment
-	{
-		private EditText login, password;
-		private Button send;
-		private LoginTask loginTask;
-		
-        
-		public PlaceholderFragment()
-		{
-        }
 
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-								 Bundle savedInstanceState)
-		{
-            View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-			login = (EditText)rootView.findViewById(R.id.editTextLogin);
-			password = (EditText)rootView.findViewById(R.id.editTextParol);
-			send = (Button)rootView.findViewById(R.id.buttonLogin);
-			send.setOnClickListener(new OnClickListener(){
-
-					@Override
-					public void onClick(View p1)
-					{
-						Login();
-					}
-				});
-            return rootView;
-        }
-
-		@Override
-		public void onActivityCreated(Bundle savedInstanceState)
-		{
-			super.onActivityCreated(savedInstanceState);
-		}
-		
-		private void Login()
-		{
-			loginTask = new LoginTask(new UserProfile());
-			loginTask.execute();
-		}
-
-		private class LoginTask extends AsyncTask<Void, Void, Boolean>
-		{
-
-			private UserProfile profile;
-			private String mLogin, mPassword;
-			public LoginTask(UserProfile profile)
-			{
-				this.profile = profile;
-			}
-
-			@Override
-			protected void onPreExecute()
-			{
-				super.onPreExecute();
-				mLogin = login.getText().toString();
-				mPassword = password.getText().toString();
-			}
-			
-			
-			@Override
-			protected Boolean doInBackground(Void[] p1)
-			{
-				try
-				{
-					if (profile.doLogin(mLogin,mPassword))
-					{
-						return true;
-					}
-				}
-				catch (Exception e)
-				{
-
-                }
-				return false;
-			}
-			
-
-			@Override
-			protected void onPostExecute(Boolean result)
-			{
-				super.onPostExecute(result);
-				if (result)
-				{
-					getActivity().getActionBar().setTitle(profile.getLogin());
-					getFragmentManager().beginTransaction()
-						.add(R.id.content_frame, new FavoritesListFragment())
-						.commit();
-				}
-				else
-				{
-					Toast.makeText(getActivity(), "Ошибка авторизации", Toast.LENGTH_SHORT).show();
-					
-				}
-			}
-
-		}
-		
-    }
 
 }

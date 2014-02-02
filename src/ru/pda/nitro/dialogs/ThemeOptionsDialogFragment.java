@@ -63,16 +63,16 @@ public class ThemeOptionsDialogFragment extends BaseDialogFragment
 		{
 			switch(p2){
 			case 0:
-				TopicChangeStatusTask.changeStatus(getActivity(), TopicChangeStatusTask.ADD_TO_FAVORITE_KEY, getTopicId(), null, null);
+				TopicThemeOptionsTask.changeStatus(getActivity(), TopicThemeOptionsTask.ADD_TO_FAVORITE_KEY, getTopicId(), null, null);
 				break;
 			case 1:
-				TopicChangeStatusTask.changeStatus(getActivity(), TopicChangeStatusTask.REMOVE_FROM_FAVORITE_KEY, getTopicId(), null, null);
+				TopicThemeOptionsTask.changeStatus(getActivity(), TopicThemeOptionsTask.REMOVE_FROM_FAVORITE_KEY, getTopicId(), null, null);
 				break;
 			case 2:
 				showSelectEmailIdDialog();
 				break;
 			case 3:
-				TopicChangeStatusTask.changeStatus(getActivity(), TopicChangeStatusTask.UN_SUBSCRIBE_KEY, getTopicId(), null, null);
+				TopicThemeOptionsTask.changeStatus(getActivity(), TopicThemeOptionsTask.UN_SUBSCRIBE_KEY, getTopicId(), null, null);
 				break;
 			case 4:
 				showGroopsDialog(getTopicId(), getTopicTitle());
@@ -137,7 +137,7 @@ public class ThemeOptionsDialogFragment extends BaseDialogFragment
 				public void onClick(DialogInterface dialog, int whichButton) {
 					UserProfile profile = new UserProfile();
 					if(profile.isLogined()){
-					TopicChangeStatusTask.changeStatus(getActivity(), TopicChangeStatusTask.SUBSCRIBE_KEY, getArguments().getCharSequence(THEME_OPTIONS_ID_KEY) ,profile.getAutchKey(),values[selected[0]] );	
+					TopicThemeOptionsTask.changeStatus(getActivity(), TopicThemeOptionsTask.SUBSCRIBE_KEY, getArguments().getCharSequence(THEME_OPTIONS_ID_KEY) ,profile.getAutchKey(),values[selected[0]] );	
 					}
 				}
 			}

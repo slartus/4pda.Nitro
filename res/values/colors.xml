@@ -5,6 +5,7 @@
     <color name="white">#ffffff</color>
 	
 	<color name="tap_button">#10000000</color>
+	<color name="tap_button_header">#40000000</color>
 	<color name="tap_button_widget">#440A0808</color>
     <color name="fon_fragment_dk">#0f0f11</color>
     <color name="fon_news_dk">#1e1f23</color>

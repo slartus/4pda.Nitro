@@ -47,7 +47,7 @@ import ru.pda.nitro.*;
 public abstract class TopicsListFragment extends BaseListFragment {
 
     public ArrayList<Topic> topics = new ArrayList<Topic>();
-    public TopicListAdapter adapter;
+    public static TopicListAdapter adapter;
     public static final int NAVIGATE_DIALOG_FRAGMENT = 1;
     private int selectedItem;
 
@@ -92,8 +92,7 @@ public abstract class TopicsListFragment extends BaseListFragment {
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         
-		AdapterContextMenuInfo info = (AdapterContextMenuInfo)
-			item.getMenuInfo();
+		AdapterContextMenuInfo info = (AdapterContextMenuInfo)item.getMenuInfo();
 		Topic topic = topics.get(info.position);
 
         switch (item.getItemId()) {
@@ -112,6 +111,7 @@ public abstract class TopicsListFragment extends BaseListFragment {
         }
         return super.onContextItemSelected(item);
     }
+	
 	public void showThemeOptionsDialog(CharSequence topicId, CharSequence topicTitle){
 		DialogFragment dialog = new ThemeOptionsDialogFragment().newInstance(topicId, topicTitle);
 		dialog.show(getFragmentManager().beginTransaction(), "dialog");

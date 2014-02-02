@@ -20,6 +20,7 @@ import ru.pda.nitro.bricks.*;
 import ru.pda.nitro.topicsview.*;
 import android.widget.AdapterView.*;
 import ru.pda.nitro.dialogs.*;
+import android.app.ActionBar;
 
 public class GroopsListFragment extends BaseListFragment implements LoaderManager.LoaderCallbacks<Cursor>
 {
@@ -37,6 +38,8 @@ public class GroopsListFragment extends BaseListFragment implements LoaderManage
 	public void onActivityCreated(Bundle savedInstanceState)
 	{
 		super.onActivityCreated(savedInstanceState);
+		getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+
 		mAdapter = new SetDetailCursorAdapter(getActivity(), null, 0);
 		listView.setAdapter(mAdapter);
 		registerForContextMenu(listView);
