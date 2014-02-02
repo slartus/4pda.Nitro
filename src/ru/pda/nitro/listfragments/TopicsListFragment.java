@@ -81,6 +81,7 @@ public abstract class TopicsListFragment extends BaseListFragment {
     public int getSelectedItem() {
         return selectedItem;
     }
+	
 
     public void onCreateContextMenu(android.view.ContextMenu contextMenu, android.view.View view,
                                     android.view.ContextMenu.ContextMenuInfo contextMenuInfo) {
@@ -108,10 +109,16 @@ public abstract class TopicsListFragment extends BaseListFragment {
 			case R.id.add_to_group:
 				showGroopsDialog(topic);
 				break;
+			case R.id.options:
+				showThemeOptionsDialog(topic.getId());
+				break;
         }
         return super.onContextItemSelected(item);
     }
-	
+	public void showThemeOptionsDialog(CharSequence topicId){
+		DialogFragment dialog = new ThemeOptionsDialogFragment().newInstance(topicId);
+		dialog.show(getFragmentManager().beginTransaction(), "dialog");
+	}
 	
     private void prepareShowTopicActivity(final int itemId, final Topic topic, final CharSequence navigateAction) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(App.getInstance());

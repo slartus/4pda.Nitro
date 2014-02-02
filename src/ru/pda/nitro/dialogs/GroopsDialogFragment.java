@@ -50,7 +50,6 @@ public class GroopsDialogFragment extends DialogFragment
         
 		builder.setTitle("Группы");
 		builder.setCursor(cursor, myClickListener, Contract.Groops.title);
-			
 		
 		 return builder.create();
 	}

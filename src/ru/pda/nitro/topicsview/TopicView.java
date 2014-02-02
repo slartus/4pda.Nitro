@@ -245,7 +245,6 @@ public class TopicView extends Fragment
 		private CharSequence topicId;
 		private long topicBaseId = -1;
 		private Bundle bundle = null;
-		private TopicChangeFavoriteTask taskChangeFavorite;
 		
 		@Override
 		public void onActivityCreated(Bundle savedInstanceState)
@@ -461,20 +460,17 @@ public class TopicView extends Fragment
 				case R.id.menu_add_groops:
 					showGroopsDialog(topicTitle, topicId);
 					break;
-				case R.id.add_to_favorite:
-					changeFavorite(true);
-					break;
-				case R.id.remove_from_favorite:
-					changeFavorite(false);
+				case R.id.options:
+					showThemeOptionsDialog(topicId);
 					break;
 				
 			}
 			return super.onOptionsItemSelected(item);
 		}
 		
-		private void changeFavorite(boolean status){
-			taskChangeFavorite = new TopicChangeFavoriteTask(getActivity(), topicId, status);
-			taskChangeFavorite.execute();
+		public void showThemeOptionsDialog(CharSequence topicId){
+			DialogFragment dialog = new ThemeOptionsDialogFragment().newInstance(topicId);
+			dialog.show(getFragmentManager().beginTransaction(), "dialog");
 		}
 		
 		

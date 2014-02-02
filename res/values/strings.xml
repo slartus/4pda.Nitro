@@ -20,6 +20,8 @@
     <string name="navigate_getnewpost">К первому непрочитанному</string>
     <string name="yes">Да</string>
     <string name="no">Нет</string>
+	
+	<string name="theme_options">Опции</string>
 
 
 </resources>

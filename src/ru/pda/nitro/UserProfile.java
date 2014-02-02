@@ -25,7 +25,8 @@ public class UserProfile {
     String mUser = "гость";
     String mK = "";
     String mUserId = "";
-
+	
+	
     public interface LoginedStateChangedListener {
         void changed();
     }
@@ -45,6 +46,11 @@ public class UserProfile {
     public String getLogin() {
         return mUser;
     }
+	
+	public String getAutchKey(){
+		return mK;
+	}
+	
 
     public Boolean doLogin(String login, String password) throws Exception {
         Context context = App.getInstance();

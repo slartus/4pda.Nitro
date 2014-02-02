@@ -22,15 +22,7 @@
 
 			<item
 				android:id="@+id/options"
-				android:title="Опции темы" >
-				<menu>
-					<item
-						android:id="@+id/add_to_favorite"
-						android:title="Добавить в избранное" />
-					<item
-						android:id="@+id/remove_from_favorite"
-						android:title="Удалить из избранного" />
-				</menu>
+				android:title="@string/theme_options" >
 			</item>
 
 		</menu>
