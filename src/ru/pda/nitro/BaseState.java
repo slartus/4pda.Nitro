@@ -7,8 +7,19 @@ public class BaseState
 	private static boolean refresh_news = true;
 	private static boolean favorite;
 	private static boolean subscribe;
+	private static boolean login;
 	
 	private static CharSequence mTitle ;
+
+	public static void setLogin(boolean login)
+	{
+		BaseState.login = login;
+	}
+
+	public static boolean isLogin()
+	{
+		return login;
+	}
 
 	public static void setMTitle(CharSequence mTitle)
 	{

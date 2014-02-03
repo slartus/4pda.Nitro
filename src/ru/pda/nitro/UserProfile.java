@@ -89,6 +89,7 @@ public class UserProfile {
         cookieStore.clear();
         cookieStore.writeExternalCookies(context);
         loginedStateChanged();
+		mUser = "гость";
     }
 
 

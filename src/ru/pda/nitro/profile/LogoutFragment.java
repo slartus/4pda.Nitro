@@ -7,9 +7,17 @@ import android.view.View.*;
 import ru.pda.nitro.R;
 import ru.pda.nitro.*;
 import ru.pda.nitro.bricks.BricksProfile.*;
+import android.app.*;
 
-public class LogoutFragment extends Fragment
+public class LogoutFragment extends BaseFragment
 {
+
+	@Override
+	public void getData()
+	{
+		// TODO: Implement this method
+	}
+
 	private Button logout;
 	private ProgressBar progressLogout;
 	
@@ -42,9 +50,11 @@ public class LogoutFragment extends Fragment
 	{
 		// TODO: Implement this method
 		super.onActivityCreated(savedInstanceState);
+		getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+		
 		BaseState.setMTitle(getTitle());
 		getActivity().getActionBar().setTitle(getTitle());
-		
+		setProgress(false);
 	}
 	
 	
@@ -73,10 +83,9 @@ public class LogoutFragment extends Fragment
 		@Override
 		protected Boolean doInBackground(Void[] p1)
 		{
-			UserProfile profile = new UserProfile();
 			try
 			{
-			profile.doLogout();
+			MainActivity.profile.doLogout();
 			return true;
 			}
 			catch (Throwable e)
@@ -93,10 +102,14 @@ public class LogoutFragment extends Fragment
 				getActivity().getSupportFragmentManager().beginTransaction()
 				.replace(R.id.content_frame, new LoginFragment())
 				.commit();
+				BaseState.setLogin(false);
+				MainActivity.getLoginMenu();
+			}else{
+				Toast.makeText(getActivity(), "Ошибка выхода", Toast.LENGTH_SHORT).show();
 			}
-			else{
-				showProgress(false);
-			}
+			
+			MainActivity.setNickName();
+			showProgress(false);
 		}
 		
 	}

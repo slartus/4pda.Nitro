@@ -13,7 +13,7 @@ public class LoginBrick extends BrickInfo
 
 
     public static final String NAME="login";
-    public static final String TITLE="Войти";
+    public static final String TITLE="Вход";
     public LoginBrick() {
         super(NAME, TITLE, true, false);
     }

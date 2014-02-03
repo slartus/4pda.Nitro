@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import android.content.*;
 import ru.pda.nitro.profile.*;
 import ru.pda.nitro.bricks.BricksProfile.*;
+import ru.pda.nitro.*;
 
 /**
  * Created by slartus on 12.01.14.
@@ -17,6 +18,7 @@ public class BricksList {
         ArrayList<BrickInfo> res = new ArrayList<BrickInfo>();
 		res.add(new GroopsBrick(prefs));
         res.add(new NewsBrick(prefs));
+		if(BaseState.isLogin())
         res.add(new FavoritesBrick(prefs));
         res.add(new ForumsBrick(prefs));
         

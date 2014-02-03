@@ -42,13 +42,15 @@ public class MainActivity extends BaseActivity
 	private DrawerLayout mDrawerLayout ;
 	private ListView mDrawerList ;
 	private FrameLayout frameDrawer;
+	public static TextView textNick;
 	
-	private MenuAdapter mAdapter;
-	private ArrayList<BrickInfo> menus;
-	private UserProfile profile;
+	private static MenuAdapter mAdapter;
+	private static ArrayList<BrickInfo> menus;
+	public static UserProfile profile;
 	private Fragment mContent;
 	private Handler handler;
 	private boolean replace = false;
+	
 
 	@Override
     protected void onCreate(Bundle savedInstanceState)
@@ -57,7 +59,7 @@ public class MainActivity extends BaseActivity
         setContentView(R.layout.content_frame_drawer);
 
 		profile = new UserProfile();
-		profile.checkLogin();
+		BaseState.setLogin(profile.isLogined());
 		
 		ab.setDisplayHomeAsUpEnabled(true);
 		ab.setDisplayShowHomeEnabled(true);
@@ -112,7 +114,7 @@ public class MainActivity extends BaseActivity
 					@Override
 					public void run()
 					{
-						setDefaultContent();
+						setDefaultContent(BaseState.isLogin());
 					}
 				});
 		}
@@ -123,14 +125,13 @@ public class MainActivity extends BaseActivity
 		View header = getLayoutInflater().inflate(R.layout.main_menu_header, null, false);
 	//	ImageView linear = (L)header.findViewById(R.id.linearLayoutHeader);
 		final ImageView imageNavigation = (ImageView)header.findViewById(R.id.imageViewNavigation);
-		final TextView nickname = (TextView)header.findViewById(R.id.textViewNick);
+		textNick = (TextView)header.findViewById(R.id.textViewNick);
 		imageNavigation.setOnClickListener(new OnClickListener(){
 		
 				@Override
 				public void onClick(View p1)
 				{
-					if(profile.isLogined())
-						nickname.setText(profile.getLogin());
+					
 					if(!replace && !DeleteMode){
 						imageNavigation.setImageResource(R.drawable.ic_action_collapse);
 					if(profile.getLogin().equals("гость") | profile.getLogin().equals("")){
@@ -146,8 +147,12 @@ public class MainActivity extends BaseActivity
 					}
 				}
 			});
-		nickname.setText(profile.getLogin());
+		setNickName();
 		return header;
+	}
+	
+	public static void setNickName(){
+		textNick.setText(profile.getLogin());
 	}
 
 	@Override
@@ -163,9 +168,9 @@ public class MainActivity extends BaseActivity
 		mDrawerToggle.onConfigurationChanged(newConfig);
 	}
 
-	private void setDefaultContent(){
+	private void setDefaultContent(boolean login){
 	
-		if(profile.isLogined()){
+		if(login){
 			mContent = menus.get(getPosition()).createFragment();
 		}else{
 			mContent = menus.get(1).createFragment();
@@ -339,18 +344,18 @@ public class MainActivity extends BaseActivity
 		 setAdapter(menus);
 	 }
 	 
-	 private void getLogOutMenu(){
+	 public static void getLogOutMenu(){
 		 menus.clear();
 		 menus = BricksList.getLogoutMenu();
 		 setAdapter(menus);
 	 }
-	private void getLoginMenu(){
+	public static void getLoginMenu(){
 		menus.clear();
 		menus = BricksList.getLoginMenu();
 		setAdapter(menus);
 	}
 	 
-	 private void setAdapter(ArrayList<BrickInfo> menus){
+	 private static void setAdapter(ArrayList<BrickInfo> menus){
 		 mAdapter.setData(menus);
 		 mAdapter.notifyDataSetChanged();
 	 }

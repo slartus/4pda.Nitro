@@ -13,7 +13,7 @@ public class LogoutBrick extends BrickInfo
 
 
     public static final String NAME="logout";
-    public static final String TITLE="Выйти";
+    public static final String TITLE="Выход";
     public LogoutBrick() {
         super(NAME, TITLE,true, false);
     }
