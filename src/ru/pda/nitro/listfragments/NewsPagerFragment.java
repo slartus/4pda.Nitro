@@ -11,8 +11,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import ru.pda.nitro.R;
-import java.util.*;
 
 public class NewsPagerFragment extends Fragment
 {
@@ -87,8 +89,8 @@ public class NewsPagerFragment extends Fragment
 		super(fm);
 		this.fragments = new ArrayList<Fragment>();
 		for(int i = 0; i < urls.length; i++){
-			fragments.add(new NewsListFragment().newInstance(urls[i], i));
-		}
+            fragments.add(NewsListFragment.newInstance(urls[i], i));
+        }
 	}
 
     @Override

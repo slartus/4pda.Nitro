@@ -20,11 +20,11 @@ import java.util.ArrayList;
 import ru.forpda.interfaces.ListInfo;
 import ru.forpda.interfaces.forum.IListItem;
 import ru.pda.nitro.BaseFragment;
-import ru.pda.nitro.IRefreshActivity;
+import ru.pda.nitro.BaseState;
 import ru.pda.nitro.R;
-import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshAttacher;
-import ru.pda.nitro.*;
-import ru.pda.nitro.bricks.*;
+import ru.pda.nitro.bricks.FavoritesBrick;
+import ru.pda.nitro.bricks.GroopsBrick;
+import ru.pda.nitro.bricks.NewsBrick;
 
 
 /**
@@ -138,9 +138,9 @@ public abstract class BaseListFragment extends BaseFragment
     }
 	
 	public void groupMenuVisible(){
-		BaseState.setGroop_menu(GroopsBrick.NAME.equals(getName()) ? true : false);
-		
-		RefreshMenu.refreshActionBarMenu(getActivity());
+        BaseState.setGroop_menu(GroopsBrick.NAME.equals(getName()));
+
+        RefreshMenu.refreshActionBarMenu(getActivity());
 	}
 
 
