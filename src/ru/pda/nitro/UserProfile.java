@@ -16,6 +16,7 @@ import ru.forpda.http.AdvCookieStore;
 import ru.forpda.http.HttpHelper;
 import ru.forpda.http.HttpSupport;
 import ru.forpda.http.SimpleCookie;
+import android.util.*;
 
 
 /**
@@ -25,7 +26,8 @@ public class UserProfile {
     String mUser = "гость";
     String mK = "";
     String mUserId = "";
-
+	
+	
     public interface LoginedStateChangedListener {
         void changed();
     }
@@ -45,15 +47,20 @@ public class UserProfile {
     public String getLogin() {
         return mUser;
     }
+	
+	public String getAutchKey(){
+		return mK;
+	}
+	
 
-    public Boolean doLogin(String login, String password) throws Exception {
+    public Boolean doLogin(String login, String password, boolean privacy) throws Exception {
         Context context = App.getInstance();
         Map<String, String> outParams = new HashMap<String, String>();
         HttpHelper httpHelper = new HttpHelper(context);
         AdvCookieStore cookieStore = HttpSupport.getCookieStoreInstance(context);
         cookieStore.clear();
 
-        Boolean logined = ProfileApi.login(httpHelper, login, password, false, outParams);
+        Boolean logined = ProfileApi.login(httpHelper, login, password, privacy, outParams);
 
 
         String loginFailedReason = outParams.get(ProfileApi.LOGIN_FAILED_REASON_KEY);
@@ -82,6 +89,7 @@ public class UserProfile {
         cookieStore.clear();
         cookieStore.writeExternalCookies(context);
         loginedStateChanged();
+		mUser = "гость";
     }
 
 
@@ -108,6 +116,7 @@ public class UserProfile {
                 } else if ("member_id".equals(cookie.getName())) {
                     memberIdCookie = cookie;
                 }
+				Log.e("nitro", "nik: " + mUser + " token: " + mK + " id: "+ mUserId);
             }
 
             if (!TextUtils.isEmpty(mUser)

@@ -1,0 +1,26 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="ru.pda.application.MainActivity" >
+
+    <item 
+		android:id="@+id/close_tab"
+		android:icon="@drawable/ic_action_remove"
+        android:title="@string/close_tab"
+        android:showAsAction="always" />
+	<item 
+		android:id="@+id/more_overflow"
+		android:icon="@drawable/ic_action_overflow"
+		android:showAsAction="always"
+		android:title="Дополнитеньно" >
+
+		<menu>
+			
+			<item
+				android:id="@+id/options"
+				android:title="@string/theme_options" >
+			</item>
+
+		</menu>
+    </item>
+
+</menu>

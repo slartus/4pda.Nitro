@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ActionBar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.DialogFragment;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
@@ -32,25 +33,23 @@ import ru.pda.nitro.listfragments.FavoritesListFragment;
 import ru.forpda.interfaces.forum.*;
 import android.graphics.*;
 import android.app.*;
+import ru.pda.nitro.dialogs.*;
+import ru.pda.nitro.bricks.*;
 
 public class MainActivity extends BaseActivity
 {
-	public static ArrayList<Topic> topics;
-	public static ArrayList<News> news;
-	public static ArrayList<Forum> forums;
-	
 	ActionBarDrawerToggle mDrawerToggle;
 	private DrawerLayout mDrawerLayout ;
 	private ListView mDrawerList ;
 	private FrameLayout frameDrawer;
-	private CharSequence mTitle ;
-	private MenuAdapter mAdapter;
-	private ArrayList<BrickInfo> menus;
-	private UserProfile profile;
 	private Fragment mContent;
 	private Handler handler;
-	private int current_position;
+	private boolean profile_menu = false;
 	
+	private static MenuAdapter mAdapter;
+	private static ArrayList<BrickInfo> menus;
+	public static UserProfile profile;
+	public static TextView textNick;
 
 	@Override
     protected void onCreate(Bundle savedInstanceState)
@@ -59,11 +58,12 @@ public class MainActivity extends BaseActivity
         setContentView(R.layout.content_frame_drawer);
 
 		profile = new UserProfile();
-		
+		BaseState.setLogin(profile.isLogined());
+		BaseState.setMTitle(getTitle());
 		ab.setDisplayHomeAsUpEnabled(true);
 		ab.setDisplayShowHomeEnabled(true);
 
-		mTitle = getTitle();
+		
 		mDrawerLayout = (DrawerLayout) findViewById(R .id. drawer_layout);
 		mDrawerList = (ListView) findViewById(R .id. left_drawer);
 		frameDrawer = (FrameLayout)findViewById(R.id.frameDraver);
@@ -72,12 +72,14 @@ public class MainActivity extends BaseActivity
 		mAdapter = new MenuAdapter(this, R.layout.row, menus);
 		getMenu();
 		
+		mDrawerList.addHeaderView(mainMenuHeader());
 		mDrawerList.setAdapter(mAdapter);
 		mDrawerList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener(){
 
 				@Override
 				public boolean onItemLongClick(AdapterView<?> p1, View p2, int p3, long p4)
 				{
+					if(!profile_menu)
 					startDeleteMode();
 					return false;
 				}
@@ -89,7 +91,7 @@ public class MainActivity extends BaseActivity
 												  R .drawable.ic_drawer_white , R.string.app_menu , R.string.app_name) {
 			public void onDrawerClosed(View view)
 			{
-				ab. setTitle(mTitle);
+				ab. setTitle(BaseState.getMTitle());
 				//	invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
 				mAdapter.notifyDataSetChanged();
 
@@ -101,9 +103,8 @@ public class MainActivity extends BaseActivity
 				//	invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
 			}
 		};
-		mDrawerLayout.setLongClickable(true);
+
 		mDrawerLayout.setDrawerListener(mDrawerToggle);
-		
 		if (savedInstanceState == null)
 		{
 			handler = new Handler();
@@ -112,13 +113,45 @@ public class MainActivity extends BaseActivity
 					@Override
 					public void run()
 					{
-						setDefaultContent();
+						setDefaultContent(BaseState.isLogin());
 					}
 				});
-        }
-		
+		}
 
     }
+	
+	private View mainMenuHeader(){
+		View header = getLayoutInflater().inflate(R.layout.main_menu_header, null, false);
+		final ImageView imageNavigation = (ImageView)header.findViewById(R.id.imageViewNavigation);
+		textNick = (TextView)header.findViewById(R.id.textViewNick);
+		imageNavigation.setOnClickListener(new OnClickListener(){
+		
+				@Override
+				public void onClick(View p1)
+				{
+					
+					if(!profile_menu && !DeleteMode){
+						imageNavigation.setImageResource(R.drawable.ic_action_collapse);
+					if(profile.getLogin().equals("гость") | profile.getLogin().equals("")){
+						getLoginMenu();
+					}else{
+						getLogOutMenu();
+					}
+					profile_menu = true;
+					}else{
+						imageNavigation.setImageResource(R.drawable.ic_action_expand);
+						getMenu();
+						profile_menu = false;
+					}
+				}
+			});
+		setNickName();
+		return header;
+	}
+	
+	public static void setNickName(){
+		textNick.setText(profile.getLogin());
+	}
 
 	@Override
 	protected void onPostCreate(Bundle savedInstanceState)
@@ -133,46 +166,22 @@ public class MainActivity extends BaseActivity
 		mDrawerToggle.onConfigurationChanged(newConfig);
 	}
 
-	private void setDefaultContent(){
-	
-		if(profile.isLogined()){
-			mContent = menus.get(getPosition()).createFragment();
-		}else{
-			mContent = new PlaceholderFragment();
-		}
-		setContent(mContent, false);
-	}
-	
-	private int getPosition(){
-		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-		for(int i = 0; i < menus.size(); i++){
-			
-			if(menus.get(i).getName().equals(prefs.getString("mainFavorite_", "favorites"))){
-				setTitle(menus.get(i).getTitle());
-				current_position = i;
-			return i;
-			}
-		}
-		return 0;
-	}
-
-
 	private class DrawerItemClickListener implements ListView.OnItemClickListener
 	{
 
 		public void onItemClick(AdapterView <?> parent , View view , int position, long id)
 		{
-			BrickInfo item = mAdapter.getItem(position);
+			BrickInfo item = mAdapter.getItem(position - 1);
 
 			if (!DeleteMode) {
-				if (mTitle.equals(item.getTitle()))
+				if (BaseState.getMTitle().equals(item.getTitle()))
 				{
 					mDrawerLayout.closeDrawer(frameDrawer);
 					mDrawerList.setItemChecked(position, false);
 				}
 				else
 				{
-					selectItem(position, item);
+					selectItem(position - 1, item);
 				}
 			}
 
@@ -180,64 +189,9 @@ public class MainActivity extends BaseActivity
 
 	}
 
-	ActionMode mMode;
-
-    public Boolean DeleteMode = false;
-
-    private void startDeleteMode() {
-
-        mMode = startActionMode(new AnActionModeOfEpicProportions());
-        DeleteMode = true;
-		getMenu();
-        mDrawerList.setSelection(AbsListView.CHOICE_MODE_MULTIPLE);
-        mAdapter.notifyDataSetChanged();
-    }
-
-    private void stopDeleteMode(Boolean finishActionMode) {
-        if (finishActionMode && mMode != null) {
-            mMode.finish();
-        }
-        DeleteMode = false;
-		getMenu();
-        mDrawerList.setSelection(AbsListView.CHOICE_MODE_NONE);
-        mAdapter.notifyDataSetChanged();
-    }
-
-	private final class AnActionModeOfEpicProportions implements ActionMode.Callback {
-        @Override
-        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-           
-            return true;
-        }
-
-        @Override
-        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-            return false;
-        }
-
-        @Override
-        public boolean onActionItemClicked(final ActionMode mode, MenuItem item) {
-			//     stopDeleteMode(true);
-            return true;
-        }
-
-        @Override
-        public void onDestroyActionMode(ActionMode mode) {
-            stopDeleteMode(false);
-        }
-    }
-
-
-	private void setContent(Fragment fragment, boolean back){
-
-		getSupportFragmentManager()
-			.beginTransaction()
-			.replace(R.id.content_frame , fragment)
-			.commit();
-	}
-
 	private void selectItem(final int position, final BrickInfo item)
 	{
+		BaseState.setMTitle(item.getTitle());
 		mDrawerLayout.closeDrawer(frameDrawer);
 		handler = new Handler();
 		handler.postDelayed(new Runnable(){
@@ -245,21 +199,50 @@ public class MainActivity extends BaseActivity
 				@Override
 				public void run()
 				{
-					current_position = position;
-					setContent(item.createFragment(), true);
-					mDrawerList.setItemChecked(position, false);
-					setTitle(item.getTitle());
 					
+					setContent(item.createFragment());
+					mDrawerList.setItemChecked(position, false);	
 				}
 			}, 1000);
 			
 			}
+			
+	private void setContent(Fragment fragment){
+
+		getSupportFragmentManager()
+			.beginTransaction()
+			.replace(R.id.content_frame , fragment)
+			.commit();
+	}
+			
+	private void setDefaultContent(boolean login){
+
+		if(login){
+			mContent = menus.get(getPosition()).createFragment();
+		}else{
+			mContent = menus.get(1).createFragment();
+		}
+		setContent(mContent);
+	}
+
+	private int getPosition(){
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+		for(int i = 0; i < menus.size(); i++){
+
+			if(menus.get(i).getName().equals(prefs.getString("mainFavorite_", "favorites"))){
+				BaseState.setMTitle(menus.get(i).getTitle());
+				return i;
+			}
+		}
+		return 0;
+	}
 
 	@Override
-	public void setTitle(CharSequence title)
+	public boolean onPrepareOptionsMenu(Menu menu)
 	{
-		mTitle = title ;
-		ab.setTitle(mTitle);
+		menu.setGroupVisible(R.id.group_groops, BaseState.isGroop_menu());
+		
+		return super.onPrepareOptionsMenu(menu);
 	}
 
 	
@@ -267,7 +250,6 @@ public class MainActivity extends BaseActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
 	{
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
@@ -280,21 +262,43 @@ public class MainActivity extends BaseActivity
 			return true;
 		}
 		
+		switch(item.getItemId()){
+			case R.id.menu_finish:
+				finish();
+				break;
+			case R.id.menu_add_groops:
+				DialogFragment df = new AddGroopsDialogFragment();
+				df.show(getSupportFragmentManager(), null);
+				break;
+		}
+		
         return super.onOptionsItemSelected(item);
     }
-	
-	/**
-	 *Адаптер NavigationDrawer
-	 */
 		
 	 private void getMenu(){
+		 menus.clear();
 		 SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 		 menus = BricksList.getBricks(prefs);
+		 setAdapter(menus);
+	 }
+	 
+	 public static void getLogOutMenu(){
+		 menus.clear();
+		 menus = BricksList.getLogoutMenu();
+		 setAdapter(menus);
+	 }
+	public static void getLoginMenu(){
+		menus.clear();
+		menus = BricksList.getLoginMenu();
+		setAdapter(menus);
+	}
+	 
+	 private static void setAdapter(ArrayList<BrickInfo> menus){
 		 mAdapter.setData(menus);
 		 mAdapter.notifyDataSetChanged();
 	 }
 	 
-	class MenuAdapter extends ArrayAdapter<BrickInfo>
+	public class MenuAdapter extends ArrayAdapter<BrickInfo>
     {
         final LayoutInflater inflater;
 		private Context context;
@@ -384,7 +388,7 @@ public class MainActivity extends BaseActivity
 
 			holder.text.setText(item.getTitle());
 			holder.text.setTypeface(face);
-			 if (current_position == position)
+			 if (BaseState.getMTitle().equals(item.getTitle()))
 			 {
 			 holder.text.setTypeface(current_face);
 			 }
@@ -400,108 +404,52 @@ public class MainActivity extends BaseActivity
 			public LinearLayout linear;
 		}
     }
-    /**
-     * A placeholder fragment containing a simple view.
-     */
-    public static class PlaceholderFragment extends Fragment
-	{
-		private EditText login, password;
-		private Button send;
-		private LoginTask loginTask;
-		
-        
-		public PlaceholderFragment()
-		{
+	
+	ActionMode mMode;
+
+    public Boolean DeleteMode = false;
+
+    private void startDeleteMode() {
+
+        mMode = startActionMode(new AnActionModeOfEpicProportions());
+        DeleteMode = true;
+		getMenu();
+        mDrawerList.setSelection(AbsListView.CHOICE_MODE_MULTIPLE);
+        mAdapter.notifyDataSetChanged();
+    }
+
+    private void stopDeleteMode(Boolean finishActionMode) {
+        if (finishActionMode && mMode != null) {
+            mMode.finish();
+        }
+        DeleteMode = false;
+		getMenu();
+        mDrawerList.setSelection(AbsListView.CHOICE_MODE_NONE);
+        mAdapter.notifyDataSetChanged();
+    }
+
+	private final class AnActionModeOfEpicProportions implements ActionMode.Callback {
+        @Override
+        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+
+            return true;
         }
 
         @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-								 Bundle savedInstanceState)
-		{
-            View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-			login = (EditText)rootView.findViewById(R.id.editTextLogin);
-			password = (EditText)rootView.findViewById(R.id.editTextParol);
-			send = (Button)rootView.findViewById(R.id.buttonLogin);
-			send.setOnClickListener(new OnClickListener(){
-
-					@Override
-					public void onClick(View p1)
-					{
-						Login();
-					}
-				});
-            return rootView;
+        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+            return false;
         }
 
-		@Override
-		public void onActivityCreated(Bundle savedInstanceState)
-		{
-			super.onActivityCreated(savedInstanceState);
-		}
-		
-		private void Login()
-		{
-			loginTask = new LoginTask(new UserProfile());
-			loginTask.execute();
-		}
+        @Override
+        public boolean onActionItemClicked(final ActionMode mode, MenuItem item) {
+			//     stopDeleteMode(true);
+            return true;
+        }
 
-		private class LoginTask extends AsyncTask<Void, Void, Boolean>
-		{
-
-			private UserProfile profile;
-			private String mLogin, mPassword;
-			public LoginTask(UserProfile profile)
-			{
-				this.profile = profile;
-			}
-
-			@Override
-			protected void onPreExecute()
-			{
-				super.onPreExecute();
-				mLogin = login.getText().toString();
-				mPassword = password.getText().toString();
-			}
-			
-			
-			@Override
-			protected Boolean doInBackground(Void[] p1)
-			{
-				try
-				{
-					if (profile.doLogin(mLogin,mPassword))
-					{
-						return true;
-					}
-				}
-				catch (Exception e)
-				{
-
-                }
-				return false;
-			}
-			
-
-			@Override
-			protected void onPostExecute(Boolean result)
-			{
-				super.onPostExecute(result);
-				if (result)
-				{
-					getActivity().getActionBar().setTitle(profile.getLogin());
-					getFragmentManager().beginTransaction()
-						.add(R.id.content_frame, new FavoritesListFragment())
-						.commit();
-				}
-				else
-				{
-					Toast.makeText(getActivity(), "Ошибка авторизации", Toast.LENGTH_SHORT).show();
-					
-				}
-			}
-
-		}
-		
+        @Override
+        public void onDestroyActionMode(ActionMode mode) {
+            stopDeleteMode(false);
+        }
     }
 
 }

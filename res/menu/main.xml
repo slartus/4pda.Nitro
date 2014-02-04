@@ -1,9 +1,19 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="ru.pda.application.MainActivity" >
-    
-    <item android:id="@+id/action_settings"
-        android:title="@string/action_settings"
-        android:orderInCategory="100"
-        android:showAsAction="never" />
+    <group android:id = "@+id/group_groops" >
+		
+		<item android:id="@+id/menu_add_groops"
+			android:title="Добавить группу"
+			android:icon="@drawable/ic_action_new"
+			android:showAsAction="always" />
+
+	</group>
+    <item 
+		android:id="@+id/menu_finish"
+        android:title="Закрыть"
+        android:orderInCategory="200"
+		android:icon="@drawable/ic_action_remove"
+        android:showAsAction="always" />
+
 </menu>

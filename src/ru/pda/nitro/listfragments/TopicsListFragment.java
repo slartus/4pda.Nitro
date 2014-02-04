@@ -32,6 +32,12 @@ import ru.pda.nitro.R;
 import ru.pda.nitro.adapters.TopicListAdapter;
 import ru.pda.nitro.database.Contract;
 import ru.pda.nitro.topicsview.TopicActivity;
+import android.widget.*;
+import android.widget.AdapterView.*;
+import android.net.*;
+import ru.pda.nitro.dialogs.*;
+import ru.pda.nitro.bricks.*;
+import ru.pda.nitro.*;
 
 
 /**
@@ -41,7 +47,7 @@ import ru.pda.nitro.topicsview.TopicActivity;
 public abstract class TopicsListFragment extends BaseListFragment {
 
     public ArrayList<Topic> topics = new ArrayList<Topic>();
-    public TopicListAdapter adapter;
+    public static TopicListAdapter adapter;
     public static final int NAVIGATE_DIALOG_FRAGMENT = 1;
     private int selectedItem;
 
@@ -63,9 +69,10 @@ public abstract class TopicsListFragment extends BaseListFragment {
             showNavigateDialog(topic);
             return;
         }
-
+		
         showTopicActivity(i, topic, navigateAction);
     }
+	
 
     public void setSelectedItem(int selectedItem) {
         this.selectedItem = selectedItem;
@@ -74,6 +81,7 @@ public abstract class TopicsListFragment extends BaseListFragment {
     public int getSelectedItem() {
         return selectedItem;
     }
+	
 
     public void onCreateContextMenu(android.view.ContextMenu contextMenu, android.view.View view,
                                     android.view.ContextMenu.ContextMenuInfo contextMenuInfo) {
@@ -83,7 +91,9 @@ public abstract class TopicsListFragment extends BaseListFragment {
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
-        Topic topic = topics.get(getSelectedItem());
+        
+		AdapterContextMenuInfo info = (AdapterContextMenuInfo)item.getMenuInfo();
+		Topic topic = topics.get(info.position);
 
         switch (item.getItemId()) {
             case R.id.navigate_getfirstpost:
@@ -95,10 +105,18 @@ public abstract class TopicsListFragment extends BaseListFragment {
             case R.id.navigate_getnewpost:
                 prepareShowTopicActivity(getSelectedItem(), topic, TopicApi.NAVIGATE_VIEW_NEW_POST);
                 break;
+			case R.id.options:
+				showThemeOptionsDialog(topic.getId(), topic.getTitle());
+				break;
         }
         return super.onContextItemSelected(item);
     }
-
+	
+	public void showThemeOptionsDialog(CharSequence topicId, CharSequence topicTitle){
+		DialogFragment dialog = new ThemeOptionsDialogFragment().newInstance(topicId, topicTitle);
+		dialog.show(getFragmentManager().beginTransaction(), "dialog");
+	}
+	
     private void prepareShowTopicActivity(final int itemId, final Topic topic, final CharSequence navigateAction) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(App.getInstance());
         String savedNavigateAction = prefs.getString(getName() + ".navigate_action", null);
@@ -135,7 +153,7 @@ public abstract class TopicsListFragment extends BaseListFragment {
         updateItem(i);
         adapter.notifyDataSetChanged();
 
-        TopicActivity.show(getActivity(), topic.getId(), topic.getTitle(), navigateAction);
+        TopicActivity.show(getActivity(), topic.getId(), topic.getTitle(), getTitle(), navigateAction);
     }
 
     public abstract ArrayList<Topic> getTopicsList() throws ParseException, IOException;
@@ -151,14 +169,14 @@ public abstract class TopicsListFragment extends BaseListFragment {
             @Override
             public void run() {
                 Cursor cursor = getActivity().getContentResolver().query(Contract.Favorite.CONTENT_URI, null, null, null, Contract.Favorite.DEFAULT_SORT_ORDER);
-                cursor.moveToPosition(i);
+                if(cursor.moveToPosition(i)){
                 long l = cursor.getLong(cursor.getColumnIndexOrThrow(BaseColumns._ID));
-                cursor.close();
                 ContentValues cv = new ContentValues();
                 cv.put(Contract.Favorite.hasUnreadPosts, false);
 
                 getActivity().getContentResolver().update(ContentUris.withAppendedId(Contract.Favorite.CONTENT_URI, l), cv, null, null);
-
+				}
+				cursor.close();
             }
         });
     }
@@ -355,5 +373,8 @@ public abstract class TopicsListFragment extends BaseListFragment {
             intent.putExtra(TOPIC_ID_KEY, topicId);
             return intent;
         }
+		
+		
     }
-}
+	
+	}

@@ -17,6 +17,16 @@ public class Provider extends ContentProvider
 	private static final int NEWS_ID = 2;
 	private static final int FAVORITE = 3;
 	private static final int FAVORITE_ID = 4;
+	
+	private static final int GROOP = 9;
+	private static final int GROOP_ID = 10;
+	
+	private static final int GROOPS = 5;
+	private static final int GROOPS_ID = 6;
+	private static final int GROOPS_ID_GROOP = 7;
+	private static final int GROOPS_ID_GROOP_ID = 8;
+	
+	
 
     private static final UriMatcher sUriMatcher;
     private Database mOpenHelper;
@@ -40,21 +50,36 @@ public class Provider extends ContentProvider
 				qb.setTables(Database.NEWS_TABLE);
 				defaultSortOrder = Contract.News.DEFAULT_SORT_ORDER;
 				break;
-			case NEWS_ID:
-				qb.setTables(Database.NEWS_TABLE);
-				defaultSortOrder = Contract.News.DEFAULT_SORT_ORDER;
-				qb.appendWhere("_id=" + uri.getLastPathSegment());
-				break;
+			
 			case FAVORITE:
 				qb.setTables(Database.FAVORITE_TABLE);
 				defaultSortOrder = Contract.Favorite.DEFAULT_SORT_ORDER;
 				break;
-			case FAVORITE_ID:
-				qb.setTables(Database.FAVORITE_TABLE);
-				defaultSortOrder = Contract.Favorite.DEFAULT_SORT_ORDER;
+	
+			case GROOP:
+				qb.setTables(Database.GROOP_TABLE);
+				defaultSortOrder = Contract.Groop.DEFAULT_SORT_ORDER;
+				break;
+			case GROOPS:
+				qb.setTables(Database.GROOPS_TABLE);
+				defaultSortOrder = Contract.Groops.DEFAULT_SORT_ORDER;
+				break;
+			case GROOPS_ID:
+				qb.setTables(Database.GROOPS_TABLE);
+				defaultSortOrder = Contract.Groops.DEFAULT_SORT_ORDER;
 				qb.appendWhere("_id=" + uri.getLastPathSegment());
 				break;
-
+			case GROOPS_ID_GROOP:
+				qb.setTables(Database.GROOP_TABLE);
+				defaultSortOrder = Contract.Groop.DEFAULT_SORT_ORDER;
+				qb.appendWhere(Contract.Groop.groop + "=" + uri.getPathSegments().get(1));
+				break;
+			case GROOPS_ID_GROOP_ID:
+				qb.setTables(Database.GROOPS_TABLE);
+				defaultSortOrder = Contract.Groops.DEFAULT_SORT_ORDER;
+				qb.appendWhere(Contract.Groop.groop + "=" + uri.getPathSegments().get(1));
+				qb.appendWhere("_id=" + uri.getLastPathSegment());
+				break;
             default:
                 throw new IllegalArgumentException("Unknown URI " + uri);
         }
@@ -86,6 +111,10 @@ public class Provider extends ContentProvider
 				return Contract.Favorite.CONTENT_TYPE;
 			case FAVORITE_ID:
 				return Contract.Favorite.CONTENT_ITEM_TYPE;
+			case GROOPS:
+				return Contract.Groop.CONTENT_TYPE;
+			case GROOPS_ID:
+				return Contract.Groop.CONTENT_ITEM_TYPE;
 				default:
                 throw new IllegalArgumentException("Unknown URI " + uri);
         }
@@ -103,6 +132,14 @@ public class Provider extends ContentProvider
 				break;
 			case FAVORITE:
 				tableName = Database.FAVORITE_TABLE;
+				break;
+			case GROOPS:
+				tableName = Database.GROOPS_TABLE;
+				break;
+			case GROOPS_ID_GROOP:
+				values.put(Contract.Groop.groop, uri.getPathSegments().get(1));
+				tableName = Database.GROOP_TABLE;
+				
 				break;
             default:
                 throw new IllegalArgumentException("Unknown URI " + uri);
@@ -123,23 +160,29 @@ public class Provider extends ContentProvider
         String tableName;
         switch (sUriMatcher.match(uri))
 		{
-			
-			case NEWS_ID:
-				tableName = Database.NEWS_TABLE;
-				selection = "_id=" + uri.getLastPathSegment() + (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : "");
-				break;
-			case FAVORITE_ID:
-				tableName = Database.FAVORITE_TABLE;
-				selection = "_id=" + uri.getLastPathSegment() + (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : "");
-				break;
-	
 			case NEWS:
 				tableName = Database.NEWS_TABLE;
 				break;
-
 			case FAVORITE:
 				tableName = Database.FAVORITE_TABLE;
 				break;
+			case GROOPS_ID:
+				tableName = Database.GROOPS_TABLE;
+				selection = "_id=" + uri.getLastPathSegment() + (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : "");
+				break;
+			case GROOP:	
+				tableName = Database.GROOP_TABLE;
+				break;
+			case GROOP_ID:
+				tableName = Database.GROOP_TABLE;
+				selection = "_id=" + uri.getLastPathSegment() + (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : "");
+				break;
+			case GROOPS_ID_GROOP_ID:
+				tableName = Database.GROOP_TABLE;
+				selection = Contract.Groop.groop + "=" + uri.getPathSegments().get(1) + (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : "");
+				selection = "_id=" + uri.getLastPathSegment() + (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : "");
+				break;
+				
 			
             default:
                 throw new IllegalArgumentException("Unknown URI " + uri);
@@ -164,6 +207,15 @@ public class Provider extends ContentProvider
 				tableName = Database.FAVORITE_TABLE;
 				selection = "_id=" + uri.getLastPathSegment() + (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : "");
 				break;
+			case GROOPS_ID:
+				tableName = Database.GROOPS_TABLE;
+				selection = "_id=" + uri.getLastPathSegment() + (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : "");
+				break;
+			case GROOPS_ID_GROOP_ID:
+				tableName = Database.GROOPS_TABLE;
+				selection = Contract.Groop.groop + "=" + uri.getPathSegments().get(1) + (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : "");
+				selection = "_id=" + uri.getLastPathSegment() + (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : "");
+				break;
             default:
                 throw new IllegalArgumentException("Unknown URI " + uri);
         }
@@ -175,7 +227,16 @@ public class Provider extends ContentProvider
     static {
 
         sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
-
+		
+		sUriMatcher.addURI(Contract.AUTHORITY, "Groop", GROOP);
+		sUriMatcher.addURI(Contract.AUTHORITY, "Groop/#", GROOP_ID);
+		
+		
+		sUriMatcher.addURI(Contract.AUTHORITY, "Группы", GROOPS);
+		sUriMatcher.addURI(Contract.AUTHORITY, "Группы/#", GROOPS_ID);
+		sUriMatcher.addURI(Contract.AUTHORITY, "Группы/#/Groop", GROOPS_ID_GROOP);
+		sUriMatcher.addURI(Contract.AUTHORITY, "Группы/#/Groop/#", GROOPS_ID_GROOP_ID);
+		
         sUriMatcher.addURI(Contract.AUTHORITY, "Favorite", FAVORITE);
 		sUriMatcher.addURI(Contract.AUTHORITY, "Favorite/#", FAVORITE_ID);
 		sUriMatcher.addURI(Contract.AUTHORITY, "News", NEWS);

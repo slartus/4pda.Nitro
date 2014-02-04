@@ -8,10 +8,15 @@ import android.widget.LinearLayout;
 import android.widget.*;
 import uk.co.senab.actionbarpulltorefresh.library.*;
 import android.os.*;
+import android.support.v4.app.*;
 
 public abstract class BaseFragment extends Fragment {
     public LinearLayout linearProgress;
     public LinearLayout linearError;
+	public LinearLayout linearData;
+	public ProgressBar progressBarData;
+	private Button buttonData;
+	
     public TextView buttonError, buttonErrorOk;
 	private boolean refresh = false;
 	private boolean loading = false;
@@ -45,6 +50,28 @@ public abstract class BaseFragment extends Fragment {
         return v;
     }
 	
+	public void initialiseDataUi(View rootView){
+		linearData =(LinearLayout)rootView.findViewById(R.id.linearLayoutData);
+		progressBarData = (ProgressBar)rootView.findViewById(R.id.progressBarData);
+		buttonData = (Button)rootView.findViewById(R.id.buttonData);
+		buttonData.setOnClickListener(new OnClickListener(){
+
+				@Override
+				public void onClick(View p1)
+				{
+					getData();
+				}
+			});
+	}
+	
+	public static class RefreshMenu
+	{
+		public static void refreshActionBarMenu(FragmentActivity activity)
+		{
+			activity.invalidateOptionsMenu();
+		}
+	}
+	
 	public void setLoading(boolean loading) {
         this.loading = loading;
     }
@@ -61,13 +88,13 @@ public abstract class BaseFragment extends Fragment {
         return refresh;
     }
 
-	public void showStatus(boolean isError) {
-        if (isError) {
-            linearProgress.setVisibility(View.GONE);
-            linearError.setVisibility(View.VISIBLE);
+	public void showStatus(View one, View two, boolean status) {
+        if (status) {
+            one.setVisibility(View.GONE);
+            two.setVisibility(View.VISIBLE);
         } else {
-            linearProgress.setVisibility(!isRefresh() ? View.VISIBLE : View.GONE);
-            linearError.setVisibility(View.GONE);
+            one.setVisibility(!isRefresh() ? View.VISIBLE : View.GONE);
+            two.setVisibility(View.GONE);
 
         }
     }

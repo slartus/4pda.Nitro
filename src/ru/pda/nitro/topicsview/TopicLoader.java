@@ -77,6 +77,7 @@ public class TopicLoader extends AsyncTaskLoader<TopicResult> {
 
             // At this point we can release the resources associated with 'apps'
             // if needed.
+			if(data != null)
             releaseResources(data);
         }
 

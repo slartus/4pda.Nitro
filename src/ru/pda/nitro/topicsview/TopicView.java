@@ -27,6 +27,15 @@ import ru.pda.nitro.listfragments.*;
 import android.view.*;
 import android.widget.*;
 import android.view.View.*;
+import ru.pda.nitro.database.*;
+import android.database.*;
+import android.util.*;
+import android.os.*;
+import android.net.*;
+import android.provider.*;
+import android.content.*;
+import android.support.v4.app.*;
+import ru.pda.nitro.dialogs.*;
 
 
 /**
@@ -34,11 +43,20 @@ import android.view.View.*;
  */
 public class TopicView extends Fragment
 {
+	private final static String TOPIC_BASEID_KEY = "ru.pda.nitro.topicsview.TopicView.TOPIC_BASEID_KEY";
+	private final String DEFAULT_TAG = "tag";
+	private Handler handler = new Handler();
+	private Uri mUri;
+	private boolean groop = false;
 
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+	public void setGroop(boolean menuGroop)
 	{
-		return inflater.inflate(R.layout.topic_layout, container, false);
+		this.groop = menuGroop;
+	}
+
+	public boolean isGroop()
+	{
+		return groop;
 	}
 
 
@@ -46,7 +64,46 @@ public class TopicView extends Fragment
 	public void onActivityCreated(Bundle savedInstanceState)
 	{
 		super.onActivityCreated(savedInstanceState);
-		showTab(getActivity().getIntent().getStringExtra(TopicActivity.TOPIC_TITLE_KEY), getActivity().getIntent().getStringExtra(TopicActivity.TOPIC_URL_KEY));
+		final ActionBar ab = getActivity().getActionBar();
+		ab.setDisplayHomeAsUpEnabled(true);
+		ab.setDisplayShowHomeEnabled(true);
+		ab.setDisplayShowTitleEnabled(true);
+		if(getActivity().getIntent().getStringExtra(TopicActivity.TOPIC_ID_KEY ) != null)
+		showTab(getActivity().getIntent().getStringExtra(TopicActivity.TOPIC_TITLE_KEY), getActivity().getIntent().getStringExtra(TopicActivity.TOPIC_URL_KEY),null, DEFAULT_TAG);
+		else
+			showGroup();
+	}
+	
+	private void showGroup(){
+		setGroop(true);
+		handler.post(new Runnable(){
+
+				@Override
+				public void run()
+				{
+				
+					mUri = getActivity().getIntent().getParcelableExtra(TopicActivity.TOPIC_GROOP_URI_KEY);
+					Cursor cursor = getActivity().getContentResolver().query(mUri, null, null, null, Contract.Groop.DEFAULT_SORT_ORDER);
+
+					if(cursor.moveToFirst()){
+						final ActionBar actionBar = getActivity().getActionBar(); 
+						actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+
+						do{
+							CharSequence topicId = cursor.getString(cursor.getColumnIndexOrThrow(Contract.Groop.id));
+							String text =	cursor.getString(cursor.getColumnIndexOrThrow(Contract.Groop.title));
+							long baseId = cursor.getLong(cursor.getColumnIndexOrThrow(BaseColumns._ID));
+
+							addNewTab(text, null, topicId, baseId, topicId.toString()); 
+
+						}while(cursor.moveToNext());
+				
+						cursor.close();
+					}else
+						cursor.close();
+				}
+			});
+		
 	}
 
 	public class TabListener<T extends Fragment> implements ActionBar.TabListener
@@ -54,12 +111,18 @@ public class TopicView extends Fragment
 		private Fragment mFragment;
 		private final Activity mActivity;
 		private final CharSequence topicUrl;
+		private final CharSequence topicId;
+		private final String mTag;
+		private final long baseId;
+		
 
-		public TabListener(Activity activity, CharSequence url)
+		public TabListener(Activity activity, CharSequence url, CharSequence id, long lid, String tag)
 		{
 			mActivity = activity;
 			topicUrl = url;
-
+			topicId = id;
+			baseId = lid;
+			mTag = tag;
 		}
 
 		public void onTabSelected(Tab tab, FragmentTransaction ft)
@@ -67,21 +130,32 @@ public class TopicView extends Fragment
 			FragmentManager fm = getActivity().getSupportFragmentManager();
 			if (mFragment == null)
 			{
-				Topic topic = new Topic();
+				
+				mFragment = new Topic();
 				Bundle args = new Bundle();
+				
+				if(topicUrl != null)
 				args.putCharSequence(TopicActivity.TOPIC_URL_KEY, topicUrl);
-
-				mFragment = topic;
+				
+				if(topicId != null){
+				args.putCharSequence(TopicActivity.TOPIC_ID_KEY, topicId);
+				args.putCharSequence(TopicActivity.NAVIGATE_ACTION_KEY, TopicApi.NAVIGATE_VIEW_NEW_POST);
+				args.putLong(TOPIC_BASEID_KEY, baseId);
+				}
+				
 
 				mFragment.setArguments(args);
 
 				fm.beginTransaction()
-					.add(R.id.topic, mFragment)
+					.add(R.id.topic, mFragment, mTag)
 					.commit();
 
 			}
 			else
 			{
+				if(tab.getText().equals(R.string.stoping))
+					tab.setText(R.string.downloads);
+				
 				fm.beginTransaction()
 					.attach(mFragment)
 					.commit();
@@ -91,9 +165,12 @@ public class TopicView extends Fragment
 
 		public void onTabUnselected(Tab tab, FragmentTransaction ft)
 		{
-			if (mFragment != null)
+			if (getActivity() != null && mFragment != null)
 			{
-				getActivity().getSupportFragmentManager().beginTransaction()
+				if(tab.getText().equals(R.string.downloads))
+					tab.setText(R.string.stoping);
+				
+					getActivity().getSupportFragmentManager().beginTransaction()
 					.detach(mFragment)
 					.commit();
 			}
@@ -104,83 +181,79 @@ public class TopicView extends Fragment
 		}
 	}
 
-	private void addNewTab(String text, CharSequence url)
+	private void addNewTab(String text, CharSequence topicUrl, CharSequence topicId, long baseId, String tag)
 	{ 
 		final ActionBar actionBar = getActivity().getActionBar(); 
-
-		/* пока отложено, до прихода музы или просто прихода.
-		 View tab = getActivity().getLayoutInflater().inflate(R.layout.action_bar_tab, null);
-		 TextView textTab = (TextView)tab.findViewById(R.id.textViewTab);
-		 textTab.setText(text);
-		 ImageView imageTab = (ImageView)tab.findViewById(R.id.imageViewTab);
-		 imageTab.setOnClickListener(new OnClickListener(){
-
-		 @Override
-		 public void onClick(View p1)
-		 {
-		 closeTab();
-		 }
-		 });*/
 
 		actionBar
 			.addTab(actionBar.newTab() 
 					.setText(text)
-					.setTag(url)
-					.setTabListener(new TabListener(getActivity(), url)));
+					.setTag(tag)
+					.setTabListener(new TabListener(getActivity(), topicUrl, topicId, baseId, tag)));
 	}
 
-	private void showTab(String text, CharSequence url)
+	private void showTab(String text, CharSequence url, CharSequence id, String tag)
 	{ 
 		final ActionBar actionBar = getActivity().getActionBar(); 
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
-		/*	for (int index = 0; index <actionBar.getNavigationItemCount(); index++) {
-		 if (actionBar.getTabAt(index).getTag().equals(url)) 
-		 { 
-		 actionBar.setSelectedNavigationItem (index); 
-		 return; 
-		 } 
-		 } */
-		addNewTab(text, url); 
+
+		for (int index = 0; index < actionBar.getNavigationItemCount(); index++)
+		{
+			if (actionBar.getTabAt(index).getTag().equals(tag)) 
+			{ 
+				actionBar.setSelectedNavigationItem(index); 
+				return; 
+			} 
+		} 
+		addNewTab(text, url, id, -1, tag); 
 		actionBar.setSelectedNavigationItem(actionBar.getNavigationItemCount() - 1);
 	}
 
 	private void closeTab()
 	{ 
+	if(getActivity() != null){
 		final ActionBar actionBar = getActivity().getActionBar(); 
 		if (actionBar.getTabCount() > 1)
 			actionBar.removeTab(actionBar.getSelectedTab()); 
+			else{
+		//	actionBar.removeTab(actionBar.getSelectedTab()); 
+			getActivity().finish();
+				}
 	}
-
-	/*	private void setTabText(String text){
-	 final ActionBar actionBar = getActivity().getActionBar(); 
-
-	 }*/
-
+	}
+	
+	
+	
 
 	public class Topic extends BaseFragment
 	implements LoaderManager.LoaderCallbacks<TopicResult>/* , FragmentLifecycle*/
 	{
 
+		public Topic(){}
+		
 		private CharSequence topicUrl = null;
-		private boolean attach = true;
-
-
+		private CharSequence topicTitle = null;
+		private CharSequence topicId;
+		private Bundle bundle = null;
+		
 		@Override
 		public void onActivityCreated(Bundle savedInstanceState)
 		{
 			super.onActivityCreated(savedInstanceState);
-			// Prepare the loader.  Either re-connect with an existing one,
-			// or start a new one.
-			Bundle bundle;
-			if (getArguments().getString(TopicActivity.TOPIC_URL_KEY) != null)
+		
+			setHasOptionsMenu(true);
+			setRetainInstance(true);
+			getPullToRefreshAttacher(getWebView());
+			
+			if (getArguments().getString(TopicActivity.TOPIC_URL_KEY) != null | getArguments().getString(TopicActivity.TOPIC_ID_KEY) != null
+			)
 				bundle = getArguments();
 			else
 				bundle = getActivity().getIntent().getExtras();
 
 			getLoaderManager().initLoader(0, bundle, this);
-
-		}
+	}
 
 		@Override
 		public android.view.View onCreateView(android.view.LayoutInflater inflater,
@@ -234,14 +307,16 @@ public class TopicView extends Fragment
 			{
 				if (!TopicApi.isTopicUrl(url))
 					return false;
-
-				showNewTab(TopicApi.normaTopicUrl(url));
+				if (TopicApi.isTopicUrl(url) && TopicApi.getTopicId(url).equals(topicId))
+					showTopic(TopicApi.normaTopicUrl(url));
+				else
+					showNewTab(TopicApi.normaTopicUrl(url));
 				return true;
 			}
 		}
 		private void showNewTab(CharSequence topicUrl)
 		{
-			showTab("Загрузка...", topicUrl);
+			showTab(getActivity().getResources().getString(R.string.downloads), topicUrl, null, topicUrl.toString());
 
 		}
 
@@ -272,64 +347,109 @@ public class TopicView extends Fragment
 			}
 			else if (bundle.containsKey(TopicActivity.TOPIC_URL_KEY))
 				topicUrl = bundle.getCharSequence(TopicActivity.TOPIC_URL_KEY);
+
+			topicId = TopicApi.getTopicId(topicUrl);
+			RefreshMenu.refreshActionBarMenu(getActivity());
+			
 			return new TopicLoader(getActivity(), topicUrl);
 		}
 
 		@Override
 		public void onLoadFinished(Loader<TopicResult> topicResultLoader, TopicResult topicResult)
 		{
-			//  if (getActivity() != null)
-			//     getActivity().setTitle(topicResult.getTitle());
+			
+			if(getActivity() != null){
+				if(topicResult != null){
+					topicTitle = topicResult.getTitle().toString();
+			final ActionBar actionBar = getActivity().getActionBar();
+			
+				for (int index = 0; index < actionBar.getNavigationItemCount(); index++)
+				{
+					Object tag = actionBar.getTabAt(index).getTag();
+					if (tag.equals(DEFAULT_TAG))
+					{
+						actionBar.getTabAt(index).setTag(topicUrl);
+					}
+					if (tag.equals(topicUrl)) 
+					{ 
+						actionBar.getTabAt(index).setText(topicTitle);
+					} 
+				}
 
-			if (topicResult != null && topicResult.getBody() != null)
+			if (topicResult.getBody() != null)
 			{
 				getWebView().loadDataWithBaseURL("http://4pda.ru/forum/", topicResult.getHtml().toString(), "text/html", "UTF-8", null);
 			}
 			else
-				showStatus(true);
-
+				showStatus(linearProgress,linearError,true);
+			
+			}else
+			showStatus(linearProgress,linearError,true);
+			
+			hideProgress();
 			setRefresh(false);
 			setLoading(false);
-			hideProgress();
 			setProgress(false);
+			
+			RefreshMenu.refreshActionBarMenu(getActivity());
+				
+			}
 		}
+		
 
 		@Override
 		public void onLoaderReset(Loader<TopicResult> topicResultLoader)
 		{
 
 		}
+
+	/*	@Override
+		public void onPrepareOptionsMenu(Menu menu)
+		{
+			super.onPrepareOptionsMenu(menu);
+		
+		}*/
+		
+		
+
+		@Override
+		public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+		{
+			super.onCreateOptionsMenu(menu, inflater);
+			inflater.inflate(R.menu.topic_view, menu);
+		}
+
+		@Override
+		public boolean onOptionsItemSelected(MenuItem item)
+		{
+			switch(item.getItemId()){
+				case android.R.id.home:
+					getActivity().finish();
+					break;
+				case R.id.close_tab:
+					closeTab();
+					break;
+				case R.id.options:
+					showThemeOptionsDialog(topicId);
+					break;
+				
+			}
+			return super.onOptionsItemSelected(item);
+		}
+		
+		public void showThemeOptionsDialog(CharSequence topicId){
+			DialogFragment dialog = new ThemeOptionsDialogFragment().newInstance(topicId, topicTitle);
+			dialog.show(getFragmentManager().beginTransaction(), "dialog");
+		}
+		
+		
 		@Override
 		public void onResume()
 		{
 			super.onResume();
-			getPullToRefreshAttacher(getWebView());
+			setProgress(isLoading());
 		}
-
-		public void setAttach(boolean attach)
-		{
-			this.attach = attach;
-		}
-
-		public boolean isAttach()
-		{
-			return attach;
-		}
-
-		@Override
-		public void onAttach(Activity activity)
-		{
-			super.onAttach(activity);
-			setAttach(true);
-		}
-
-		@Override
-		public void onDetach()
-		{
-			super.onDetach();
-			setAttach(false);
-		}
-
+		
 
 	}
 

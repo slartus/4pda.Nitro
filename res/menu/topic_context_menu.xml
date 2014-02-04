@@ -11,4 +11,8 @@
         android:id="@+id/navigate_getnewpost"
         android:title="@string/navigate_getnewpost" />
 
+	<item
+        android:id="@+id/options"
+        android:title="@string/theme_options" />
+	
 </menu>

@@ -26,6 +26,8 @@ import ru.pda.nitro.database.Contract;
 import android.util.*;
 import android.net.*;
 import uk.co.senab.actionbarpulltorefresh.library.*;
+import android.view.View.*;
+import ru.pda.nitro.*;
 
 
 /**
@@ -88,6 +90,7 @@ public class FavoritesListFragment extends TopicsListFragment implements OnScrol
 		listView.setAdapter(adapter);
 		registerForContextMenu(listView);
 		listView.setOnScrollListener(this);
+		
 		getPullToRefreshAttacher(listView);
 		getData();
 	}
