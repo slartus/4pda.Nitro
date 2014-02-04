@@ -1,4 +1,4 @@
-package ru.forpda.api;
+package ru.forpda.api.infos;
 
 /**
  * Created by slinkin on 21.01.14.

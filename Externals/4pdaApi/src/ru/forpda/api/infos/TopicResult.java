@@ -1,4 +1,4 @@
-package ru.forpda.api;
+package ru.forpda.api.infos;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

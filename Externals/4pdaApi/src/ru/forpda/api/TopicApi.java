@@ -9,6 +9,8 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import ru.forpda.api.infos.ResultInfo;
+import ru.forpda.api.infos.TopicResult;
 import ru.forpda.interfaces.IHttpClient;
 import ru.forpda.interfaces.exceptions.ShowInBrowserException;
 
@@ -313,6 +315,7 @@ public class TopicApi {
     /**
      * Возвращает идентификатор топика из ссылки на топик
      * Для проверки, что ссылка - ссылка на топик смотри isTopicUrl
+     *
      * @param topicUrl
      * @return
      */

@@ -57,6 +57,11 @@ public class HttpHelper implements IHttpClient {
         mContext = context;
     }
 
+    @Override
+    public CookieStore getCookieStore() {
+        HttpContext http_context = HttpSupport.getHttpContextInstance();
+        return (CookieStore) http_context.getAttribute(ClientContext.COOKIE_STORE);
+    }
 
     @Override
     public String getRedirectUrl() {

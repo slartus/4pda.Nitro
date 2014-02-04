@@ -2,21 +2,20 @@ package ru.pda.nitro;
 
 import android.content.Context;
 import android.text.TextUtils;
+import android.util.Log;
 
 import org.apache.http.client.CookieStore;
 import org.apache.http.cookie.Cookie;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 import ru.forpda.api.ProfileApi;
+import ru.forpda.api.infos.LoginResult;
 import ru.forpda.http.AdvCookieStore;
 import ru.forpda.http.HttpHelper;
 import ru.forpda.http.HttpSupport;
 import ru.forpda.http.SimpleCookie;
-import android.util.*;
 
 
 /**
@@ -51,33 +50,31 @@ public class UserProfile {
 	public String getAutchKey(){
 		return mK;
 	}
-	
 
     public Boolean doLogin(String login, String password, boolean privacy) throws Exception {
         Context context = App.getInstance();
-        Map<String, String> outParams = new HashMap<String, String>();
+
         HttpHelper httpHelper = new HttpHelper(context);
         AdvCookieStore cookieStore = HttpSupport.getCookieStoreInstance(context);
         cookieStore.clear();
 
-        Boolean logined = ProfileApi.login(httpHelper, login, password, privacy, outParams);
+        LoginResult loginResult = ProfileApi.login(httpHelper, login, password, privacy);
 
-
-        String loginFailedReason = outParams.get(ProfileApi.LOGIN_FAILED_REASON_KEY);
-
-        mUserId = outParams.get(ProfileApi.USER_ID_KEY);
-        mUser = outParams.get(ProfileApi.USER_KEY);
-        mK = outParams.get(ProfileApi.K_KEY);
+        mUserId = loginResult.getUserId().toString();
+        mUser = loginResult.getUserLogin().toString();
+        mK = loginResult.getK().toString();
 
         cookieStore.addCookie(new SimpleCookie("4pda.UserId", mUserId));
         cookieStore.addCookie(new SimpleCookie("4pda.User", mUser));
         cookieStore.addCookie(new SimpleCookie("4pda.K", mK));
 
         cookieStore.writeExternalCookies(context);
-        if (!TextUtils.isEmpty(loginFailedReason))
-            throw new Exception(loginFailedReason);
+
+        if (!loginResult.isSuccess())
+            throw new Exception(loginResult.getLoginError().toString());
+
         loginedStateChanged();
-        return logined;
+        return loginResult.isSuccess();
     }
 
     public void doLogout() throws Throwable {

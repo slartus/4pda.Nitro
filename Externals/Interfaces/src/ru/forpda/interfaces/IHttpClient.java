@@ -1,5 +1,7 @@
 package ru.forpda.interfaces;
 
+import org.apache.http.client.CookieStore;
+
 import java.io.IOException;
 import java.util.Map;
 
@@ -9,6 +11,8 @@ import ru.forpda.interfaces.common.ProgressState;
  * Created by slartus on 12.01.14.
  */
 public interface IHttpClient {
+    CookieStore getCookieStore();
+
     String getRedirectUrl();
 
     String performGet(String s) throws IOException;
