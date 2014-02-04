@@ -19,6 +19,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -31,13 +32,8 @@ import ru.pda.nitro.App;
 import ru.pda.nitro.R;
 import ru.pda.nitro.adapters.TopicListAdapter;
 import ru.pda.nitro.database.Contract;
+import ru.pda.nitro.dialogs.ThemeOptionsDialogFragment;
 import ru.pda.nitro.topicsview.TopicActivity;
-import android.widget.*;
-import android.widget.AdapterView.*;
-import android.net.*;
-import ru.pda.nitro.dialogs.*;
-import ru.pda.nitro.bricks.*;
-import ru.pda.nitro.*;
 
 
 /**
@@ -69,10 +65,10 @@ public abstract class TopicsListFragment extends BaseListFragment {
             showNavigateDialog(topic);
             return;
         }
-		
+
         showTopicActivity(i, topic, navigateAction);
     }
-	
+
 
     public void setSelectedItem(int selectedItem) {
         this.selectedItem = selectedItem;
@@ -81,7 +77,7 @@ public abstract class TopicsListFragment extends BaseListFragment {
     public int getSelectedItem() {
         return selectedItem;
     }
-	
+
 
     public void onCreateContextMenu(android.view.ContextMenu contextMenu, android.view.View view,
                                     android.view.ContextMenu.ContextMenuInfo contextMenuInfo) {
@@ -91,9 +87,9 @@ public abstract class TopicsListFragment extends BaseListFragment {
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
-        
-		AdapterContextMenuInfo info = (AdapterContextMenuInfo)item.getMenuInfo();
-		Topic topic = topics.get(info.position);
+
+        AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
+        Topic topic = topics.get(info.position);
 
         switch (item.getItemId()) {
             case R.id.navigate_getfirstpost:
@@ -105,18 +101,18 @@ public abstract class TopicsListFragment extends BaseListFragment {
             case R.id.navigate_getnewpost:
                 prepareShowTopicActivity(getSelectedItem(), topic, TopicApi.NAVIGATE_VIEW_NEW_POST);
                 break;
-			case R.id.options:
-				showThemeOptionsDialog(topic.getId(), topic.getTitle());
-				break;
+            case R.id.options:
+                showThemeOptionsDialog(topic.getId(), topic.getTitle());
+                break;
         }
         return super.onContextItemSelected(item);
     }
-	
-	public void showThemeOptionsDialog(CharSequence topicId, CharSequence topicTitle){
-		DialogFragment dialog = new ThemeOptionsDialogFragment().newInstance(topicId, topicTitle);
-		dialog.show(getFragmentManager().beginTransaction(), "dialog");
-	}
-	
+
+    public void showThemeOptionsDialog(CharSequence topicId, CharSequence topicTitle) {
+        DialogFragment dialog = ThemeOptionsDialogFragment.newInstance(topicId, topicTitle);
+        dialog.show(getFragmentManager().beginTransaction(), "dialog");
+    }
+
     private void prepareShowTopicActivity(final int itemId, final Topic topic, final CharSequence navigateAction) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(App.getInstance());
         String savedNavigateAction = prefs.getString(getName() + ".navigate_action", null);
@@ -168,15 +164,22 @@ public abstract class TopicsListFragment extends BaseListFragment {
 
             @Override
             public void run() {
-                Cursor cursor = getActivity().getContentResolver().query(Contract.Favorite.CONTENT_URI, null, null, null, Contract.Favorite.DEFAULT_SORT_ORDER);
-                if(cursor.moveToPosition(i)){
-                long l = cursor.getLong(cursor.getColumnIndexOrThrow(BaseColumns._ID));
-                ContentValues cv = new ContentValues();
-                cv.put(Contract.Favorite.hasUnreadPosts, false);
+                Cursor cursor = null;
+                try {
+                    cursor = getActivity().getContentResolver().query(Contract.Favorite.CONTENT_URI, null, null, null, Contract.Favorite.DEFAULT_SORT_ORDER);
+                    if (cursor != null && cursor.moveToPosition(i)) {
+                        long l = cursor.getLong(cursor.getColumnIndexOrThrow(BaseColumns._ID));
+                        ContentValues cv = new ContentValues();
+                        cv.put(Contract.Favorite.hasUnreadPosts, false);
 
-                getActivity().getContentResolver().update(ContentUris.withAppendedId(Contract.Favorite.CONTENT_URI, l), cv, null, null);
-				}
-				cursor.close();
+                        getActivity().getContentResolver().update(ContentUris.withAppendedId(Contract.Favorite.CONTENT_URI, l), cv, null, null);
+                    }
+                } finally {
+                    if (cursor != null)
+                        cursor.close();
+                }
+
+
             }
         });
     }
@@ -186,6 +189,7 @@ public abstract class TopicsListFragment extends BaseListFragment {
         try {
             return getTopics();
         } catch (Throwable e) {
+
         }
 
         return false;
@@ -213,10 +217,7 @@ public abstract class TopicsListFragment extends BaseListFragment {
     }
 
     public boolean getCount() {
-        if (getOutCount() == 0 | getFrom() < getOutCount()) {
-            return true;
-        }
-        return false;
+        return getOutCount() == 0 | getFrom() < getOutCount();
     }
 
     public void getData() {
@@ -231,22 +232,28 @@ public abstract class TopicsListFragment extends BaseListFragment {
     public ArrayList<Topic> getLocalData() {
         topics = new ArrayList<Topic>();
         if (getUri() != null) {
-            Cursor cursor = getActivity().getContentResolver().query(getUri(), null, null, null, Contract.Favorite.DEFAULT_SORT_ORDER);
-            if (cursor.moveToFirst()) {
-                do {
-                    Topic topic = new Topic(null, null);
-                    topic.setDescription(cursor.getString(cursor.getColumnIndexOrThrow(Contract.Favorite.description)));
-                    topic.setForumTitle(cursor.getString(cursor.getColumnIndexOrThrow(Contract.Favorite.forumTitle)));
-                    topic.setHasUnreadPosts(cursor.getInt(cursor.getColumnIndexOrThrow(Contract.Favorite.hasUnreadPosts)) == 1 ? true : false);
-                    topic.setId(cursor.getString(cursor.getColumnIndexOrThrow(Contract.Favorite.id)));
-                    topic.setLastPostAuthor(cursor.getString(cursor.getColumnIndexOrThrow(Contract.Favorite.lastAvtor)));
-                    topic.setLastPostDate(cursor.getString(cursor.getColumnIndexOrThrow(Contract.Favorite.lastDate)));
-                    topic.setTitle(cursor.getString(cursor.getColumnIndexOrThrow(Contract.Favorite.title)));
-                    topics.add(topic);
-                } while (cursor.moveToNext());
+            Cursor cursor = null;
+            try {
+                cursor = getActivity().getContentResolver().query(getUri(), null, null, null, Contract.Favorite.DEFAULT_SORT_ORDER);
+                if (cursor != null && cursor.moveToFirst()) {
+                    do {
+                        Topic topic = new Topic(null, null);
+                        topic.setDescription(cursor.getString(cursor.getColumnIndexOrThrow(Contract.Favorite.description)));
+                        topic.setForumTitle(cursor.getString(cursor.getColumnIndexOrThrow(Contract.Favorite.forumTitle)));
+                        topic.setHasUnreadPosts(cursor.getInt(cursor.getColumnIndexOrThrow(Contract.Favorite.hasUnreadPosts)) == 1 ? true : false);
+                        topic.setId(cursor.getString(cursor.getColumnIndexOrThrow(Contract.Favorite.id)));
+                        topic.setLastPostAuthor(cursor.getString(cursor.getColumnIndexOrThrow(Contract.Favorite.lastAvtor)));
+                        topic.setLastPostDate(cursor.getString(cursor.getColumnIndexOrThrow(Contract.Favorite.lastDate)));
+                        topic.setTitle(cursor.getString(cursor.getColumnIndexOrThrow(Contract.Favorite.title)));
+                        topics.add(topic);
+                    } while (cursor.moveToNext());
 
+                }
+            } finally {
+                if (cursor != null)
+                    cursor.close();
             }
-            cursor.close();
+
         }
         return topics;
     }
@@ -261,7 +268,7 @@ public abstract class TopicsListFragment extends BaseListFragment {
                 cv.put(Contract.Favorite.hasUnreadPosts, topic.getHasUnreadPosts() ? 1 : 0);
                 cv.put(Contract.Favorite.id, topic.getId().toString());
                 cv.put(Contract.Favorite.lastAvtor, topic.getLastPostAuthor().toString());
-                cv.put(Contract.Favorite.lastDate, topic.getLastPostDate().toString());
+                cv.put(Contract.Favorite.lastDate, topic.getLastPostDate());
                 cv.put(Contract.Favorite.title, topic.getTitle().toString());
                 getActivity().getContentResolver().insert(getUri(), cv);
             }
@@ -276,7 +283,9 @@ public abstract class TopicsListFragment extends BaseListFragment {
 
                     @Override
                     public void run() {
-                        CharSequence topicId = data.getExtras().getCharSequence(SelectNavigateDialogFragment.TOPIC_ID_KEY);
+                        if (data.getExtras() == null
+                                || !data.getExtras().containsKey(SelectNavigateDialogFragment.NAVIGATE_ACTION_KEY))
+                            return;
                         CharSequence navigateAction = data.getExtras().getCharSequence(SelectNavigateDialogFragment.NAVIGATE_ACTION_KEY);
                         if (resultCode == SelectNavigateDialogFragment.RESULT_ALWAYS) {
                             saveDefaultAction(navigateAction);
@@ -373,8 +382,8 @@ public abstract class TopicsListFragment extends BaseListFragment {
             intent.putExtra(TOPIC_ID_KEY, topicId);
             return intent;
         }
-		
-		
+
+
     }
-	
-	}
+
+}
