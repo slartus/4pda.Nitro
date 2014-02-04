@@ -102,7 +102,7 @@ public class ThemeOptionsDialogFragment extends BaseDialogFragment
 	}
 
 	private void showSelectEmailIdDialog(){
-		DialogFragment dialog = new SelectEmailId().newInstance(getTopicId());
+		DialogFragment dialog = SelectEmailId.newInstance(getTopicId());
 		dialog.show(getFragmentManager().beginTransaction(), "dislogs");
 	}
 	

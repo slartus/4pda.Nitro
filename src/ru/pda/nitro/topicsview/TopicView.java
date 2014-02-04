@@ -197,7 +197,6 @@ public class TopicView extends Fragment {
             if (actionBar.getTabCount() > 1)
                 actionBar.removeTab(actionBar.getSelectedTab());
             else {
-                //	actionBar.removeTab(actionBar.getSelectedTab());
                 getActivity().finish();
             }
         }
@@ -223,8 +222,7 @@ public class TopicView extends Fragment {
             setRetainInstance(true);
             getPullToRefreshAttacher(getWebView());
 
-            if (getArguments().getString(TopicActivity.TOPIC_URL_KEY) != null | getArguments().getString(TopicActivity.TOPIC_ID_KEY) != null
-                    )
+            if (getArguments().getString(TopicActivity.TOPIC_URL_KEY) != null | getArguments().getString(TopicActivity.TOPIC_ID_KEY) != null)
                 bundle = getArguments();
             else
                 bundle = getActivity().getIntent().getExtras();

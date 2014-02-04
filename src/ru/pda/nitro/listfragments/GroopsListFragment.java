@@ -96,32 +96,31 @@ public class GroopsListFragment extends BaseListFragment implements LoaderManage
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-        DialogFragment dialogFragment;
-        Bundle args;
         switch (item.getItemId()) {
             case R.id.context_rename_groop:
-                dialogFragment = new RenameDialogFragment();
-                args = new Bundle();
-                args.putParcelable("_uri", ContentUris.withAppendedId(Contract.Groops.CONTENT_URI, info.id));
-                final Cursor cursor = (Cursor) mAdapter.getItem(info.position);
-                final int columnName = cursor.getColumnIndexOrThrow(Contract.Groops.title);
-                String name = cursor.getString(columnName);
-                args.putString("_name", name);
-                dialogFragment.setArguments(args);
-                dialogFragment.show(getActivity().getSupportFragmentManager(), null);
-
+				final Cursor cursor = (Cursor) mAdapter.getItem(info.position);
+				showRenameDialogFragment(
+				ContentUris.withAppendedId(Contract.Groops.CONTENT_URI, info.id),
+				cursor.getString(cursor.getColumnIndexOrThrow(Contract.Groops.title)));
                 break;
             case R.id.context_delete_groop:
-                dialogFragment = new DeleteDialogFragment();
-                args = new Bundle();
-                args.putParcelable("_uri", ContentUris.withAppendedId(Contract.Groops.CONTENT_URI, info.id));
-                args.putLong("_id", info.id);
-                dialogFragment.setArguments(args);
-                dialogFragment.show(getActivity().getSupportFragmentManager(), null);
+                showDeleteDialog(
+				ContentUris.withAppendedId(Contract.Groops.CONTENT_URI, info.id),
+				info.id);
                 break;
         }
         return super.onContextItemSelected(item);
     }
+	
+	private void showRenameDialogFragment(Uri mUri, String name){
+		DialogFragment dialogFragment = RenameDialogFragment.newInstance(mUri, name);
+		dialogFragment.show(getActivity().getSupportFragmentManager(), null);
+	}
+	
+	private void showDeleteDialog(Uri mUri, long id){
+		DialogFragment dialogFragment = DeleteDialogFragment.newInstance(mUri, id);
+		dialogFragment.show(getActivity().getSupportFragmentManager(), null);
+	}
 
 
     @Override

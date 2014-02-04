@@ -22,12 +22,12 @@ public class NewsListAdapter extends BaseAdapter
 	private Context context;
 	final LayoutInflater inflater;
 	private DisplayImageOptions options;
-	private ImageLoader imageLoader = ImageLoader.getInstance();
+	private ImageLoader imageLoader;
 	
-	public NewsListAdapter(Context context, NewsList newsList){
+	public NewsListAdapter(Context context, NewsList newsList, ImageLoader imageLoader){
 		inflater = (LayoutInflater)context.getSystemService(context.LAYOUT_INFLATER_SERVICE);
 		face = Typeface.createFromAsset(context.getAssets(), "4pda/fonts/RobotoSlab-Light.ttf");
-		
+		this.imageLoader = imageLoader;
 		this.newsList = newsList;
 		this.context = context;
 		
@@ -37,25 +37,8 @@ public class NewsListAdapter extends BaseAdapter
 			.cacheInMemory()
 			.cacheOnDisc()
 			.bitmapConfig(Bitmap.Config.RGB_565)
-			//.decodingType(ImageScaleType.EXACT)
 			.build();
-			//	File cacheDir = StorageUtils.getCacheDirectory(context, "UniversalImageLoader/Cache");
-
-		ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(context)
-			//.memoryCacheExtraOptions(480, 800) // width, height
-			//.discCacheExtraOptions(480, 800, CompressFormat.JPEG, 75) // width, height, compress format, quality
-			.threadPoolSize(5)
-			.threadPriority(Thread.MIN_PRIORITY + 2)
-			.denyCacheImageMultipleSizesInMemory()
-
-			.memoryCache(new UsingFreqLimitedMemoryCache(5 * 1024 * 1024)) // 2 Mb
-			//.discCache(new UnlimitedDiscCache(cacheDir))
-			.discCacheFileNameGenerator(new HashCodeFileNameGenerator())
-			//.imageDownloader(new DefaultImageDownloader(5 * 1000, 30 * 1000)) // connectTimeout (5 s), readTimeout (30 s)
-			.defaultDisplayImageOptions(options)
-
-			.build();
-		this.imageLoader.init(config);
+		
 	}
 	
 	public void setData(NewsList data){

@@ -89,7 +89,7 @@ public class NewsListFragment extends BaseListFragment implements FragmentLifecy
 		newsUrl = getArguments().getString("_url");
 		position = getArguments().getInt("_position");
 		newsList = new NewsList(new HttpHelper(App.getInstance()), newsUrl);
-		adapter = new NewsListAdapter(getActivity(), newsList);
+		adapter = new NewsListAdapter(getActivity(), newsList, imageLoader);
         listView.addFooterView(initialiseFooter());
         listView.setAdapter(adapter);
         listView.setOnScrollListener(this);
