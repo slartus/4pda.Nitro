@@ -42,15 +42,14 @@ public class MainActivity extends BaseActivity
 	private DrawerLayout mDrawerLayout ;
 	private ListView mDrawerList ;
 	private FrameLayout frameDrawer;
-	public static TextView textNick;
+	private Fragment mContent;
+	private Handler handler;
+	private boolean profile_menu = false;
 	
 	private static MenuAdapter mAdapter;
 	private static ArrayList<BrickInfo> menus;
 	public static UserProfile profile;
-	private Fragment mContent;
-	private Handler handler;
-	private boolean replace = false;
-	
+	public static TextView textNick;
 
 	@Override
     protected void onCreate(Bundle savedInstanceState)
@@ -60,11 +59,11 @@ public class MainActivity extends BaseActivity
 
 		profile = new UserProfile();
 		BaseState.setLogin(profile.isLogined());
-		
+		BaseState.setMTitle(getTitle());
 		ab.setDisplayHomeAsUpEnabled(true);
 		ab.setDisplayShowHomeEnabled(true);
 
-		BaseState.setMTitle(getTitle());
+		
 		mDrawerLayout = (DrawerLayout) findViewById(R .id. drawer_layout);
 		mDrawerList = (ListView) findViewById(R .id. left_drawer);
 		frameDrawer = (FrameLayout)findViewById(R.id.frameDraver);
@@ -80,7 +79,7 @@ public class MainActivity extends BaseActivity
 				@Override
 				public boolean onItemLongClick(AdapterView<?> p1, View p2, int p3, long p4)
 				{
-					if(!replace)
+					if(!profile_menu)
 					startDeleteMode();
 					return false;
 				}
@@ -104,7 +103,7 @@ public class MainActivity extends BaseActivity
 				//	invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
 			}
 		};
-		mDrawerLayout.setLongClickable(true);
+
 		mDrawerLayout.setDrawerListener(mDrawerToggle);
 		if (savedInstanceState == null)
 		{
@@ -123,7 +122,6 @@ public class MainActivity extends BaseActivity
 	
 	private View mainMenuHeader(){
 		View header = getLayoutInflater().inflate(R.layout.main_menu_header, null, false);
-	//	ImageView linear = (L)header.findViewById(R.id.linearLayoutHeader);
 		final ImageView imageNavigation = (ImageView)header.findViewById(R.id.imageViewNavigation);
 		textNick = (TextView)header.findViewById(R.id.textViewNick);
 		imageNavigation.setOnClickListener(new OnClickListener(){
@@ -132,18 +130,18 @@ public class MainActivity extends BaseActivity
 				public void onClick(View p1)
 				{
 					
-					if(!replace && !DeleteMode){
+					if(!profile_menu && !DeleteMode){
 						imageNavigation.setImageResource(R.drawable.ic_action_collapse);
 					if(profile.getLogin().equals("гость") | profile.getLogin().equals("")){
 						getLoginMenu();
 					}else{
 						getLogOutMenu();
 					}
-					replace = true;
+					profile_menu = true;
 					}else{
 						imageNavigation.setImageResource(R.drawable.ic_action_expand);
 						getMenu();
-						replace = false;
+						profile_menu = false;
 					}
 				}
 			});
@@ -168,29 +166,6 @@ public class MainActivity extends BaseActivity
 		mDrawerToggle.onConfigurationChanged(newConfig);
 	}
 
-	private void setDefaultContent(boolean login){
-	
-		if(login){
-			mContent = menus.get(getPosition()).createFragment();
-		}else{
-			mContent = menus.get(1).createFragment();
-		}
-		setContent(mContent);
-	}
-	
-	private int getPosition(){
-		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-		for(int i = 0; i < menus.size(); i++){
-			
-			if(menus.get(i).getName().equals(prefs.getString("mainFavorite_", "favorites"))){
-				BaseState.setMTitle( menus.get(i).getTitle());
-			return i;
-			}
-		}
-		return 0;
-	}
-
-
 	private class DrawerItemClickListener implements ListView.OnItemClickListener
 	{
 
@@ -214,62 +189,6 @@ public class MainActivity extends BaseActivity
 
 	}
 
-	ActionMode mMode;
-
-    public Boolean DeleteMode = false;
-
-    private void startDeleteMode() {
-
-        mMode = startActionMode(new AnActionModeOfEpicProportions());
-        DeleteMode = true;
-		getMenu();
-        mDrawerList.setSelection(AbsListView.CHOICE_MODE_MULTIPLE);
-        mAdapter.notifyDataSetChanged();
-    }
-
-    private void stopDeleteMode(Boolean finishActionMode) {
-        if (finishActionMode && mMode != null) {
-            mMode.finish();
-        }
-        DeleteMode = false;
-		getMenu();
-        mDrawerList.setSelection(AbsListView.CHOICE_MODE_NONE);
-        mAdapter.notifyDataSetChanged();
-    }
-
-	private final class AnActionModeOfEpicProportions implements ActionMode.Callback {
-        @Override
-        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-           
-            return true;
-        }
-
-        @Override
-        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-            return false;
-        }
-
-        @Override
-        public boolean onActionItemClicked(final ActionMode mode, MenuItem item) {
-			//     stopDeleteMode(true);
-            return true;
-        }
-
-        @Override
-        public void onDestroyActionMode(ActionMode mode) {
-            stopDeleteMode(false);
-        }
-    }
-
-
-	private void setContent(Fragment fragment){
-
-		getSupportFragmentManager()
-			.beginTransaction()
-			.replace(R.id.content_frame , fragment)
-			.commit();
-	}
-
 	private void selectItem(final int position, final BrickInfo item)
 	{
 		BaseState.setMTitle(item.getTitle());
@@ -287,13 +206,36 @@ public class MainActivity extends BaseActivity
 			}, 1000);
 			
 			}
+			
+	private void setContent(Fragment fragment){
 
-/*	@Override
-	public void setTitle(CharSequence title)
-	{
-		mTitle = title ;
-		ab.setTitle(mTitle);
-	}*/
+		getSupportFragmentManager()
+			.beginTransaction()
+			.replace(R.id.content_frame , fragment)
+			.commit();
+	}
+			
+	private void setDefaultContent(boolean login){
+
+		if(login){
+			mContent = menus.get(getPosition()).createFragment();
+		}else{
+			mContent = menus.get(1).createFragment();
+		}
+		setContent(mContent);
+	}
+
+	private int getPosition(){
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+		for(int i = 0; i < menus.size(); i++){
+
+			if(menus.get(i).getName().equals(prefs.getString("mainFavorite_", "favorites"))){
+				BaseState.setMTitle(menus.get(i).getTitle());
+				return i;
+			}
+		}
+		return 0;
+	}
 
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu)
@@ -332,10 +274,6 @@ public class MainActivity extends BaseActivity
 		
         return super.onOptionsItemSelected(item);
     }
-	
-	/**
-	 *Адаптер NavigationDrawer
-	 */
 		
 	 private void getMenu(){
 		 menus.clear();
@@ -360,7 +298,7 @@ public class MainActivity extends BaseActivity
 		 mAdapter.notifyDataSetChanged();
 	 }
 	 
-	class MenuAdapter extends ArrayAdapter<BrickInfo>
+	public class MenuAdapter extends ArrayAdapter<BrickInfo>
     {
         final LayoutInflater inflater;
 		private Context context;
@@ -466,6 +404,52 @@ public class MainActivity extends BaseActivity
 			public LinearLayout linear;
 		}
     }
+	
+	ActionMode mMode;
 
+    public Boolean DeleteMode = false;
+
+    private void startDeleteMode() {
+
+        mMode = startActionMode(new AnActionModeOfEpicProportions());
+        DeleteMode = true;
+		getMenu();
+        mDrawerList.setSelection(AbsListView.CHOICE_MODE_MULTIPLE);
+        mAdapter.notifyDataSetChanged();
+    }
+
+    private void stopDeleteMode(Boolean finishActionMode) {
+        if (finishActionMode && mMode != null) {
+            mMode.finish();
+        }
+        DeleteMode = false;
+		getMenu();
+        mDrawerList.setSelection(AbsListView.CHOICE_MODE_NONE);
+        mAdapter.notifyDataSetChanged();
+    }
+
+	private final class AnActionModeOfEpicProportions implements ActionMode.Callback {
+        @Override
+        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+
+            return true;
+        }
+
+        @Override
+        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+            return false;
+        }
+
+        @Override
+        public boolean onActionItemClicked(final ActionMode mode, MenuItem item) {
+			//     stopDeleteMode(true);
+            return true;
+        }
+
+        @Override
+        public void onDestroyActionMode(ActionMode mode) {
+            stopDeleteMode(false);
+        }
+    }
 
 }

@@ -53,14 +53,14 @@ public class UserProfile {
 	}
 	
 
-    public Boolean doLogin(String login, String password) throws Exception {
+    public Boolean doLogin(String login, String password, boolean privacy) throws Exception {
         Context context = App.getInstance();
         Map<String, String> outParams = new HashMap<String, String>();
         HttpHelper httpHelper = new HttpHelper(context);
         AdvCookieStore cookieStore = HttpSupport.getCookieStoreInstance(context);
         cookieStore.clear();
 
-        Boolean logined = ProfileApi.login(httpHelper, login, password, false, outParams);
+        Boolean logined = ProfileApi.login(httpHelper, login, password, privacy, outParams);
 
 
         String loginFailedReason = outParams.get(ProfileApi.LOGIN_FAILED_REASON_KEY);

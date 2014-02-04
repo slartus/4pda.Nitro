@@ -230,6 +230,8 @@ public class TopicView extends Fragment
 	implements LoaderManager.LoaderCallbacks<TopicResult>/* , FragmentLifecycle*/
 	{
 
+		public Topic(){}
+		
 		private CharSequence topicUrl = null;
 		private CharSequence topicTitle = null;
 		private CharSequence topicId;
@@ -379,10 +381,10 @@ public class TopicView extends Fragment
 				getWebView().loadDataWithBaseURL("http://4pda.ru/forum/", topicResult.getHtml().toString(), "text/html", "UTF-8", null);
 			}
 			else
-				showStatus(true);
+				showStatus(linearProgress,linearError,true);
 			
 			}else
-			showStatus(true);
+			showStatus(linearProgress,linearError,true);
 			
 			hideProgress();
 			setRefresh(false);

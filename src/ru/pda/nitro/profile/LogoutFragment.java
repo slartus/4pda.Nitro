@@ -11,36 +11,16 @@ import android.app.*;
 
 public class LogoutFragment extends BaseFragment
 {
-
-	@Override
-	public void getData()
-	{
-		// TODO: Implement this method
-	}
-
-	private Button logout;
-	private ProgressBar progressLogout;
-	
+		
 	private String getTitle(){
 		return LogoutBrick.TITLE;
 	}
 	
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-							 Bundle savedInstanceState)
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
 		View rootView = inflater.inflate(R.layout.logout_fragment, container, false);
-		progressLogout = (ProgressBar)rootView.findViewById(R.id.progressLogout);
-		logout = (Button)rootView.findViewById(R.id.buttonLogout);
-		logout.setOnClickListener(new OnClickListener(){
-
-				@Override
-				public void onClick(View p1)
-				{
-					Task task = new Task();
-					task.execute();
-				}
-			});
+		initialiseDataUi(rootView);
 		return rootView;
 	}
 	
@@ -48,7 +28,6 @@ public class LogoutFragment extends BaseFragment
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState)
 	{
-		// TODO: Implement this method
 		super.onActivityCreated(savedInstanceState);
 		getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
 		
@@ -57,16 +36,11 @@ public class LogoutFragment extends BaseFragment
 		setProgress(false);
 	}
 	
-	
-	private void showProgress(boolean progress){
-		if(progress){
-			logout.setVisibility(View.GONE);
-			progressLogout.setVisibility(View.VISIBLE);
-		}else{
-			logout.setVisibility(View.VISIBLE);
-			progressLogout.setVisibility(View.GONE);
-			
-		}
+	@Override
+	public void getData()
+	{
+		Task task = new Task();
+		task.execute();
 	}
 	
 	public class Task extends AsyncTask<Void, Void, Boolean>
@@ -76,7 +50,7 @@ public class LogoutFragment extends BaseFragment
 		protected void onPreExecute()
 		{
 			super.onPreExecute();
-			showProgress(true);
+			showStatus(linearData, progressBarData,true);
 		}
 
 		
@@ -109,7 +83,7 @@ public class LogoutFragment extends BaseFragment
 			}
 			
 			MainActivity.setNickName();
-			showProgress(false);
+			showStatus(linearData,progressBarData,false);
 		}
 		
 	}

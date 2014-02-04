@@ -174,7 +174,7 @@ public abstract class BaseListFragment extends BaseFragment
 		{
             super.onPreExecute();
             setLoading(true);
-            showStatus(false);
+            showStatus(linearProgress, linearError,false);
         }
 
 
@@ -204,7 +204,7 @@ public abstract class BaseListFragment extends BaseFragment
 				else
 				{
 					textMore.setText("Загрузить еще...");
-					showStatus(true);
+					showStatus(linearProgress,linearError,true);
 					showFooter(false);
 				}
             }

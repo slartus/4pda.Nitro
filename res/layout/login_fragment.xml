@@ -8,7 +8,7 @@
 	android:orientation="vertical">
 
 	<LinearLayout
-		android:id="@+id/linearLayoutLogin"
+		android:id="@+id/linearLayoutData"
 		android:layout_height="wrap_content"
 		android:layout_width="wrap_content"
 		android:orientation="vertical">
@@ -28,8 +28,16 @@
 			android:layout_width="wrap_content"
 			android:id="@+id/editTextParol"/>
 
+		<CheckBox
+			android:paddingBottom="5dp"
+			android:paddingTop="5dp"
+			android:id="@+id/checkBoxPrivacy"
+			android:text="Скрытно"
+			android:layout_height="wrap_content"
+			android:layout_width="wrap_content"/>
+
 		<Button
-			android:id="@+id/buttonLogin"
+			android:id="@+id/buttonData"
 			android:layout_height="wrap_content"
 			android:text="@string/hello_world"
 			android:layout_width="match_parent"/>
@@ -38,7 +46,7 @@
 
 	<ProgressBar
 		android:visibility="gone"
-		android:id="@+id/progressBarLogin"
+		android:id="@+id/progressBarData"
 		android:layout_height="wrap_content"
 		android:layout_width="wrap_content"/>
 

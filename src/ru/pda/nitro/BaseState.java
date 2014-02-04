@@ -2,6 +2,7 @@ package ru.pda.nitro;
 
 public class BaseState
 {
+	//
 	private static boolean groop_menu = false;
 	private static boolean refresh_favorite = true;
 	private static boolean refresh_news = true;

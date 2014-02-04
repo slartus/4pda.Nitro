@@ -7,15 +7,23 @@
 	android:background="#e0e0e0"
 	android:gravity="center">
 
-	<Button
-		android:id="@+id/buttonLogout"
+	<LinearLayout
+		android:id="@+id/linearLayoutData"
 		android:layout_height="wrap_content"
-		android:text="Выход"
-		android:layout_width="wrap_content"/>
+		android:layout_width="wrap_content"
+		android:orientation="horizontal">
+
+		<Button
+			android:id="@+id/buttonData"
+			android:layout_height="wrap_content"
+			android:text="Выход"
+			android:layout_width="wrap_content"/>
+
+	</LinearLayout>
 
 	<ProgressBar
 		android:visibility="gone"
-		android:id="@+id/progressLogout"
+		android:id="@+id/progressBarData"
 		android:layout_height="wrap_content"
 		android:layout_width="wrap_content"/>
 
