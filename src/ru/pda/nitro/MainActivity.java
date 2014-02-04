@@ -35,6 +35,8 @@ import android.graphics.*;
 import android.app.*;
 import ru.pda.nitro.dialogs.*;
 import ru.pda.nitro.bricks.*;
+import com.nostra13.universalimageloader.core.*;
+import com.nostra13.universalimageloader.core.display.*;
 
 public class MainActivity extends BaseActivity
 {
@@ -50,6 +52,7 @@ public class MainActivity extends BaseActivity
 	private static ArrayList<BrickInfo> menus;
 	public static UserProfile profile;
 	public static TextView textNick;
+	private DisplayImageOptions options;
 
 	@Override
     protected void onCreate(Bundle savedInstanceState)
@@ -57,6 +60,15 @@ public class MainActivity extends BaseActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.content_frame_drawer);
 
+		options = new DisplayImageOptions.Builder()
+			.showImageForEmptyUri(R.drawable.no_image)
+			.showImageOnFail(R.drawable.no_image)
+			.cacheInMemory(true)
+			.cacheOnDisc(true)
+			.displayer(new RoundedBitmapDisplayer(20))
+			.build();
+		
+		
 		profile = new UserProfile();
 		BaseState.setLogin(profile.isLogined());
 		BaseState.setMTitle(getTitle());
@@ -122,6 +134,7 @@ public class MainActivity extends BaseActivity
 	
 	private View mainMenuHeader(){
 		View header = getLayoutInflater().inflate(R.layout.main_menu_header, null, false);
+		final ImageView avatar = (ImageView)header.findViewById(R.id.imageViewAvatar);
 		final ImageView imageNavigation = (ImageView)header.findViewById(R.id.imageViewNavigation);
 		textNick = (TextView)header.findViewById(R.id.textViewNick);
 		imageNavigation.setOnClickListener(new OnClickListener(){
@@ -145,6 +158,7 @@ public class MainActivity extends BaseActivity
 					}
 				}
 			});
+		imageLoader.displayImage(profile.getAvatar(), avatar, options);
 		setNickName();
 		return header;
 	}

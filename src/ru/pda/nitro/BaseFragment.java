@@ -9,6 +9,7 @@ import android.widget.*;
 import uk.co.senab.actionbarpulltorefresh.library.*;
 import android.os.*;
 import android.support.v4.app.*;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 public abstract class BaseFragment extends Fragment {
     public LinearLayout linearProgress;
@@ -22,6 +23,8 @@ public abstract class BaseFragment extends Fragment {
 	private boolean loading = false;
     public Handler handler;
 
+	protected ImageLoader imageLoader = ImageLoader.getInstance();
+	
     public abstract void getData();
 
     public View initialiseUi(View v) {

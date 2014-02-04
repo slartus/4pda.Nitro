@@ -25,6 +25,7 @@ public class UserProfile {
     String mUser = "гость";
     String mK = "";
     String mUserId = "";
+	String mUserAvatar = "";
 	
 	
     public interface LoginedStateChangedListener {
@@ -50,6 +51,10 @@ public class UserProfile {
 	public String getAutchKey(){
 		return mK;
 	}
+	
+	public String getAvatar(){
+		return mUserAvatar;
+	}
 
     public Boolean doLogin(String login, String password, boolean privacy) throws Exception {
         Context context = App.getInstance();
@@ -63,10 +68,12 @@ public class UserProfile {
         mUserId = loginResult.getUserId().toString();
         mUser = loginResult.getUserLogin().toString();
         mK = loginResult.getK().toString();
+		mUserAvatar = loginResult.getUserAvatarUrl().toString();
 
         cookieStore.addCookie(new SimpleCookie("4pda.UserId", mUserId));
         cookieStore.addCookie(new SimpleCookie("4pda.User", mUser));
         cookieStore.addCookie(new SimpleCookie("4pda.K", mK));
+		cookieStore.addCookie(new SimpleCookie("4pda.UserAvatar", mUserAvatar));
 
         cookieStore.writeExternalCookies(context);
 
@@ -107,13 +114,14 @@ public class UserProfile {
                 if ("4pda.UserId".equals(cookie.getName())) {
                     mUserId = cookie.getValue();
                 } else if ("4pda.User".equals(cookie.getName())) {
-                    mUser = cookie.getValue();
+                   mUser =  cookie.getValue().equals("") ? "гость" : cookie.getValue();
                 } else if ("4pda.K".equals(cookie.getName())) {
                     mK = cookie.getValue();
                 } else if ("member_id".equals(cookie.getName())) {
                     memberIdCookie = cookie;
-                }
-				Log.e("nitro", "nik: " + mUser + " token: " + mK + " id: "+ mUserId);
+                } else if ("4pda.UserAvatar".equals(cookie.getName())){
+					mUserAvatar = cookie.getValue();
+				}
             }
 
             if (!TextUtils.isEmpty(mUser)
