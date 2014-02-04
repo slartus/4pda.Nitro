@@ -13,6 +13,7 @@ public class Log {
         android.util.Log.e(TAG, e.toString());
     }
 
+
     private static final String TAG = "ru.pda.nitro.Log";
 
     private static String getClassName(Class<?> clazz) {
