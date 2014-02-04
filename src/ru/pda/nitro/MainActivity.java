@@ -45,6 +45,7 @@ public class MainActivity extends BaseActivity
 	private ListView mDrawerList ;
 	private FrameLayout frameDrawer;
 	private Fragment mContent;
+	private static ImageView avatar;
 	private Handler handler;
 	private boolean profile_menu = false;
 	
@@ -52,7 +53,7 @@ public class MainActivity extends BaseActivity
 	private static ArrayList<BrickInfo> menus;
 	public static UserProfile profile;
 	public static TextView textNick;
-	private DisplayImageOptions options;
+	private static DisplayImageOptions options;
 
 	@Override
     protected void onCreate(Bundle savedInstanceState)
@@ -134,7 +135,7 @@ public class MainActivity extends BaseActivity
 	
 	private View mainMenuHeader(){
 		View header = getLayoutInflater().inflate(R.layout.main_menu_header, null, false);
-		final ImageView avatar = (ImageView)header.findViewById(R.id.imageViewAvatar);
+		avatar = (ImageView)header.findViewById(R.id.imageViewAvatar);
 		final ImageView imageNavigation = (ImageView)header.findViewById(R.id.imageViewNavigation);
 		textNick = (TextView)header.findViewById(R.id.textViewNick);
 		imageNavigation.setOnClickListener(new OnClickListener(){
@@ -158,13 +159,15 @@ public class MainActivity extends BaseActivity
 					}
 				}
 			});
-		imageLoader.displayImage(profile.getAvatar(), avatar, options);
-		setNickName();
+				setUserData();
 		return header;
 	}
 	
-	public static void setNickName(){
+	
+	public static void setUserData(){
 		textNick.setText(profile.getLogin());
+		imageLoader.displayImage(profile.getAvatar(), avatar, options);
+		
 	}
 
 	@Override

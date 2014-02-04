@@ -94,6 +94,7 @@ public class UserProfile {
         cookieStore.writeExternalCookies(context);
         loginedStateChanged();
 		mUser = "гость";
+		mUserAvatar = "";
     }
 
 

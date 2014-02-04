@@ -9,7 +9,7 @@ public class BaseActivity extends FragmentActivity implements IRefreshActivity
 {
 	public ActionBar ab;
 	private PullToRefreshAttacher mPullToRefreshAttacher;
-	protected ImageLoader imageLoader = ImageLoader.getInstance();
+	protected static ImageLoader imageLoader = ImageLoader.getInstance();
 	
 
 	@Override

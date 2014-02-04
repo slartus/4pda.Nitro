@@ -73,16 +73,17 @@ public class LogoutFragment extends BaseFragment
 		
 			super.onPostExecute(result);
 			if(result){
+				BaseState.setLogin(false);
+				MainActivity.getLoginMenu();
 				getActivity().getSupportFragmentManager().beginTransaction()
 				.replace(R.id.content_frame, new LoginFragment())
 				.commit();
-				BaseState.setLogin(false);
-				MainActivity.getLoginMenu();
+				
 			}else{
 				Toast.makeText(getActivity(), "Ошибка выхода", Toast.LENGTH_SHORT).show();
 			}
 			
-			MainActivity.setNickName();
+			MainActivity.setUserData();
 			showStatus(linearData,progressBarData,false);
 		}
 		

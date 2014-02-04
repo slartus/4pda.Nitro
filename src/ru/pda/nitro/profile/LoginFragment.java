@@ -104,7 +104,7 @@ public class LoginFragment extends BaseFragment
 					Toast.makeText(getActivity(), "Ошибка авторизации", Toast.LENGTH_SHORT).show();
 					
 				}
-				MainActivity.setNickName();
+				MainActivity.setUserData();
 			}
 
 		}
