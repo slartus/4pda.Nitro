@@ -47,36 +47,36 @@ public class Provider extends ContentProvider
         switch (sUriMatcher.match(uri))
 		{
 			case NEWS:
-				qb.setTables(Database.NEWS_TABLE);
-				defaultSortOrder = Contract.News.DEFAULT_SORT_ORDER;
+                qb.setTables(Contract.News.TABLE_NAME);
+                defaultSortOrder = Contract.News.DEFAULT_SORT_ORDER;
 				break;
 			
 			case FAVORITE:
-				qb.setTables(Database.FAVORITE_TABLE);
-				defaultSortOrder = Contract.Favorite.DEFAULT_SORT_ORDER;
+                qb.setTables(Contract.Favorite.TABLE_NAME);
+                defaultSortOrder = Contract.Favorite.DEFAULT_SORT_ORDER;
 				break;
 	
 			case GROOP:
-				qb.setTables(Database.GROOP_TABLE);
-				defaultSortOrder = Contract.Groop.DEFAULT_SORT_ORDER;
+                qb.setTables(Contract.Groop.TABLE_NAME);
+                defaultSortOrder = Contract.Groop.DEFAULT_SORT_ORDER;
 				break;
 			case GROOPS:
-				qb.setTables(Database.GROOPS_TABLE);
-				defaultSortOrder = Contract.Groops.DEFAULT_SORT_ORDER;
+                qb.setTables(Contract.Groops.TABLE_NAME);
+                defaultSortOrder = Contract.Groops.DEFAULT_SORT_ORDER;
 				break;
 			case GROOPS_ID:
-				qb.setTables(Database.GROOPS_TABLE);
-				defaultSortOrder = Contract.Groops.DEFAULT_SORT_ORDER;
+                qb.setTables(Contract.Groops.TABLE_NAME);
+                defaultSortOrder = Contract.Groops.DEFAULT_SORT_ORDER;
 				qb.appendWhere("_id=" + uri.getLastPathSegment());
 				break;
 			case GROOPS_ID_GROOP:
-				qb.setTables(Database.GROOP_TABLE);
-				defaultSortOrder = Contract.Groop.DEFAULT_SORT_ORDER;
+                qb.setTables(Contract.Groop.TABLE_NAME);
+                defaultSortOrder = Contract.Groop.DEFAULT_SORT_ORDER;
 				qb.appendWhere(Contract.Groop.groop + "=" + uri.getPathSegments().get(1));
 				break;
 			case GROOPS_ID_GROOP_ID:
-				qb.setTables(Database.GROOPS_TABLE);
-				defaultSortOrder = Contract.Groops.DEFAULT_SORT_ORDER;
+                qb.setTables(Contract.Groops.TABLE_NAME);
+                defaultSortOrder = Contract.Groops.DEFAULT_SORT_ORDER;
 				qb.appendWhere(Contract.Groop.groop + "=" + uri.getPathSegments().get(1));
 				qb.appendWhere("_id=" + uri.getLastPathSegment());
 				break;
@@ -128,19 +128,19 @@ public class Provider extends ContentProvider
 		{
             
 			case NEWS:
-				tableName = Database.NEWS_TABLE;
-				break;
+                tableName = Contract.News.TABLE_NAME;
+                break;
 			case FAVORITE:
-				tableName = Database.FAVORITE_TABLE;
-				break;
+                tableName = Contract.Favorite.TABLE_NAME;
+                break;
 			case GROOPS:
-				tableName = Database.GROOPS_TABLE;
-				break;
+                tableName = Contract.Groops.TABLE_NAME;
+                break;
 			case GROOPS_ID_GROOP:
 				values.put(Contract.Groop.groop, uri.getPathSegments().get(1));
-				tableName = Database.GROOP_TABLE;
-				
-				break;
+                tableName = Contract.Groop.TABLE_NAME;
+
+                break;
             default:
                 throw new IllegalArgumentException("Unknown URI " + uri);
         }
@@ -161,25 +161,25 @@ public class Provider extends ContentProvider
         switch (sUriMatcher.match(uri))
 		{
 			case NEWS:
-				tableName = Database.NEWS_TABLE;
-				break;
+                tableName = Contract.News.TABLE_NAME;
+                break;
 			case FAVORITE:
-				tableName = Database.FAVORITE_TABLE;
-				break;
+                tableName = Contract.Favorite.TABLE_NAME;
+                break;
 			case GROOPS_ID:
-				tableName = Database.GROOPS_TABLE;
-				selection = "_id=" + uri.getLastPathSegment() + (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : "");
+                tableName = Contract.Groops.TABLE_NAME;
+                selection = "_id=" + uri.getLastPathSegment() + (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : "");
 				break;
-			case GROOP:	
-				tableName = Database.GROOP_TABLE;
-				break;
+			case GROOP:
+                tableName = Contract.Groop.TABLE_NAME;
+                break;
 			case GROOP_ID:
-				tableName = Database.GROOP_TABLE;
-				selection = "_id=" + uri.getLastPathSegment() + (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : "");
+                tableName = Contract.Groop.TABLE_NAME;
+                selection = "_id=" + uri.getLastPathSegment() + (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : "");
 				break;
 			case GROOPS_ID_GROOP_ID:
-				tableName = Database.GROOP_TABLE;
-				selection = Contract.Groop.groop + "=" + uri.getPathSegments().get(1) + (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : "");
+                tableName = Contract.Groop.TABLE_NAME;
+                selection = Contract.Groop.groop + "=" + uri.getPathSegments().get(1) + (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : "");
 				selection = "_id=" + uri.getLastPathSegment() + (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : "");
 				break;
 				
@@ -200,20 +200,20 @@ public class Provider extends ContentProvider
 		{
             
 			case NEWS_ID:
-				tableName = Database.NEWS_TABLE;
-				selection = "_id=" + uri.getLastPathSegment() + (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : "");
+                tableName = Contract.News.TABLE_NAME;
+                selection = "_id=" + uri.getLastPathSegment() + (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : "");
 				break;
 			case FAVORITE_ID:
-				tableName = Database.FAVORITE_TABLE;
-				selection = "_id=" + uri.getLastPathSegment() + (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : "");
+                tableName = Contract.Favorite.TABLE_NAME;
+                selection = "_id=" + uri.getLastPathSegment() + (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : "");
 				break;
 			case GROOPS_ID:
-				tableName = Database.GROOPS_TABLE;
-				selection = "_id=" + uri.getLastPathSegment() + (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : "");
+                tableName = Contract.Groops.TABLE_NAME;
+                selection = "_id=" + uri.getLastPathSegment() + (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : "");
 				break;
 			case GROOPS_ID_GROOP_ID:
-				tableName = Database.GROOPS_TABLE;
-				selection = Contract.Groop.groop + "=" + uri.getPathSegments().get(1) + (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : "");
+                tableName = Contract.Groops.TABLE_NAME;
+                selection = Contract.Groop.groop + "=" + uri.getPathSegments().get(1) + (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : "");
 				selection = "_id=" + uri.getLastPathSegment() + (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : "");
 				break;
             default:

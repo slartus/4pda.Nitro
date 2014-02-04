@@ -1,7 +1,7 @@
 package ru.pda.nitro.database;
 
 import android.net.Uri;
-import android.provider.*;
+import android.provider.BaseColumns;
 
 public final class Contract
 {
@@ -15,7 +15,8 @@ public final class Contract
 		private Groops()
 		{}
 
-		public static final String title = "title";
+        public static final String TABLE_NAME = "Группы";
+        public static final String title = "title";
 		
 		public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/Группы");
 		public static final String CONTENT_TYPE = "vnd.android.cursor.dir/vnd." + AUTHORITY + ".Группы";
@@ -30,7 +31,8 @@ public final class Contract
 		private Groop()
 		{}
 
-		public static final String id = "id";
+        static final String TABLE_NAME = "Groop";
+        public static final String id = "id";
 		public static final String title = "title";
 		public static final String groop = "groop";
 		
@@ -47,7 +49,8 @@ public final class Contract
 		private Favorite()
 		{}
 
-		public static final String id = "id";
+        public static final String TABLE_NAME = "Favorite";
+        public static final String id = "id";
 		public static final String title = "title";
 		public static final String lastAvtor = "lastAvtor";
 		public static final String lastDate = "lastDate";
@@ -68,7 +71,8 @@ public final class Contract
 		private News()
 		{}
 
-		public static final String id = "id";
+        public static final String TABLE_NAME = "News";
+        public static final String id = "id";
 		public static final String category = "category";
 		public static final String title = "title";
 		public static final String author = "author";

@@ -4,20 +4,12 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
-import android.database.*;
-import java.util.*;
-import android.content.*;
 
 public class Database extends SQLiteOpenHelper
 {
 	private static final String DATABASE_NAME = "nitro.db";
     private static final int DATABASE_VERSION = 11;
-	
-	static final String NEWS_TABLE = "News";
-    static final String FAVORITE_TABLE = "Favorite";
-	static final String GROOP_TABLE = "Groop";
-	static final String GROOPS_TABLE = "Группы";
-	
+
 
     public Database(Context context)
     {
@@ -28,20 +20,20 @@ public class Database extends SQLiteOpenHelper
     public void onCreate(SQLiteDatabase db)
 	
     {
-		db.execSQL("CREATE TABLE " + GROOPS_TABLE + " ("
-				   + BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+        db.execSQL("CREATE TABLE " + Contract.Groops.TABLE_NAME + " ("
+                + BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
 				  	+ Contract.Groops.title + " TEXT"
 				   + ")");
-				   
-		db.execSQL("CREATE TABLE " + GROOP_TABLE + " ("
-				   + BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-				   + Contract.Groop.groop + " TEXT " + "REFERENCES " + GROOPS_TABLE + "(" + BaseColumns._ID + ")" + ","
-				   + Contract.Groop.id + " TEXT,"
+
+        db.execSQL("CREATE TABLE " + Contract.Groop.TABLE_NAME + " ("
+                + BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + Contract.Groop.groop + " TEXT " + "REFERENCES " + Contract.Groops.TABLE_NAME + "(" + BaseColumns._ID + ")" + ","
+                + Contract.Groop.id + " TEXT,"
 				   + Contract.Groop.title + " TEXT"
 				   + ")");
 
-		db.execSQL("CREATE TABLE " + FAVORITE_TABLE + " ("
-				   + BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+        db.execSQL("CREATE TABLE " + Contract.Favorite.TABLE_NAME + " ("
+                + BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
 				   + Contract.Favorite.id + " TEXT,"
 				   + Contract.Favorite.title + " TEXT,"
 				   + Contract.Favorite.lastAvtor + " TEXT,"
@@ -52,8 +44,8 @@ public class Database extends SQLiteOpenHelper
 				   
 				   + ")");
 
-		db.execSQL("CREATE TABLE " + NEWS_TABLE + " ("
-				   + BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+        db.execSQL("CREATE TABLE " + Contract.News.TABLE_NAME + " ("
+                + BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
 				   + Contract.News.category + " TEXT,"
 				   + Contract.News.author + " TEXT,"
 				   + Contract.News.description + " TEXT,"
@@ -79,12 +71,12 @@ public class Database extends SQLiteOpenHelper
 		LocalDataHelper.getLocalNews(cursor);
 		cursor.close();
 		*/
-		db.execSQL("DROP TABLE IF EXISTS " + GROOP_TABLE);
-		db.execSQL("DROP TABLE IF EXISTS " + GROOPS_TABLE);
-		
-		db.execSQL("DROP TABLE IF EXISTS " + FAVORITE_TABLE);
-		db.execSQL("DROP TABLE IF EXISTS " + NEWS_TABLE);
-		onCreate(db);
+        db.execSQL("DROP TABLE IF EXISTS " + Contract.Groop.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + Contract.Groops.TABLE_NAME);
+
+        db.execSQL("DROP TABLE IF EXISTS " + Contract.Favorite.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + Contract.News.TABLE_NAME);
+        onCreate(db);
 
     }
 	
