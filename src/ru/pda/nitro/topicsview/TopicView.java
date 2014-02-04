@@ -1,11 +1,23 @@
 package ru.pda.nitro.topicsview;
 
 
-import android.content.Context;
+import android.app.ActionBar;
+import android.app.ActionBar.Tab;
+import android.app.Activity;
+import android.app.FragmentTransaction;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.provider.BaseColumns;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.LoaderManager;
-import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
@@ -13,29 +25,10 @@ import android.webkit.WebViewClient;
 
 import ru.forpda.api.TopicApi;
 import ru.forpda.api.TopicResult;
-import ru.forpda.http.HttpHelper;
-import ru.pda.nitro.App;
 import ru.pda.nitro.BaseFragment;
 import ru.pda.nitro.R;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.app.FragmentTransaction;
-import android.app.ActionBar.Tab;
-import android.app.ActionBar;
-import android.app.Activity;
-import ru.pda.nitro.listfragments.*;
-import android.view.*;
-import android.widget.*;
-import android.view.View.*;
-import ru.pda.nitro.database.*;
-import android.database.*;
-import android.util.*;
-import android.os.*;
-import android.net.*;
-import android.provider.*;
-import android.content.*;
-import android.support.v4.app.*;
-import ru.pda.nitro.dialogs.*;
+import ru.pda.nitro.database.Contract;
+import ru.pda.nitro.dialogs.ThemeOptionsDialogFragment;
 
 
 /**
@@ -83,25 +76,31 @@ public class TopicView extends Fragment
 				{
 				
 					mUri = getActivity().getIntent().getParcelableExtra(TopicActivity.TOPIC_GROOP_URI_KEY);
-					Cursor cursor = getActivity().getContentResolver().query(mUri, null, null, null, Contract.Groop.DEFAULT_SORT_ORDER);
+                    Cursor cursor = null;
+                    try {
+                        cursor = getActivity().getContentResolver().query(mUri, null, null, null, Contract.Groop.DEFAULT_SORT_ORDER);
 
-					if(cursor.moveToFirst()){
-						final ActionBar actionBar = getActivity().getActionBar(); 
-						actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+                        if (cursor != null && cursor.moveToFirst()) {
+                            final ActionBar actionBar = getActivity().getActionBar();
+                            actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
-						do{
-							CharSequence topicId = cursor.getString(cursor.getColumnIndexOrThrow(Contract.Groop.id));
-							String text =	cursor.getString(cursor.getColumnIndexOrThrow(Contract.Groop.title));
-							long baseId = cursor.getLong(cursor.getColumnIndexOrThrow(BaseColumns._ID));
+                            do {
+                                CharSequence topicId = cursor.getString(cursor.getColumnIndexOrThrow(Contract.Groop.id));
+                                String text = cursor.getString(cursor.getColumnIndexOrThrow(Contract.Groop.title));
+                                long baseId = cursor.getLong(cursor.getColumnIndexOrThrow(BaseColumns._ID));
 
-							addNewTab(text, null, topicId, baseId, topicId.toString()); 
+                                addNewTab(text, null, topicId, baseId, topicId.toString());
 
-						}while(cursor.moveToNext());
-				
-						cursor.close();
-					}else
-						cursor.close();
-				}
+                            } while (cursor.moveToNext());
+
+
+                        }
+                    } finally {
+                        if (cursor != null)
+                            cursor.close();
+                    }
+
+                }
 			});
 		
 	}
@@ -438,8 +437,8 @@ public class TopicView extends Fragment
 		}
 		
 		public void showThemeOptionsDialog(CharSequence topicId){
-			DialogFragment dialog = new ThemeOptionsDialogFragment().newInstance(topicId, topicTitle);
-			dialog.show(getFragmentManager().beginTransaction(), "dialog");
+            DialogFragment dialog = ThemeOptionsDialogFragment.newInstance(topicId, topicTitle);
+            dialog.show(getFragmentManager().beginTransaction(), "dialog");
 		}
 		
 		
