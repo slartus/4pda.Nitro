@@ -69,7 +69,6 @@ public class MainActivity extends BaseActivity
 			.displayer(new RoundedBitmapDisplayer(20))
 			.build();
 		
-		
 		profile = new UserProfile();
 		BaseState.setLogin(profile.isLogined());
 		BaseState.setMTitle(getTitle());
@@ -258,10 +257,11 @@ public class MainActivity extends BaseActivity
 	public boolean onPrepareOptionsMenu(Menu menu)
 	{
 		menu.setGroupVisible(R.id.group_groops, BaseState.isGroop_menu());
+		menu.setGroupVisible(R.id.group_profile, BaseState.isLogin_menu());
+	//	menu.getItem(R.id.menu_finish).setVisible(BaseState.isShowMenuItemCancel());
 		
 		return super.onPrepareOptionsMenu(menu);
 	}
-
 	
 
     @Override
@@ -287,6 +287,8 @@ public class MainActivity extends BaseActivity
 				DialogFragment df = new AddGroopsDialogFragment();
 				df.show(getSupportFragmentManager(), null);
 				break;
+			case R.id.menu_register:
+				showActionViewActivity(this, "http://4pda.ru/forum/index.php?act=Reg&CODE=00");
 		}
 		
         return super.onOptionsItemSelected(item);

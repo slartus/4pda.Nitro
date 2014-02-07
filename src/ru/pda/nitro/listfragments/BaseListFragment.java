@@ -76,7 +76,6 @@ public abstract class BaseListFragment extends BaseFragment
         super.onActivityCreated(savedInstanceState);
         listView.setOnItemClickListener(this);
         listView.setOnCreateContextMenuListener(this);
-		groupMenuVisible();
 		BaseState.setMTitle(getTitle());
 		getActivity().getActionBar().setTitle(BaseState.getMTitle());
     }
@@ -136,12 +135,6 @@ public abstract class BaseListFragment extends BaseFragment
 			});
         return footer;
     }
-	
-	public void groupMenuVisible(){
-        BaseState.setGroop_menu(GroopsBrick.NAME.equals(getName()));
-
-        RefreshMenu.refreshActionBarMenu(getActivity());
-	}
 
 
     public void setProgressMore(boolean show)
@@ -265,10 +258,6 @@ public abstract class BaseListFragment extends BaseFragment
     public abstract ArrayList<? extends IListItem> getList() throws ParseException, IOException;
 
 	public abstract Uri getUri();
-	
-    public abstract String getName();
-
-    public abstract String getTitle();
 
     public abstract void getData();
 

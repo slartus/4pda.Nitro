@@ -9,11 +9,17 @@
 			android:showAsAction="always" />
 
 	</group>
+	<group android:id = "@+id/group_profile" >
+
+		<item android:id="@+id/menu_register"
+			android:title="Регистрация"
+			android:showAsAction="always" />
+
+	</group>
     <item 
 		android:id="@+id/menu_finish"
         android:title="Закрыть"
-        android:orderInCategory="200"
 		android:icon="@drawable/ic_action_remove"
-        android:showAsAction="always" />
+        android:showAsAction="never" />
 
 </menu>

@@ -4,13 +4,25 @@ public class BaseState
 {
 	//
 	private static boolean groop_menu = false;
+	private static boolean login_menu = false;
 	private static boolean refresh_favorite = true;
 	private static boolean refresh_news = true;
 	private static boolean favorite;
 	private static boolean subscribe;
 	private static boolean login;
-	
+	private static boolean showMenuItemCancel = false;
 	private static CharSequence mTitle ;
+
+	public static void setLogin_menu(boolean login_menu)
+	{
+		BaseState.login_menu = login_menu;
+	}
+
+	public static boolean isLogin_menu()
+	{
+		return login_menu;
+	}
+
 
 	public static void setLogin(boolean login)
 	{

@@ -2,7 +2,6 @@ package ru.pda.nitro;
 
 import android.content.Context;
 import android.text.TextUtils;
-import android.util.Log;
 
 import org.apache.http.client.CookieStore;
 import org.apache.http.cookie.Cookie;
@@ -16,6 +15,7 @@ import ru.forpda.http.AdvCookieStore;
 import ru.forpda.http.HttpHelper;
 import ru.forpda.http.HttpSupport;
 import ru.forpda.http.SimpleCookie;
+import ru.forpda.common.Log;
 
 
 /**
@@ -25,8 +25,7 @@ public class UserProfile {
     String mUser = "гость";
     String mK = "";
     String mUserId = "";
-	String mUserAvatar = "";
-	
+	String mUserAvatar = "drawable://" + R.drawable.enter;
 	
     public interface LoginedStateChangedListener {
         void changed();
@@ -69,8 +68,8 @@ public class UserProfile {
         mUser = loginResult.getUserLogin().toString();
         mK = loginResult.getK().toString();
 		mUserAvatar = loginResult.getUserAvatarUrl().toString();
-
-        cookieStore.addCookie(new SimpleCookie("4pda.UserId", mUserId));
+        
+		cookieStore.addCookie(new SimpleCookie("4pda.UserId", mUserId));
         cookieStore.addCookie(new SimpleCookie("4pda.User", mUser));
         cookieStore.addCookie(new SimpleCookie("4pda.K", mK));
 		cookieStore.addCookie(new SimpleCookie("4pda.UserAvatar", mUserAvatar));
@@ -94,7 +93,7 @@ public class UserProfile {
         cookieStore.writeExternalCookies(context);
         loginedStateChanged();
 		mUser = "гость";
-		mUserAvatar = "";
+		mUserAvatar = "drawable://" + R.drawable.enter;
     }
 
 
@@ -104,7 +103,8 @@ public class UserProfile {
 
     public Boolean checkLogin() {
         mUserId = "";
-        mUser = "";
+        mUser = "гость";
+		mUserAvatar = "drawable://" + R.drawable.enter;
         mK = "";
 
         try {

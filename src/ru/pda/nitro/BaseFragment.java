@@ -10,6 +10,8 @@ import uk.co.senab.actionbarpulltorefresh.library.*;
 import android.os.*;
 import android.support.v4.app.*;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import ru.pda.nitro.bricks.BricksProfile.*;
+import ru.pda.nitro.bricks.*;
 
 public abstract class BaseFragment extends Fragment {
     public LinearLayout linearProgress;
@@ -26,6 +28,23 @@ public abstract class BaseFragment extends Fragment {
 	protected ImageLoader imageLoader = ImageLoader.getInstance();
 	
     public abstract void getData();
+
+	@Override
+	public void onActivityCreated(Bundle savedInstanceState)
+	{
+		super.onActivityCreated(savedInstanceState);
+		setCurrentFragmentMenu();
+	}
+	
+	private void setCurrentFragmentMenu(){
+		BaseState.setLogin_menu(getName().equals(LoginBrick.NAME));
+		BaseState.setGroop_menu(getName().equals(GroopsBrick.NAME));
+		
+		
+		RefreshMenu.refreshActionBarMenu(getActivity());
+	}
+	
+	
 
     public View initialiseUi(View v) {
 		
@@ -128,4 +147,7 @@ public abstract class BaseFragment extends Fragment {
 	}
 	
 	protected void refreshData(){};
+	public abstract String getName();
+
+    public abstract String getTitle();
 }

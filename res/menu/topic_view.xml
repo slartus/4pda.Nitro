@@ -8,6 +8,8 @@
         android:title="@string/close_tab"
         android:showAsAction="always" />
 	<item 
+		android:titleCondensed="Дополнительно"
+		android:enabled="true"
 		android:id="@+id/more_overflow"
 		android:icon="@drawable/ic_action_overflow"
 		android:showAsAction="always"

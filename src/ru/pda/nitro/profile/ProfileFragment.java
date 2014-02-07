@@ -9,13 +9,19 @@ public class ProfileFragment extends BaseFragment
 {
 
 	@Override
-	public void getData()
+	public String getName()
 	{
-		// TODO: Implement this method
+		return ProfileBrick.NAME;
 	}
 
 
-	private String getTitle(){
+	@Override
+	public void getData()
+	{
+	}
+
+
+	public String getTitle(){
 		return ProfileBrick.TITLE;
 	}
 	@Override

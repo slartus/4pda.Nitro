@@ -204,7 +204,21 @@ public class TopicView extends Fragment {
 
 
     public class Topic extends BaseFragment
-            implements LoaderManager.LoaderCallbacks<TopicResult>/* , FragmentLifecycle*/ {
+	implements LoaderManager.LoaderCallbacks<TopicResult>
+	/* , FragmentLifecycle*/ {
+
+		@Override
+		public String getName()
+		{
+			return "";
+		}
+
+		@Override
+		public String getTitle()
+		{
+			return "";
+		}
+
 
         public Topic() {
         }

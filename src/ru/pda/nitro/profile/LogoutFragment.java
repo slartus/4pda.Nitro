@@ -11,8 +11,16 @@ import android.app.*;
 
 public class LogoutFragment extends BaseFragment
 {
+
+	@Override
+	public String getName()
+	{
+		// TODO: Implement this method
+		return LogoutBrick.NAME;
+	}
+
 		
-	private String getTitle(){
+	public String getTitle(){
 		return LogoutBrick.TITLE;
 	}
 	
