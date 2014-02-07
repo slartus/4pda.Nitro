@@ -25,6 +25,7 @@ import ru.pda.nitro.R;
 import ru.pda.nitro.bricks.FavoritesBrick;
 import ru.pda.nitro.bricks.GroopsBrick;
 import ru.pda.nitro.bricks.NewsBrick;
+import android.content.*;
 
 
 /**
@@ -231,10 +232,10 @@ public abstract class BaseListFragment extends BaseFragment
 		return false;
 	}
 
-    public void deleteAllLocalData(Uri mUri)
+    public static void deleteAllLocalData(Context context, Uri mUri)
 	{
         if (mUri != null)
-			getActivity().getContentResolver().delete(mUri, null, null);
+			context.getContentResolver().delete(mUri, null, null);
     }
 
 	

@@ -34,6 +34,8 @@ import ru.pda.nitro.adapters.TopicListAdapter;
 import ru.pda.nitro.database.Contract;
 import ru.pda.nitro.dialogs.ThemeOptionsDialogFragment;
 import ru.pda.nitro.topicsview.TopicActivity;
+import android.net.*;
+import android.content.*;
 
 
 /**
@@ -42,7 +44,7 @@ import ru.pda.nitro.topicsview.TopicActivity;
  */
 public abstract class TopicsListFragment extends BaseListFragment {
 
-    public ArrayList<Topic> topics = new ArrayList<Topic>();
+    public static ArrayList<Topic> topics = new ArrayList<Topic>();
     public static TopicListAdapter adapter;
     public static final int NAVIGATE_DIALOG_FRAGMENT = 1;
     private int selectedItem;
@@ -146,7 +148,7 @@ public abstract class TopicsListFragment extends BaseListFragment {
 
     private void showTopicActivity(int i, Topic topic, CharSequence navigateAction) {
         topic.setHasUnreadPosts(false);
-        updateItem(i);
+        updateItem(getActivity(),i);
         adapter.notifyDataSetChanged();
 
         TopicActivity.show(getActivity(), topic.getId(), topic.getTitle(), getTitle(), navigateAction);
@@ -158,21 +160,21 @@ public abstract class TopicsListFragment extends BaseListFragment {
         return false;
     }
 
-    public void updateItem(final int i) {
-        handler = new Handler();
+    public static void updateItem(final Context context, final int i) {
+      Handler  handler = new Handler();
         handler.post(new Runnable() {
 
             @Override
             public void run() {
                 Cursor cursor = null;
                 try {
-                    cursor = getActivity().getContentResolver().query(Contract.Favorite.CONTENT_URI, null, null, null, Contract.Favorite.DEFAULT_SORT_ORDER);
+                    cursor = context.getContentResolver().query(Contract.Favorite.CONTENT_URI, null, null, null, Contract.Favorite.DEFAULT_SORT_ORDER);
                     if (cursor != null && cursor.moveToPosition(i)) {
                         long l = cursor.getLong(cursor.getColumnIndexOrThrow(BaseColumns._ID));
                         ContentValues cv = new ContentValues();
                         cv.put(Contract.Favorite.hasUnreadPosts, false);
 
-                        getActivity().getContentResolver().update(ContentUris.withAppendedId(Contract.Favorite.CONTENT_URI, l), cv, null, null);
+                        context.getContentResolver().update(ContentUris.withAppendedId(Contract.Favorite.CONTENT_URI, l), cv, null, null);
                     }
                 } finally {
                     if (cursor != null)
@@ -229,12 +231,12 @@ public abstract class TopicsListFragment extends BaseListFragment {
 
     }
 
-    public ArrayList<Topic> getLocalData() {
+    public static ArrayList<Topic> getLocalTopicsData(Context context, Uri uri) {
         topics = new ArrayList<Topic>();
-        if (getUri() != null) {
+        if (uri != null) {
             Cursor cursor = null;
             try {
-                cursor = getActivity().getContentResolver().query(getUri(), null, null, null, Contract.Favorite.DEFAULT_SORT_ORDER);
+                cursor = context.getContentResolver().query(uri, null, null, null, Contract.Favorite.DEFAULT_SORT_ORDER);
                 if (cursor != null && cursor.moveToFirst()) {
                     do {
                         Topic topic = new Topic(null, null);
@@ -258,9 +260,9 @@ public abstract class TopicsListFragment extends BaseListFragment {
         return topics;
     }
 
-    public void setLocalData(ArrayList<Topic> topics) {
+    public static void setLocalData(Context context, ArrayList<Topic> topics, Uri uri) {
 
-        if (getUri() != null)
+        if (uri != null)
             for (Topic topic : topics) {
                 ContentValues cv = new ContentValues();
                 cv.put(Contract.Favorite.description, topic.getDescription().toString());
@@ -270,7 +272,7 @@ public abstract class TopicsListFragment extends BaseListFragment {
                 cv.put(Contract.Favorite.lastAvtor, topic.getLastPostAuthor().toString());
                 cv.put(Contract.Favorite.lastDate, topic.getLastPostDate());
                 cv.put(Contract.Favorite.title, topic.getTitle().toString());
-                getActivity().getContentResolver().insert(getUri(), cv);
+                context.getContentResolver().insert(uri, cv);
             }
     }
 

@@ -108,8 +108,8 @@ public class FavoritesListFragment extends TopicsListFragment implements OnScrol
 				for(Topic topic : data){
 					topics.add(topic);
 				}
-					deleteAllLocalData(Contract.Favorite.CONTENT_URI);
-					setLocalData(topics);
+					deleteAllLocalData(getActivity(), Contract.Favorite.CONTENT_URI);
+					setLocalData(getActivity(),topics, getUri());
 				return true;
 				}
 			}else{
@@ -117,8 +117,8 @@ public class FavoritesListFragment extends TopicsListFragment implements OnScrol
 			if (topics.size() > 0)
 			{
 				setOutCount(listInfo.getOutCount());
-				deleteAllLocalData(getUri());
-				setLocalData(topics);
+				deleteAllLocalData(getActivity(),getUri());
+				setLocalData(getActivity(),topics, getUri());
 				return true;
 			}
 			}
@@ -126,7 +126,7 @@ public class FavoritesListFragment extends TopicsListFragment implements OnScrol
 		else
 		{
 			setFrom(getFrom());
-			topics = getLocalData();
+			topics = getLocalTopicsData(getActivity(), getUri());
 			
 			setOutCount(getOutCount());
 			if (topics.size() == 0)
@@ -135,7 +135,7 @@ public class FavoritesListFragment extends TopicsListFragment implements OnScrol
 				if (topics.size() > 0)
 				{
 					setOutCount(listInfo.getOutCount());
-					setLocalData(topics);
+					setLocalData(getActivity(),topics, getUri());
 					return true;
 				}
 			}

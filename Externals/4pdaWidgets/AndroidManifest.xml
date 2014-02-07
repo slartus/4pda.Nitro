@@ -8,9 +8,9 @@
         android:minSdkVersion="14" 
         android:targetSdkVersion="14" />
 
-	<!--uses-permission android:name="android.permission.INTERNET"/>
-	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /-->
-	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+	<uses-permission android:name="android.permission.INTERNET"/>
+	<!--uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /-->
+	<!--uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" /-->
 	<!--uses-permission android:name="android.permission.VIBRATE"/>
 	<uses-permission android:name="android.permission.READ_PHONE_STATE"/>
 	<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
@@ -21,7 +21,7 @@
 
     <application
 		android:hardwareAccelerated="true"
-        android:icon="@drawable/ic_launcher"
+        android:icon="@drawable/icon"
         android:label="@string/app_name"
 	>		
 		<!--activity android:name=".ConfigureActivity"
@@ -39,11 +39,16 @@
 			android:name=".ListWidgetService"
 			android:permission="android.permission.BIND_REMOTEVIEWS">
 		</service>
+		<service android:process=":updateTopics" android:enabled="true" android:name=".UpdateWidgetsService"/>
+		
 		<receiver
 			android:name=".ListWidget"
 			android:label="4pda Избранное">
 			<intent-filter>
 				<action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
+			</intent-filter>
+			<intent-filter>
+				<action android:name="ru.pda.nitro.widgets.action.LIST_WIDGETS_ACTION_KEY"/>
 			</intent-filter>
 			<meta-data
 				android:name="android.appwidget.provider"

@@ -15,6 +15,8 @@ import android.net.*;
  * Created by slinkin on 21.01.14.
  */
 public class TopicActivity extends BaseActivity {
+	public static final String TOPIC_ACTIVITY_INTENT_KEY = "ru.pda.nitro.topicsview.TOPIC_ACTIVITY";
+	
     public static final String TOPIC_ID_KEY = "ru.pda.nitro.topicsview.TOPIC_ID_KEY";
     public static final String TOPIC_URL_KEY = "ru.pda.nitro.topicsview.TOPIC_URL_KEY";
     public static final String NAVIGATE_ACTION_KEY = "ru.pda.nitro.topicsview.NAVIGATE_ACTION_KEY";
@@ -58,9 +60,9 @@ public class TopicActivity extends BaseActivity {
         show(activity, topicId, null, null, navigateAction);
     }
 
-    public static void show(Activity activity, CharSequence topicId, CharSequence topicTitle, CharSequence topicListTitle,
+    public static void show(Context activity, CharSequence topicId, CharSequence topicTitle, CharSequence topicListTitle,
                             CharSequence navigateAction) {
-        Intent intent = new Intent(activity.getApplicationContext(), TopicActivity.class);
+        Intent intent = new Intent(TOPIC_ACTIVITY_INTENT_KEY);
 		
 	 		intent.putExtra(TOPIC_ID_KEY, topicId);
         if (!TextUtils.isEmpty(navigateAction))
@@ -69,6 +71,7 @@ public class TopicActivity extends BaseActivity {
             intent.putExtra(TOPIC_TITLE_KEY, topicTitle);
 		if (!TextUtils.isEmpty(topicListTitle))
             intent.putExtra(TOPIC_LIST_TITLE_KEY, topicListTitle);
+		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         activity.startActivity(intent);
     }
 }

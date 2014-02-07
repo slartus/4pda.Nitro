@@ -34,16 +34,11 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:mimeType="vnd.android.cursor.dir/vnd.ru.pda.nitro.database.Groops" />
             </intent-filter>
+			<intent-filter> 
+				<action android:name="ru.pda.nitro.MAIN_ACTIVITY"></action> 
+				<category android:name="android.intent.category.DEFAULT"></category> 
+			</intent-filter>
         </activity>
-		<!--activity
-            android:name=".ui.SetDetailActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data android:mimeType="vnd.android.cursor.item/vnd.com.example.promo.provider.Наборы" />
-            </intent-filter>
-        </activity-->
-		
         <activity
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:name=".topicsview.TopicActivity"

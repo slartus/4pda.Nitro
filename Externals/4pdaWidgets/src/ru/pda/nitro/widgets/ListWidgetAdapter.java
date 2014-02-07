@@ -18,7 +18,8 @@ import android.view.*;
 import android.graphics.*;
 import android.os.*;
 import ru.forpda.interfaces.forum.*;
-import ru.pda.nitro.widgets.database.*;
+import ru.pda.nitro.database.*;
+import ru.pda.nitro.listfragments.*;
 
 public class ListWidgetAdapter implements RemoteViewsFactory
 {
@@ -65,6 +66,7 @@ public class ListWidgetAdapter implements RemoteViewsFactory
 	public RemoteViews getViewAt(final int position)
 	{
 		final RemoteViews rView = new RemoteViews(context.getPackageName(), R.layout.list_item);
+		if(data != null && data.size() > 0){
 		rView.setImageViewResource(R.id.imgFlag, 0);
 		if(data.get(position).getHasUnreadPosts())
 		rView.setImageViewResource(R.id.imgFlag, R.drawable.new_flag);
@@ -79,7 +81,7 @@ public class ListWidgetAdapter implements RemoteViewsFactory
 		clickIntent.putExtra(ListWidget.LIST_ITEM_POSITION_KEY, position);
 		
 		rView.setOnClickFillInIntent(R.id.linearStartPost, clickIntent);
-	
+		}
 		return rView;
 	}
 
@@ -98,34 +100,8 @@ public class ListWidgetAdapter implements RemoteViewsFactory
 	@Override
 	public void onDataSetChanged()
 	{
-		data = getLocalData();
+		data = TopicsListFragment.getLocalTopicsData(context, Contract.Favorite.CONTENT_URI);
 	}
-	
-	public ArrayList<Topic> getLocalData() {
-        data = new ArrayList<Topic>();
-            Cursor cursor = null;
-            try {
-                cursor = context.getContentResolver().query(Contract.Favorite.CONTENT_URI, null, null, null, Contract.Favorite.DEFAULT_SORT_ORDER);
-                if (cursor != null && cursor.moveToFirst()) {
-                    do {
-                        Topic topic = new Topic(null, null);
-                        topic.setDescription(cursor.getString(cursor.getColumnIndexOrThrow(Contract.Favorite.description)));
-                        topic.setForumTitle(cursor.getString(cursor.getColumnIndexOrThrow(Contract.Favorite.forumTitle)));
-                        topic.setHasUnreadPosts(cursor.getInt(cursor.getColumnIndexOrThrow(Contract.Favorite.hasUnreadPosts)) == 1 ? true : false);
-                        topic.setId(cursor.getString(cursor.getColumnIndexOrThrow(Contract.Favorite.id)));
-                        topic.setLastPostAuthor(cursor.getString(cursor.getColumnIndexOrThrow(Contract.Favorite.lastAvtor)));
-                        topic.setLastPostDate(cursor.getString(cursor.getColumnIndexOrThrow(Contract.Favorite.lastDate)));
-                        topic.setTitle(cursor.getString(cursor.getColumnIndexOrThrow(Contract.Favorite.title)));
-                        data.add(topic);
-                    } while (cursor.moveToNext());
-
-                }
-            } finally {
-                if (cursor != null)
-                    cursor.close();
-            }
-        return data;
-    }
 
 	@Override
 	public void onDestroy()

@@ -7,6 +7,7 @@ import android.net.*;
 import android.view.*;
 import android.widget.*;
 import ru.pda.nitro.widgets.*;
+import android.util.*;
 
 public class ListWidget extends AppWidgetProvider
 {
@@ -16,12 +17,10 @@ public class ListWidget extends AppWidgetProvider
 	private final String UPDATE_CURENT_WIDGETS = "ru.pda.nitro.widgets.ListWidget.UPDATE_CURENT_WIDGETS";
 	private final String WIDGETS_ID_KEY = "ru.pda.nitro.widgets.ListWidget.WIDGETS_ID_KEY";
 	private final String MAIN_ACTIVITY_INTENT_KEY = "ru.pda.nitro.MAIN_ACTIVITY";
-	public static final String TOPIC_ACTIVITY_INTENT_KEY = "ru.pda.nitro.topicsview.TOPIC_ACTIVITY";
 	
 	public final static String LIST_ITEM_POSITION_KEY = "ru.pda.nitro.widgets.ListWidget.LIST_ITEM_POSITION_KEY";
 	public final static String UPDATE_ALL_WIDGETS = "ru.pda.nitro.widgets.ListWidget.UPDATE_ALL_WIDGETS";
 	
-	public static boolean list_update = true;
 	public static boolean update = true;
 	
 	@Override
@@ -38,9 +37,7 @@ public class ListWidget extends AppWidgetProvider
 	void updateWidget(Context context, AppWidgetManager appWidgetManager,
 					  int appWidgetId)
 	{
-		RemoteViews rv = new RemoteViews(context.getPackageName(),
-										 R.layout.widget);
-
+		RemoteViews rv = new RemoteViews(context.getPackageName(), R.layout.widget);
 		
 		setUpdateTV(rv, context, appWidgetId);
 
@@ -50,7 +47,7 @@ public class ListWidget extends AppWidgetProvider
 
 		appWidgetManager.updateAppWidget(appWidgetId, rv);
 		
-		if(list_update)
+		if(update)
 		appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId,
 														R.id.lvList);
 	}
@@ -106,6 +103,7 @@ public class ListWidget extends AppWidgetProvider
 	public void onReceive(Context context, Intent intent)
 	{
 		super.onReceive(context, intent);
+		
 		int itemPos = intent.getIntExtra(LIST_ITEM_POSITION_KEY, -1);
 		if (itemPos != -1)
 		{
@@ -113,17 +111,9 @@ public class ListWidget extends AppWidgetProvider
 			if (intent.getAction().equalsIgnoreCase(START_TOPICK_KEY))
 			{
 				
-				Helper.startItem(context, itemPos);
+				WidgetsHelper.startItem(context, itemPos);
+				updateUllWidgets(context);
 				
-				ComponentName thisAppWidget = new ComponentName(
-					context.getPackageName(), getClass().getName());
-				AppWidgetManager appWidgetManager = AppWidgetManager
-					.getInstance(context);
-				int ids[] = appWidgetManager.getAppWidgetIds(thisAppWidget);
-				for (int appWidgetID : ids)
-				{
-					updateWidget(context, appWidgetManager, appWidgetID);
-				}
 			}
 		}
 		
@@ -134,7 +124,33 @@ public class ListWidget extends AppWidgetProvider
 			context.startActivity(i);
 		}
 		
+		if (intent.getAction().equalsIgnoreCase(UPDATE_CURENT_WIDGETS))
+		{
+					update = false;
+					int appWidgetId = intent.getIntExtra(WIDGETS_ID_KEY, -1);
+					
+					AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+					updateWidget(context, appWidgetManager, appWidgetId);
+						
+					context.startService(new Intent(context, UpdateWidgetsService.class));
 
+		}
+		
+		if(intent.getAction().equalsIgnoreCase(UPDATE_ALL_WIDGETS)){
+			update = true;
+			updateUllWidgets(context);
+		}
 	}
 
+	public void updateUllWidgets(Context context){
+		ComponentName thisAppWidget = new ComponentName(
+			context.getPackageName(), getClass().getName());
+		AppWidgetManager appWidgetManager = AppWidgetManager
+			.getInstance(context);
+		int ids[] = appWidgetManager.getAppWidgetIds(thisAppWidget);
+		for (int appWidgetID : ids)
+		{
+			updateWidget(context, appWidgetManager, appWidgetID);
+		}
+	}
 }

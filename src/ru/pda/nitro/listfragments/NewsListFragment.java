@@ -206,7 +206,7 @@ public class NewsListFragment extends BaseListFragment implements FragmentLifecy
 
 		if (newsUrl.equals(""))
 		{
-			deleteAllLocalData(getUri());
+			deleteAllLocalData(getActivity(),getUri());
 			ContentValues cv = new ContentValues();
 			for(News topic : newsList){
 			cv.put(Contract.News.description, topic.getDescription().toString());
