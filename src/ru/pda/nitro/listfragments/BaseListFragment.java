@@ -26,6 +26,10 @@ import ru.pda.nitro.bricks.FavoritesBrick;
 import ru.pda.nitro.bricks.GroopsBrick;
 import ru.pda.nitro.bricks.NewsBrick;
 import android.content.*;
+import android.os.*;
+import android.widget.*;
+import ru.pda.nitro.*;
+import ru.pda.nitro.adapters.*;
 
 
 /**
@@ -152,6 +156,16 @@ public abstract class BaseListFragment extends BaseFragment
 
         }
     }
+	
+	public void updateAdapter(BaseListAdapter adapter){
+		adapter.notifyDataSetChanged();
+		WidgetsHelper.updateAllWidgets(getActivity());
+
+	}
+	
+	public void setDataInAdapter(BaseListAdapter adapter, ArrayList<IListItem> data){
+		adapter.setData(data);
+	}
 
 
     public void showFooter(boolean show)
@@ -246,21 +260,26 @@ public abstract class BaseListFragment extends BaseFragment
 		if(task != null)
 			task.cancel(true);
 	}
-	
-	
-	
 
-    protected void setFrom(int from)
-	{}
+	@Override
+	public void onStart()
+	{
+		super.onStart();
+		getLocalDataOnStart();
+	}
+	
+	
+	
+	
+	protected void getLocalDataOnStart(){}
 
-    protected void setNextPage()
-	{}
+    protected void setFrom(int from){}
+
+    protected void setNextPage(){}
 
     public abstract ArrayList<? extends IListItem> getList() throws ParseException, IOException;
 
 	public abstract Uri getUri();
-
-    public abstract void getData();
 
     public abstract boolean inBackground();
 

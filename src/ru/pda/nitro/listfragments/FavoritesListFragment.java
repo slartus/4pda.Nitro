@@ -92,8 +92,17 @@ public class FavoritesListFragment extends TopicsListFragment implements OnScrol
 		listView.setOnScrollListener(this);
 		
 		getPullToRefreshAttacher(listView);
-		getData();
+
 	}
+
+	@Override
+	public void onResume()
+	{
+		getData();
+		super.onResume();
+	}
+	
+	
 
 	@Override
 	protected boolean getTopics() throws Throwable
@@ -126,7 +135,7 @@ public class FavoritesListFragment extends TopicsListFragment implements OnScrol
 		else
 		{
 			setFrom(getFrom());
-			topics = getLocalTopicsData(getActivity(), getUri());
+		//	topics = getLocalTopicsData(getActivity(), getUri());
 			
 			setOutCount(getOutCount());
 			if (topics.size() == 0)
@@ -181,5 +190,5 @@ public class FavoritesListFragment extends TopicsListFragment implements OnScrol
 
     }
 
-	
+
 }

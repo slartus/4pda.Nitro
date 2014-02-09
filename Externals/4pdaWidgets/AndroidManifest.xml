@@ -50,6 +50,9 @@
 			<intent-filter>
 				<action android:name="ru.pda.nitro.widgets.action.LIST_WIDGETS_ACTION_KEY"/>
 			</intent-filter>
+			<intent-filter>
+				<action android:name="ru.pda.nitro.widgets.ListWidget.UPDATE_ALL_WIDGETS"/>
+			</intent-filter>
 			<meta-data
 				android:name="android.appwidget.provider"
 				android:resource="@xml/list_widget_metadata">

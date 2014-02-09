@@ -8,6 +8,7 @@ import android.view.*;
 import android.widget.*;
 import ru.pda.nitro.widgets.*;
 import android.util.*;
+import ru.pda.nitro.*;
 
 public class ListWidget extends AppWidgetProvider
 {
@@ -19,7 +20,6 @@ public class ListWidget extends AppWidgetProvider
 	private final String MAIN_ACTIVITY_INTENT_KEY = "ru.pda.nitro.MAIN_ACTIVITY";
 	
 	public final static String LIST_ITEM_POSITION_KEY = "ru.pda.nitro.widgets.ListWidget.LIST_ITEM_POSITION_KEY";
-	public final static String UPDATE_ALL_WIDGETS = "ru.pda.nitro.widgets.ListWidget.UPDATE_ALL_WIDGETS";
 	
 	public static boolean update = true;
 	
@@ -136,7 +136,7 @@ public class ListWidget extends AppWidgetProvider
 
 		}
 		
-		if(intent.getAction().equalsIgnoreCase(UPDATE_ALL_WIDGETS)){
+		if(intent.getAction().equalsIgnoreCase(WidgetsHelper.UPDATE_ALL_WIDGETS)){
 			update = true;
 			updateUllWidgets(context);
 		}

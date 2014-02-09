@@ -15,7 +15,7 @@ import com.nostra13.universalimageloader.cache.disc.naming.HashCodeFileNameGener
 import android.graphics.Bitmap;
 import android.graphics.*;
 
-public class NewsListAdapter extends BaseAdapter
+public class NewsListAdapter extends BaseListAdapter
 {
 	private NewsList newsList;
 	private Typeface face;
@@ -40,9 +40,11 @@ public class NewsListAdapter extends BaseAdapter
 			.build();
 		
 	}
-	
-	public void setData(NewsList data){
-		this.newsList = data;
+
+	@Override
+	public void setData(ArrayList<? extends IListItem> data)
+	{
+		this.newsList = (NewsList) data;
 	}
 	
 	@Override

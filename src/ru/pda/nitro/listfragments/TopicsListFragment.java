@@ -36,6 +36,9 @@ import ru.pda.nitro.dialogs.ThemeOptionsDialogFragment;
 import ru.pda.nitro.topicsview.TopicActivity;
 import android.net.*;
 import android.content.*;
+import ru.pda.nitro.WidgetsHelper;
+import ru.pda.nitro.*;
+import android.widget.*;
 
 
 /**
@@ -49,7 +52,13 @@ public abstract class TopicsListFragment extends BaseListFragment {
     public static final int NAVIGATE_DIALOG_FRAGMENT = 1;
     private int selectedItem;
 
+	@Override
+	public void onActivityCreated(Bundle savedInstanceState)
+	{
+		super.onActivityCreated(savedInstanceState);
+	}
 
+	
     @Override
     public ArrayList<? extends IListItem> getList() throws ParseException, IOException {
         return getTopicsList();
@@ -68,7 +77,7 @@ public abstract class TopicsListFragment extends BaseListFragment {
             return;
         }
 
-        showTopicActivity(i, topic, navigateAction);
+       showTopicActivity(i, topic, navigateAction);
     }
 
 
@@ -149,8 +158,7 @@ public abstract class TopicsListFragment extends BaseListFragment {
     private void showTopicActivity(int i, Topic topic, CharSequence navigateAction) {
         topic.setHasUnreadPosts(false);
         updateItem(getActivity(),i);
-        adapter.notifyDataSetChanged();
-
+        updateAdapter(adapter);
         TopicActivity.show(getActivity(), topic.getId(), topic.getTitle(), getTitle(), navigateAction);
     }
 
@@ -202,10 +210,8 @@ public abstract class TopicsListFragment extends BaseListFragment {
 
         if (!getCount())
             showFooter(false);
-
-        adapter.setData(topics);
-        adapter.notifyDataSetChanged();
-
+		setDataInAdapter(adapter, (ArrayList<IListItem>)topics);
+        updateAdapter(adapter);	
     }
 
     public int getFrom() {
@@ -387,5 +393,11 @@ public abstract class TopicsListFragment extends BaseListFragment {
 
 
     }
-
+	@Override
+	public void getLocalDataOnStart()
+	{
+		topics = getLocalTopicsData(getActivity(), getUri());
+		setDataInAdapter(adapter,(ArrayList<IListItem>)topics);
+		updateAdapter(adapter);
+	}
 }

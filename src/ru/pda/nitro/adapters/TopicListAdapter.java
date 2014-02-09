@@ -11,9 +11,10 @@ import android.content.*;
 import android.util.*;
 import ru.forpda.common.*;
 import android.graphics.*;
+import ru.forpda.interfaces.forum.*;
 
 
-public class TopicListAdapter extends BaseAdapter
+public class TopicListAdapter extends BaseListAdapter
 {
 
 	private Context context;
@@ -29,9 +30,11 @@ public class TopicListAdapter extends BaseAdapter
 		this.context = context;
 		this.topics = topics;
 	}
-	
-	public void setData(ArrayList<Topic> data){
-		this.topics = data;
+
+	@Override
+	public void setData(ArrayList<IListItem> data)
+	{
+		this.topics = (ArrayList<Topic>) data;
 	}
 	
 	@Override

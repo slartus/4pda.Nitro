@@ -38,6 +38,7 @@ public class NewsListFragment extends BaseListFragment implements FragmentLifecy
     private NewsList newsList = null;
     private String newsUrl = "";
     private NewsListAdapter adapter;
+	private boolean localNews = false;
 
     @Override
     public ArrayList<? extends IListItem> getList()
@@ -95,10 +96,19 @@ public class NewsListFragment extends BaseListFragment implements FragmentLifecy
         listView.setOnScrollListener(this);
 		if (position == 0){
 			getPullToRefreshAttacher(listView);
-			getData();
 		}
     }
 
+	@Override
+	public void onResume()
+	{
+		super.onResume();
+		if(position == 0){
+			getData();
+		}
+	}
+	
+	
 
 	@Override
 	public void onResumeFragment()
@@ -114,7 +124,7 @@ public class NewsListFragment extends BaseListFragment implements FragmentLifecy
         try
 		{
 
-			if (!isRefresh() && !isLoadmore() && getLocalData())
+			if (!isRefresh() && !isLoadmore() && localNews)
 			{
 				setLoading(false);				
 				return true;
@@ -147,9 +157,11 @@ public class NewsListFragment extends BaseListFragment implements FragmentLifecy
     @Override
     public void inExecute()
 	{
-        adapter.setData(newsList);
-        adapter.notifyDataSetChanged();
+		setDataInAdapter(adapter, (ArrayList<IListItem>) newsList);
+        updateAdapter(adapter);
     }
+	
+	
 
     public void getData()
 	{
@@ -178,6 +190,18 @@ public class NewsListFragment extends BaseListFragment implements FragmentLifecy
 
     }
 
+	@Override
+	public void getLocalDataOnStart()
+	{
+		newsList.clear();
+		localNews = getLocalData();
+		if(localNews){
+			setDataInAdapter(adapter, (ArrayList<IListItem>)newsList);
+			updateAdapter(adapter);
+		}
+	}
+
+	
 
     public boolean getLocalData()
 	{
