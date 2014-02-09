@@ -65,7 +65,6 @@ public class TopicListAdapter extends BaseListAdapter
 		if(view == null){
 			view = inflater.inflate(R.layout.list_item, p3, false);
 			holder = new ViewHolder();
-			holder.imageFlag = (ImageView)view.findViewById(R.id.imgFlag);
 			holder.textAutor = (TextView)view.findViewById(R.id.textViewAutor);
 			holder.textDate = (TextView)view.findViewById(R.id.textViewDate);
 			holder.textDescription = (TextView)view.findViewById(R.id.textViewDescription);
@@ -83,15 +82,14 @@ public class TopicListAdapter extends BaseListAdapter
 		holder.textDescription.setText(topic.getDescription());
 		holder.textForumTitle.setText(topic.getForumTitle());
 		holder.textTitle.setText(topic.getTitle());
-		holder.imageFlag.setImageDrawable(null);
+		holder.textTitle.setTextColor(Color.parseColor("#000000"));
 		if(topic.getHasUnreadPosts()){
-			holder.imageFlag.setImageResource(R.drawable.new_flag);
-			}
+			holder.textTitle.setTextColor(Color.parseColor("#33B5E5"));
+		}
 
 		return view;
 	}
 	public class ViewHolder{
-		public ImageView imageFlag;
 		public TextView textTitle;
 		public TextView textDate;
 		public TextView textDescription;

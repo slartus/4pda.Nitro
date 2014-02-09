@@ -42,7 +42,7 @@
 		<service android:process=":updateTopics" android:enabled="true" android:name=".UpdateWidgetsService"/>
 		
 		<receiver
-			android:name=".ListWidget"
+			android:name=".TopicsWidget"
 			android:label="4pda Избранное">
 			<intent-filter>
 				<action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>

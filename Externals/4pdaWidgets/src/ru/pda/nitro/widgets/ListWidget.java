@@ -9,11 +9,14 @@ import android.widget.*;
 import ru.pda.nitro.widgets.*;
 import android.util.*;
 import ru.pda.nitro.*;
+import ru.forpda.interfaces.*;
+import java.util.*;
+import ru.forpda.interfaces.forum.*;
 
-public class ListWidget extends AppWidgetProvider
+public abstract class ListWidget extends AppWidgetProvider
 {
-
-	private final String START_TOPICK_KEY = "ru.pda.nitro.widgets.ListWidget.START_TOPICK_KEY";
+	public final static String LIST_WIDGET_ACTION_KEY = "ru.pda.nitro.widgets.ListWidtet.LIST_WIDGET_ACTION_KEY";
+	public final String START_TOPICK_KEY = "ru.pda.nitro.widgets.ListWidget.START_TOPICK_KEY";
 	private final String START_APP_KEY = "ru.pda.nitro.widgets.ListWidget.START_APP_KEY";
 	private final String UPDATE_CURENT_WIDGETS = "ru.pda.nitro.widgets.ListWidget.UPDATE_CURENT_WIDGETS";
 	private final String WIDGETS_ID_KEY = "ru.pda.nitro.widgets.ListWidget.WIDGETS_ID_KEY";
@@ -63,7 +66,7 @@ public class ListWidget extends AppWidgetProvider
 			rv.setViewVisibility(R.id.progressBar, View.VISIBLE);
 		}
 			
-		Intent updIntent=  new Intent(context, ListWidget.class);
+		Intent updIntent=  new Intent(context, getCurrentClass());
 		updIntent.setAction(UPDATE_CURENT_WIDGETS);
 		updIntent.putExtra(WIDGETS_ID_KEY, appWidgetId);
 		Uri adata = Uri.parse(updIntent.toUri(Intent.URI_INTENT_SCHEME));
@@ -71,7 +74,7 @@ public class ListWidget extends AppWidgetProvider
 		PendingIntent updPIntent = PendingIntent.getBroadcast(context, 0, updIntent, 0);
 		rv.setOnClickPendingIntent(R.id.ivUpdate, updPIntent);
 		
-		Intent startIntent=  new Intent(context, ListWidget.class);
+		Intent startIntent=  new Intent(context, getCurrentClass());
 		startIntent.setAction(START_APP_KEY);
 		Uri startdata = Uri.parse(startIntent.toUri(Intent.URI_INTENT_SCHEME));
 		startIntent.setData(startdata);
@@ -79,26 +82,16 @@ public class ListWidget extends AppWidgetProvider
 		rv.setOnClickPendingIntent(R.id.ivIcon, startPIntent);
 
 	}
+	public abstract Class<? extends ListWidget> getCurrentClass();
 
-	void setList(RemoteViews rv, Context context, int appWidgetId)
-	{
-		Intent adapter = new Intent(context, ListWidgetService.class);
-		adapter.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
-		Uri data = Uri.parse(adapter.toUri(Intent.URI_INTENT_SCHEME));
-		adapter.setData(data);
-		rv.setRemoteAdapter(R.id.lvList, adapter);
+	public abstract void setList(RemoteViews rv, Context context, int appWidgetId);
+
+	public abstract void setListClick(RemoteViews rv, Context context, int appWidgetId);
+	
+	public static ArrayList<IListItem> inBackground(){
+		return null;
 	}
-
-	void setListClick(RemoteViews rv, Context context, int appWidgetId)
-	{
-		Intent listClickIntent = new Intent(context, ListWidget.class);
-		listClickIntent.setAction(START_TOPICK_KEY);
-		PendingIntent listClickPIntent = PendingIntent.getBroadcast(context, 0,
-																	listClickIntent, 0);
-		rv.setPendingIntentTemplate(R.id.lvList, listClickPIntent);
-
-	}
-
+	
 	@Override
 	public void onReceive(Context context, Intent intent)
 	{

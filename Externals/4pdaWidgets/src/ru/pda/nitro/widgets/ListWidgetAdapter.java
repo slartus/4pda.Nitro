@@ -21,12 +21,11 @@ import ru.forpda.interfaces.forum.*;
 import ru.pda.nitro.database.*;
 import ru.pda.nitro.listfragments.*;
 
-public class ListWidgetAdapter implements RemoteViewsFactory
+public abstract class ListWidgetAdapter implements RemoteViewsFactory
 {
 
-	ArrayList<Topic> data;
+	ArrayList<IListItem> data;
 	Context context;
-	SimpleDateFormat sdf;
 	int widgetID;
 
 	ListWidgetAdapter(Context ctx, Intent intent)
@@ -39,11 +38,9 @@ public class ListWidgetAdapter implements RemoteViewsFactory
 	@Override
 	public void onCreate()
 	{
-		
-		data = new ArrayList<Topic>();
-	
+		data = getList();
 	}
-
+	
 	@Override
 	public int getCount()
 	{
@@ -65,26 +62,10 @@ public class ListWidgetAdapter implements RemoteViewsFactory
 	@Override
 	public RemoteViews getViewAt(final int position)
 	{
-		final RemoteViews rView = new RemoteViews(context.getPackageName(), R.layout.list_item);
-		if(data != null && data.size() > 0){
-		rView.setImageViewResource(R.id.imgFlag, 0);
-		if(data.get(position).getHasUnreadPosts())
-		rView.setImageViewResource(R.id.imgFlag, R.drawable.new_flag);
-		
-		rView.setTextViewText(R.id.textViewAutor, data.get(position).getLastPostAuthor());
-		rView.setTextViewText(R.id.textViewDate, data.get(position).getLastPostDate());
-		rView.setTextViewText(R.id.textViewDescription, data.get(position).getDescription());
-		rView.setTextViewText(R.id.textViewForumTitle, data.get(position).getForumTitle());
-		rView.setTextViewText(R.id.textViewTitle, data.get(position).getTitle());
-		
-		Intent clickIntent = new Intent();
-		clickIntent.putExtra(ListWidget.LIST_ITEM_POSITION_KEY, position);
-		
-		rView.setOnClickFillInIntent(R.id.linearStartPost, clickIntent);
-		}
-		return rView;
+		return getView(position);
 	}
-
+	
+	
 	@Override
 	public int getViewTypeCount()
 	{
@@ -100,8 +81,12 @@ public class ListWidgetAdapter implements RemoteViewsFactory
 	@Override
 	public void onDataSetChanged()
 	{
-		data = TopicsListFragment.getLocalTopicsData(context, Contract.Favorite.CONTENT_URI);
+		data = getData();
 	}
+	
+	public abstract ArrayList<IListItem> getData();
+	public abstract ArrayList<IListItem> getList();
+	public abstract RemoteViews getView(int position);
 
 	@Override
 	public void onDestroy()

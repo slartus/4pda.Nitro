@@ -4,25 +4,11 @@
 	android:layout_height="wrap_content"
 	android:layout_width="match_parent"
 	android:background="#e0e0e0"
-	android:paddingLeft="2dip"
-	android:paddingTop="2dp"
+	android:paddingLeft="5dip"
+	android:paddingTop="5dp"
 	android:paddingBottom="2dp"
 	android:paddingRight="5dp"
 	android:orientation="vertical">
-
-	<LinearLayout
-		android:layout_height="wrap_content"
-		android:layout_width="match_parent"
-		android:orientation="horizontal">
-			<ImageView
-				android:id="@+id/imgFlag"
-				android:layout_width="4dip"
-				android:layout_height="fill_parent"
-				android:scaleType="centerCrop"
-				android:lines="3"
-				android:layout_marginRight="2dip"
-				android:layout_marginBottom="5dp"
-				android:minLines="3"/>
 
 		<FrameLayout
 			android:layout_height="wrap_content"
@@ -72,7 +58,6 @@
 					</LinearLayout>
 
 					<TextView
-						android:textColor="#400000"
 						android:id="@+id/textViewTitle"
 						android:layout_width="fill_parent"
 						android:layout_height="wrap_content"
@@ -132,8 +117,6 @@
 				android:orientation="vertical"/>
 
 		</FrameLayout>
-
-	</LinearLayout>
 
 </LinearLayout>
 
