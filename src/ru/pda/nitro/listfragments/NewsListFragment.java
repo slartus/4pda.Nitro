@@ -89,24 +89,27 @@ public class NewsListFragment extends BaseListFragment implements FragmentLifecy
         super.onActivityCreated(savedInstanceState);
 		newsUrl = getArguments().getString("_url");
 		position = getArguments().getInt("_position");
+		
 		newsList = new NewsList(new HttpHelper(App.getInstance()), newsUrl);
 		adapter = new NewsListAdapter(getActivity(), newsList, imageLoader);
-        listView.addFooterView(initialiseFooter());
+        
+		listView.addFooterView(initialiseFooter());
         listView.setAdapter(adapter);
         listView.setOnScrollListener(this);
 		if (position == 0){
 			getPullToRefreshAttacher(listView);
+			getData();
 		}
     }
 
-	@Override
+/*	@Override
 	public void onResume()
 	{
 		super.onResume();
 		if(position == 0){
 			getData();
 		}
-	}
+	}*/
 	
 	
 
@@ -124,7 +127,7 @@ public class NewsListFragment extends BaseListFragment implements FragmentLifecy
         try
 		{
 
-			if (!isRefresh() && !isLoadmore() && localNews)
+			if (!isRefresh() && !isLoadmore() && getLocalNewsData())
 			{
 				setLoading(false);				
 				return true;
@@ -140,7 +143,7 @@ public class NewsListFragment extends BaseListFragment implements FragmentLifecy
 			}
 			
 			newsList.loadNextNewsPage();
-			setLocalData(newsList);
+			setLocalData(getActivity(),newsList, getUri(), newsUrl);
 			return true;
 
         }
@@ -190,49 +193,49 @@ public class NewsListFragment extends BaseListFragment implements FragmentLifecy
 
     }
 
-	@Override
+/*	@Override
 	public void getLocalDataOnStart()
 	{
 		newsList.clear();
-		localNews = getLocalData();
+		localNews = getLocalNewsData();
 		if(localNews){
 			setDataInAdapter(adapter, (ArrayList<IListItem>)newsList);
 			updateAdapter(adapter);
 		}
-	}
+	}*/
 
 	
 
-    public boolean getLocalData()
+    public boolean getLocalNewsData()
 	{
+		
         if (newsUrl.equals(""))
 		{
-			Cursor cursor = getActivity().getContentResolver().query(Contract.News.CONTENT_URI, null, null, null, Contract.Favorite.DEFAULT_SORT_ORDER);
-			if(LocalDataHelper.getLocalNews(cursor) != null){
-			for(News item : LocalDataHelper.news){
+			Cursor cursor = null;
+			try{
+			cursor = getActivity().getContentResolver().query(Contract.News.CONTENT_URI, null, null, null, Contract.Favorite.DEFAULT_SORT_ORDER);
+			for(News item : LocalDataHelper.getLocalNews(cursor)){
 				newsList.add(item);
 			}
 			
-			cursor.close();
 			return true;
-			}else{
-				cursor.close();
-				return false;
-			}
 			
-			
+			} finally {
+                if (cursor != null)
+                    cursor.close();
+            }
 		}
         return false;
     }
 
-    public void setLocalData(NewsList topics)
+    public static void setLocalData(Context context, ArrayList<News> topics, Uri uri, String url)
 	{
 
-		if (newsUrl.equals(""))
+		if (url.equals(""))
 		{
-			deleteAllLocalData(getActivity(),getUri());
+			deleteAllLocalData(context,uri);
 			ContentValues cv = new ContentValues();
-			for(News topic : newsList){
+			for(News topic : topics){
 			cv.put(Contract.News.description, topic.getDescription().toString());
 			cv.put(Contract.News.title, topic.getTitle().toString());
 			cv.put(Contract.News.id, topic.getId().toString());
@@ -251,7 +254,7 @@ public class NewsListFragment extends BaseListFragment implements FragmentLifecy
 			cv.put(Contract.News.tagName, topic.getTagName().toString());
 			cv.put(Contract.News.tagTitle, topic.getTagTitle().toString());
 			}
-			getActivity().getContentResolver().insert(getUri(), cv);
+			context.getContentResolver().insert(uri, cv);
 			}
 		}
     }

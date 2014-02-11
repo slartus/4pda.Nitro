@@ -38,6 +38,7 @@ public abstract class ListWidgetAdapter implements RemoteViewsFactory
 	@Override
 	public void onCreate()
 	{
+		App.getInstance().setWidgetsCount(App.getInstance().getWidgetsCount() + 1);
 		data = getList();
 	}
 	
@@ -91,7 +92,6 @@ public abstract class ListWidgetAdapter implements RemoteViewsFactory
 	@Override
 	public void onDestroy()
 	{
-
 	}
 
 }

@@ -6,10 +6,13 @@ import java.io.*;
 import android.widget.*;
 import java.util.*;
 import ru.forpda.interfaces.*;
-import ru.pda.nitro.*;
+import ru.pda.nitro.WidgetsHelper;
+import android.util.*;
 
 public class UpdateWidgetsService extends Service
 {
+	public MyBinder binder = new MyBinder();
+	
 	@Override
 	public void onCreate()
 	{
@@ -20,51 +23,79 @@ public class UpdateWidgetsService extends Service
 	public int onStartCommand(Intent intent, int flags, int startId)
 	{
 		
-		UpdateData(this);
 		return Service.START_STICKY;
 	}
 	
-	
-	
-	public static void UpdateData(Context context){
-		Update update = new Update(context);
+	public void UpdateData(Context context, String listKey){
+		Update update = new Update(context, listKey);
 		update.execute();
 	}
 
 
 	public static class Update extends AsyncTask<Void, Void, ArrayList<? extends ListInfo>>
 	{
+
 		private Context context;
+		private String listKey;
 
-		public Update(Context context){
+		public Update(Context context, String listKey){
 			this.context = context;
+			this.listKey = listKey;
 		}
-
+		
 		@Override
-		protected ArrayList<ListInfo> doInBackground(Void[] p1)
+		protected ArrayList<? extends ListInfo> doInBackground(Void[] p1)
 		{
-
-			return TopicsWidget.inBackground();
+			switch(listKey){
+				case TopicsWidget.TOPICS_WIDGET_KEY:
+					return TopicsWidget.inBackground();
+				case NewsWidget.NEWS_WIDGET_KEY:
+					return NewsWidget.inBackground();
+			}
+			return null;
 		}
+		
 
 		@Override
 		protected void onPostExecute(ArrayList<ListInfo> result)
 		{
 			super.onPostExecute(result);
 			if(result != null){
-				TopicsWidget.inPostExecute(context, result);
+				switch(listKey){
+					case TopicsWidget.TOPICS_WIDGET_KEY:
+						TopicsWidget.inPostExecute(context, result);
+					break;
+					case NewsWidget.NEWS_WIDGET_KEY:
+					   NewsWidget.inPostExecute(context, result);
+					break;
+				}
 			}
-			context.stopService(new Intent(context, UpdateWidgetsService.class));
-			WidgetsHelper.updateAllWidgets(context);
+		WidgetsHelper.updateAllWidgets(context);
 		}
 
 
 	}
 	
-	@Override
-	public IBinder onBind(Intent p1)
+	public IBinder onBind(Intent intent)
 	{
-		return null;
+		return binder;
 	}
 
+	public void onRebind(Intent intent)
+	{
+		super.onRebind(intent);
+	}
+
+	public boolean onUnbind(Intent intent)
+	{
+		return true;
+	}
+
+	public class MyBinder extends Binder
+	{
+		public UpdateWidgetsService getService()
+		{ 
+			return UpdateWidgetsService.this; 
+		} 
+	}
 }

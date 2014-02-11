@@ -8,10 +8,11 @@ import android.view.*;
 import android.widget.*;
 import ru.pda.nitro.widgets.*;
 import android.util.*;
-import ru.pda.nitro.*;
+import ru.pda.nitro.WidgetsHelper;
 import ru.forpda.interfaces.*;
 import java.util.*;
 import ru.forpda.interfaces.forum.*;
+import android.os.*;
 
 public abstract class ListWidget extends AppWidgetProvider
 {
@@ -21,15 +22,41 @@ public abstract class ListWidget extends AppWidgetProvider
 	private final String UPDATE_CURENT_WIDGETS = "ru.pda.nitro.widgets.ListWidget.UPDATE_CURENT_WIDGETS";
 	private final String WIDGETS_ID_KEY = "ru.pda.nitro.widgets.ListWidget.WIDGETS_ID_KEY";
 	private final String MAIN_ACTIVITY_INTENT_KEY = "ru.pda.nitro.MAIN_ACTIVITY";
-	
+
 	public final static String LIST_ITEM_POSITION_KEY = "ru.pda.nitro.widgets.ListWidget.LIST_ITEM_POSITION_KEY";
 	
 	public static boolean update = true;
+
+	@Override
+	public void onEnabled(Context context)
+	{
+		super.onEnabled(context);
+		
+	}
+
+	@Override
+	public void onDisabled(Context context)
+	{
+		super.onDisabled(context);
+		App.getInstance().stopMyServise();
+	}
+
+	@Override
+	public void onDeleted(Context context, int[] appWidgetIds)
+	{
+		super.onDeleted(context, appWidgetIds);
+		App.getInstance().setWidgetsCount(App.getInstance().getWidgetsCount() - 1);
+		
+	}
+	
+	
+	
 	
 	@Override
 	public void onUpdate(Context context, AppWidgetManager appWidgetManager,
 						 int[] appWidgetIds)
 	{
+		
 		super.onUpdate(context, appWidgetManager, appWidgetIds);
 		for (int i : appWidgetIds)
 		{
@@ -58,6 +85,7 @@ public abstract class ListWidget extends AppWidgetProvider
 	void setUpdateTV(RemoteViews rv, Context context, int appWidgetId)
 	{
 	
+		rv.setTextViewText(R.id.textViewWidgetTitle, getWidgetTitle());
 		if(update){
 			rv.setViewVisibility(R.id.ivUpdate, View.VISIBLE);
 			rv.setViewVisibility(R.id.progressBar, View.GONE);
@@ -88,9 +116,9 @@ public abstract class ListWidget extends AppWidgetProvider
 
 	public abstract void setListClick(RemoteViews rv, Context context, int appWidgetId);
 	
-	public static ArrayList<IListItem> inBackground(){
-		return null;
-	}
+	public abstract String getListKey();
+	
+	public abstract String getWidgetTitle();
 	
 	@Override
 	public void onReceive(Context context, Intent intent)
@@ -124,9 +152,8 @@ public abstract class ListWidget extends AppWidgetProvider
 					
 					AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
 					updateWidget(context, appWidgetManager, appWidgetId);
-						
-					context.startService(new Intent(context, UpdateWidgetsService.class));
-
+					
+					App.getInstance().getMyServise().UpdateData(context, getListKey());
 		}
 		
 		if(intent.getAction().equalsIgnoreCase(WidgetsHelper.UPDATE_ALL_WIDGETS)){
@@ -146,4 +173,5 @@ public abstract class ListWidget extends AppWidgetProvider
 			updateWidget(context, appWidgetManager, appWidgetID);
 		}
 	}
+	
 }

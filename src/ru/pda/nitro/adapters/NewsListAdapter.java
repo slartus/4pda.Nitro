@@ -17,14 +17,14 @@ import android.graphics.*;
 
 public class NewsListAdapter extends BaseListAdapter
 {
-	private NewsList newsList;
+	private ArrayList<News> newsList;
 	private Typeface face;
 	private Context context;
 	final LayoutInflater inflater;
 	private DisplayImageOptions options;
 	private ImageLoader imageLoader;
 	
-	public NewsListAdapter(Context context, NewsList newsList, ImageLoader imageLoader){
+	public NewsListAdapter(Context context, ArrayList<News> newsList, ImageLoader imageLoader){
 		inflater = (LayoutInflater)context.getSystemService(context.LAYOUT_INFLATER_SERVICE);
 		face = Typeface.createFromAsset(context.getAssets(), "4pda/fonts/RobotoSlab-Light.ttf");
 		this.imageLoader = imageLoader;

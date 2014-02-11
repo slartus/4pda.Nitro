@@ -11,6 +11,9 @@ public class ListWidgetService extends RemoteViewsService {
 		switch(intent.getStringExtra(LIST_WIDGET_KEY)){
 			case TopicsWidget.TOPICS_WIDGET_KEY:
 				return new TopicsAdapter(getApplicationContext(), intent);
+			case NewsWidget.NEWS_WIDGET_KEY:
+				return new NewsAdapter(getApplicationContext(), intent);
+				
 		}
 		return null;
 	}

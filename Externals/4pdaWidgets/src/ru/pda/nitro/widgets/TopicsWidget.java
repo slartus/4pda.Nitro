@@ -7,16 +7,30 @@ import java.util.*;
 import ru.forpda.interfaces.forum.*;
 import ru.forpda.api.*;
 import ru.forpda.http.*;
-import ru.pda.nitro.*;
 import ru.forpda.interfaces.*;
 import java.io.IOException;
 import android.net.Uri;
 import java.text.ParseException;
 import ru.pda.nitro.listfragments.*;
 import ru.pda.nitro.database.*;
+import ru.pda.nitro.topicsview.*;
 
 public class TopicsWidget extends ListWidget
 {
+
+	@Override
+	public String getWidgetTitle()
+	{
+		return "Избранное";
+	}
+
+
+	@Override
+	public String getListKey()
+	{
+		return TOPICS_WIDGET_KEY;
+	}
+
 
 
 	public final static String TOPICS_WIDGET_KEY = "ru.pda.nitro.widgets.TopicsWidget.TOPICS_WIDGET_KEY";
@@ -54,7 +68,7 @@ public class TopicsWidget extends ListWidget
         return TopicsApi.getFavorites(new HttpHelper(App.getInstance()), listInfo);
     }
 	
-	public static ArrayList<ListInfo> inBackground(){
+	public static ArrayList<? extends ListInfo> inBackground(){
 
 		try
 		{

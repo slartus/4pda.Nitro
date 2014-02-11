@@ -15,9 +15,8 @@ public class LocalDataHelper
 			do{
 				news.add(getNewsItem(cursor));
 			}while(cursor.moveToNext());
-			return news;
 		}
-			return null;
+		return news;
 	}
 	
 	
