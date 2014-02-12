@@ -23,11 +23,11 @@
 			android:layout_width="fill_parent"
 			android:orientation="vertical">
 
-			<!--ImageView
+			<ImageView
 				android:id="@+id/imageImage"
 				android:scaleType="centerInside"
 				android:layout_height="wrap_content"
-				android:layout_width="match_parent"/-->
+				android:layout_width="match_parent"/>
 
 
 			<LinearLayout

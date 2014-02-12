@@ -8,12 +8,26 @@ import ru.pda.nitro.listfragments.*;
 import android.database.*;
 import ru.pda.nitro.database.*;
 import android.view.*;
+/*
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.ImageSize;
+import com.nostra13.universalimageloader.core.assist.SimpleImageLoadingListener;
+import com.nostra13.universalimageloader.core.display.FakeBitmapDisplayer;
+import android.graphics.*;
+*/
 
 public class NewsAdapter extends ListWidgetAdapter
 {
 	private ArrayList<News> data = new ArrayList<News>();
 	Context context;
 	int widgetID;
+	
+/*	private static DisplayImageOptions optionsWithFakeDisplayer;
+
+	static {
+		optionsWithFakeDisplayer = new DisplayImageOptions.Builder().displayer(new FakeBitmapDisplayer()).build();
+	}*/
 
 	NewsAdapter(Context ctx, Intent intent)
 	{
@@ -61,6 +75,22 @@ public class NewsAdapter extends ListWidgetAdapter
 
 			Intent clickIntent = new Intent();
 			clickIntent.putExtra(ListWidget.LIST_ITEM_POSITION_KEY, position);
+			
+		/*	ImageSize minImageSize = new ImageSize(70, 70); // 70 - approximate size of ImageView in widget
+			ImageLoader.getInstance().loadImage(item.getImgUrl().toString(), minImageSize, optionsWithFakeDisplayer, new SimpleImageLoadingListener() {
+					@Override
+					public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+						rView.setImageViewBitmap(R.id.imageImage, loadedImage);
+				//		appWidgetManager.updateAppWidget(appWidgetId, views);
+					}
+				});
+			ImageLoader.getInstance().loadImage(IMAGES[1], minImageSize, optionsWithFakeDisplayer, new SimpleImageLoadingListener() {
+					@Override
+					public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+						rView.setImageViewBitmap(R.id.image_right, loadedImage);
+				//		appWidgetManager.updateAppWidget(appWidgetId, views);
+					}
+				});*/
 
 			rView.setOnClickFillInIntent(R.id.linearStartPost, clickIntent);
 		}
@@ -68,3 +98,42 @@ public class NewsAdapter extends ListWidgetAdapter
 	}
 
 }
+/*
+
+
+public class UILWidgetProvider extends AppWidgetProvider {
+
+	
+
+	@Override
+	public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
+		UILApplication.initImageLoader(context);
+
+		final int widgetCount = appWidgetIds.length;
+		for (int i = 0; i < widgetCount; i++) {
+			int appWidgetId = appWidgetIds[i];
+			updateAppWidget(context, appWidgetManager, appWidgetId);
+		}
+	}
+
+	static void updateAppWidget(Context context, final AppWidgetManager appWidgetManager, final int appWidgetId) {
+		final RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget);
+
+		ImageSize minImageSize = new ImageSize(70, 70); // 70 - approximate size of ImageView in widget
+		ImageLoader.getInstance().loadImage(IMAGES[0], minImageSize, optionsWithFakeDisplayer, new SimpleImageLoadingListener() {
+			@Override
+			public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+				views.setImageViewBitmap(R.id.image_left, loadedImage);
+				appWidgetManager.updateAppWidget(appWidgetId, views);
+			}
+		});
+		ImageLoader.getInstance().loadImage(IMAGES[1], minImageSize, optionsWithFakeDisplayer, new SimpleImageLoadingListener() {
+			@Override
+			public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+				views.setImageViewBitmap(R.id.image_right, loadedImage);
+				appWidgetManager.updateAppWidget(appWidgetId, views);
+			}
+		});
+	}
+}
+*/

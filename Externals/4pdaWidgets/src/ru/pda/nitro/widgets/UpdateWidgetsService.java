@@ -32,7 +32,7 @@ public class UpdateWidgetsService extends Service
 	}
 
 
-	public static class Update extends AsyncTask<Void, Void, ArrayList<? extends ListInfo>>
+	public class Update extends AsyncTask<Void, Void, ArrayList<? extends ListInfo>>
 	{
 
 		private Context context;
