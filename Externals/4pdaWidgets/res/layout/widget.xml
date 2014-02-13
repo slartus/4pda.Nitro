@@ -17,10 +17,5 @@
 
 	</ListView>
 
-	<!--View
-		android:layout_height="4dp"
-		android:background="#ffffff"
-		android:layout_width="match_parent"/-->
-
 </LinearLayout>
 

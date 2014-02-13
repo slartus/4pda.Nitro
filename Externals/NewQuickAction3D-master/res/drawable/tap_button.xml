@@ -1,0 +1,20 @@
+<selector 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+>
+
+    <!-- pressed -->  
+    <item 
+		android:drawable="@color/tap_button"
+	android:state_pressed="true"/> 
+    <!-- focused --> 
+    <item 
+		android:drawable="@color/tap_button"
+	android:state_activated="true"
+    /> 
+
+    <!-- default --> 
+    <item 
+		android:drawable="@android:color/transparent"
+    />
+
+</selector>

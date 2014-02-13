@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent"
+	android:background="#40000000"
+	android:orientation="vertical"
+	android:gravity="center_horizontal">
+
+	<TextView
+		android:gravity="center"
+		android:layout_marginRight="30dp"
+		android:layout_marginLeft="30dp"
+		android:id="@+id/textViewTime"
+		android:background="@drawable/card_bg_play"
+		android:layout_height="wrap_content"
+		android:text="25:61"
+		android:layout_width="match_parent"
+		android:padding="5dp"
+		android:textColor="#90000000"
+		android:textStyle="bold"
+		android:textSize="70sp"/>
+
+</LinearLayout>
+

@@ -6,6 +6,10 @@ import com.nostra13.universalimageloader.core.*;
 import com.nostra13.universalimageloader.cache.disc.naming.*;
 import com.nostra13.universalimageloader.core.assist.*;
 import ru.forpda.common.*;
+import ru.pda.nitro.widgets.time.*;
+import ru.pda.nitro.widgets.time.*;
+import android.text.format.Time;
+import android.text.format.*;
 
 public class App extends Application
 {
@@ -39,7 +43,7 @@ public class App extends Application
 	{
 		super.onCreate();
 		
-		setLog(false);
+		setLog(true);
 		
 		connect = new ServiceConnection(){
 
@@ -60,8 +64,8 @@ public class App extends Application
 		};
 		
 		intent = new Intent(this, UpdateWidgetsService.class);
-
 	}
+			
 	public void setLog(String text){
 		if(isLog())
 			Log.d(text);

@@ -11,6 +11,8 @@ public class WidgetsHelper
 {
 	public final static String LIST_WIDGETS_ACTION_KEY = "ru.pda.nitro.widgets.action.LIST_WIDGETS_ACTION_KEY";
 	public final static String UPDATE_ALL_WIDGETS = "ru.pda.nitro.widgets.ListWidget.UPDATE_ALL_WIDGETS";
+	public final static String TIME_WIDGETS_ACTION_KEY = "ru.pda.nitro.widgets.action.TIME_WIDGETS_ACTION_KEY";
+	public final static String UPDATE_TIME_WIDGETS = "ru.pda.nitro.widgets.TimeWidget.UPDATE_TIME_WIDGETS";
 	
 	/*	public static boolean isNitroInstaled(Context context)
 	 {
@@ -70,14 +72,15 @@ public class WidgetsHelper
 
 	}
 	
-	private static void updateClientList(){
-		
-	}
-
 	public static void updateAllWidgets(Context context){
 		Intent intent = new Intent(LIST_WIDGETS_ACTION_KEY);
 		intent.setAction(UPDATE_ALL_WIDGETS);
 		context.sendBroadcast(intent);
 	}
 	
+	public static void updateTimeWidget(Context context){
+		Intent intent = new Intent(TIME_WIDGETS_ACTION_KEY);
+		intent.setAction(UPDATE_TIME_WIDGETS);
+		context.sendBroadcast(intent);
+	}
 }
