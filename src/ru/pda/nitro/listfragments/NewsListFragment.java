@@ -236,12 +236,12 @@ public class NewsListFragment extends BaseListFragment implements FragmentLifecy
 			deleteAllLocalData(context,uri);
 			ContentValues cv = new ContentValues();
 			for(News topic : topics){
-			cv.put(Contract.News.description, topic.getDescription().toString());
-			cv.put(Contract.News.title, topic.getTitle().toString());
-			cv.put(Contract.News.id, topic.getId().toString());
-			cv.put(Contract.News.author, topic.getAuthor().toString());
-			cv.put(Contract.News.newsDate, topic.getNewsDate().toString());
-			cv.put(Contract.News.imgUrl, topic.getImgUrl().toString());
+			cv.put(Contract.News.description, topic.getDescription() != null ? topic.getDescription().toString() : "");
+			cv.put(Contract.News.title,topic.getTitle() != null ? topic.getTitle().toString() : "");
+			cv.put(Contract.News.id,topic.getId() != null ? topic.getId().toString() : "");
+			cv.put(Contract.News.author, topic.getAuthor() != null ? topic.getAuthor().toString() : "");
+			cv.put(Contract.News.newsDate,topic.getNewsDate() != null ? topic.getNewsDate().toString() : "");
+			cv.put(Contract.News.imgUrl, topic.getImgUrl() != null ? topic.getImgUrl().toString() : "");
 			
 			cv.put(Contract.News.commentsCount, topic.getCommentsCount());
 			
