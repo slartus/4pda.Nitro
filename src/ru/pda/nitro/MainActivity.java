@@ -22,10 +22,8 @@ import android.view.View.*;
 import android.content.res.*;
 import android.view.*;
 import android.content.*;
-import java.util.*;
 
 import android.preference.*;
-import android.util.*;
 
 import ru.pda.nitro.bricks.BrickInfo;
 import ru.pda.nitro.bricks.BricksList;
@@ -35,8 +33,8 @@ import android.graphics.*;
 import android.app.*;
 import ru.pda.nitro.dialogs.*;
 import ru.pda.nitro.bricks.*;
-import com.nostra13.universalimageloader.core.*;
-import com.nostra13.universalimageloader.core.display.*;
+import java.util.ArrayList;
+import ru.forpda.common.*;
 
 public class MainActivity extends BaseActivity
 {
@@ -53,21 +51,12 @@ public class MainActivity extends BaseActivity
 	private static ArrayList<BrickInfo> menus;
 	public static UserProfile profile;
 	public static TextView textNick;
-	private static DisplayImageOptions options;
 
 	@Override
     protected void onCreate(Bundle savedInstanceState)
 	{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.content_frame_drawer);
-
-		options = new DisplayImageOptions.Builder()
-			.showImageForEmptyUri(R.drawable.no_image)
-			.showImageOnFail(R.drawable.no_image)
-			.cacheInMemory(true)
-			.cacheOnDisc(true)
-			.displayer(new RoundedBitmapDisplayer(20))
-			.build();
 		
 		profile = new UserProfile();
 		BaseState.setLogin(profile.isLogined());
@@ -165,7 +154,7 @@ public class MainActivity extends BaseActivity
 	
 	public static void setUserData(){
 		textNick.setText(profile.getLogin());
-		imageLoader.displayImage(profile.getAvatar(), avatar, options);
+		imageLoader.displayImage(profile.getAvatar(), avatar);
 		
 	}
 
@@ -173,7 +162,7 @@ public class MainActivity extends BaseActivity
 	protected void onPostCreate(Bundle savedInstanceState)
 	{
 		super.onPostCreate(savedInstanceState);
-		mDrawerToggle . syncState();
+		mDrawerToggle.syncState();
 	}
 	@Override
 	public void onConfigurationChanged(Configuration newConfig)

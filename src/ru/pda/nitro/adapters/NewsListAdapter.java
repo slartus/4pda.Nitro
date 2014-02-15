@@ -7,12 +7,9 @@ import android.content.*;
 import ru.pda.nitro.R;
 import android.text.*;
 
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.nostra13.universalimageloader.cache.memory.impl.UsingFreqLimitedMemoryCache;
-import com.nostra13.universalimageloader.cache.disc.naming.HashCodeFileNameGenerator;
-import android.graphics.Bitmap;
+import android.graphics.Typeface;
+import com.nostra13.universalimageloader.core.assist.*;
 import android.graphics.*;
 
 public class NewsListAdapter extends BaseListAdapter
@@ -21,7 +18,6 @@ public class NewsListAdapter extends BaseListAdapter
 	private Typeface face;
 	private Context context;
 	final LayoutInflater inflater;
-	private DisplayImageOptions options;
 	private ImageLoader imageLoader;
 	
 	public NewsListAdapter(Context context, ArrayList<News> newsList, ImageLoader imageLoader){
@@ -29,16 +25,7 @@ public class NewsListAdapter extends BaseListAdapter
 		face = Typeface.createFromAsset(context.getAssets(), "4pda/fonts/RobotoSlab-Light.ttf");
 		this.imageLoader = imageLoader;
 		this.newsList = newsList;
-		this.context = context;
-		
-		options = new DisplayImageOptions.Builder()
-			.showStubImage(R.drawable.no_image)
-			.showImageForEmptyUri(R.drawable.no_image)
-			.cacheInMemory()
-			.cacheOnDisc()
-			.bitmapConfig(Bitmap.Config.RGB_565)
-			.build();
-		
+		this.context = context;		
 	}
 
 	@Override
@@ -72,6 +59,7 @@ public class NewsListAdapter extends BaseListAdapter
 		if(view == null){
 			view = inflater.inflate(R.layout.item_news, parent, false);
 			holder = new ViewHolder();
+			holder.mProgressBar = (LinearLayout)view.findViewById(R.id.mProgressBar);
 			holder.textSource = (TextView)view.findViewById(R.id.textSource);
 			holder.textComments = (TextView)view.findViewById(R.id.textComments);
 			holder.textTag =(TextView)view.findViewById(R.id.textTag);
@@ -93,7 +81,35 @@ public class NewsListAdapter extends BaseListAdapter
 		holder.textDescription.setText(data.getDescription());
 		holder.textTitle.setText(data.getTitle());
 		if(data.getImgUrl() != null)
-		imageLoader.displayImage(data.getImgUrl().toString(), holder.imageImage, options);
+			imageLoader.displayImage(data.getImgUrl().toString(), holder.imageImage, new ImageLoadingListener() {
+
+					@Override
+					public void onLoadingStarted(String p1, View p2)
+					{
+						p2.setVisibility(View.GONE);
+						holder.mProgressBar.setVisibility(View.VISIBLE);
+					}
+
+					@Override
+					public void onLoadingFailed(String p1, View p2, FailReason p3)
+					{
+						holder.mProgressBar.setVisibility(View.INVISIBLE);
+					}
+
+					@Override
+					public void onLoadingComplete(String p1, View p2, Bitmap p3)
+					{
+						p2.setVisibility(View.VISIBLE);
+						holder.mProgressBar.setVisibility(View.INVISIBLE);
+					}
+
+					@Override
+					public void onLoadingCancelled(String p1, View p2)
+					{
+						// TODO: Implement this method
+					}
+			});
+		
 		if(data.getTagTitle() != null){
 			holder.textTag.setVisibility(View.VISIBLE);
 			holder.textTag.setText(data.getTagTitle());
@@ -115,6 +131,7 @@ public class NewsListAdapter extends BaseListAdapter
 		public TextView textTag;
 		public TextView textComments;
 		public TextView textSource;
+		public LinearLayout mProgressBar;
 	}
 
 }
