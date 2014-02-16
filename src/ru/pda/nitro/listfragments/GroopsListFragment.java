@@ -32,7 +32,7 @@ import ru.pda.nitro.bricks.GroopsBrick;
 import ru.pda.nitro.database.Contract;
 import ru.pda.nitro.dialogs.DeleteDialogFragment;
 import ru.pda.nitro.dialogs.RenameDialogFragment;
-import ru.pda.nitro.topicsview.TopicActivity;
+import ru.pda.nitro.TabsViewActivity;
 
 public class GroopsListFragment extends BaseListFragment implements LoaderManager.LoaderCallbacks<Cursor> {
     private CursorAdapter mAdapter;
@@ -73,7 +73,7 @@ public class GroopsListFragment extends BaseListFragment implements LoaderManage
                 try {
                     groopCursor = getActivity().getContentResolver().query(mUri, null, null, null, null);
                     if (groopCursor != null && groopCursor.moveToFirst())
-                        TopicActivity.show(getActivity(), mUri, title, l);
+                        TabsViewActivity.show(getActivity(), mUri, title, l, null);
                     else
                         Toast.makeText(getActivity(), "В этой группе нет тем.", Toast.LENGTH_SHORT).show();
                 } finally {
@@ -219,5 +219,11 @@ public class GroopsListFragment extends BaseListFragment implements LoaderManage
     public ArrayList<? extends IListItem> getList() throws ParseException, IOException {
         return null;
     }
+	
+	@Override
+	public String getClassName()
+	{
+		return null;
+	}
 
 }

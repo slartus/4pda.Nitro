@@ -248,6 +248,7 @@ containing a value of this type.
         public static final int ptr_progress=0x7f060007;
         public static final int ptr_text=0x7f060006;
         public static final int ptr_text_opaque_bg=0x7f060005;
+        public static final int quickstart=0x7f06004b;
         public static final int relativeMore=0x7f060015;
         public static final int row_title=0x7f06003a;
         public static final int spb_interpolator_accelerate=0x7f060000;

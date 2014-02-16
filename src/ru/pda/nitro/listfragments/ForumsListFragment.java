@@ -28,6 +28,12 @@ public class ForumsListFragment extends BaseListFragment
 {
 
 	@Override
+	public String getClassName()
+	{
+		return null;
+	}
+
+	@Override
 	public Uri getUri()
 	{
 		return ForumsBrick.URI;

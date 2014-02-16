@@ -22,10 +22,11 @@ import ru.forpda.common.Log;
  * Created by slartus on 12.01.14.
  */
 public class UserProfile {
+	private final static String DEFAULT_USER_AVATAR = "drawable://" + R.drawable.enter;
     String mUser = "гость";
     String mK = "";
     String mUserId = "";
-	String mUserAvatar = "drawable://" + R.drawable.enter;
+	String mUserAvatar;
 	
     public interface LoginedStateChangedListener {
         void changed();
@@ -93,7 +94,7 @@ public class UserProfile {
         cookieStore.writeExternalCookies(context);
         loginedStateChanged();
 		mUser = "гость";
-		mUserAvatar = "drawable://" + R.drawable.enter;
+		mUserAvatar = DEFAULT_USER_AVATAR;
     }
 
 
@@ -104,7 +105,7 @@ public class UserProfile {
     public Boolean checkLogin() {
         mUserId = "";
         mUser = "гость";
-		mUserAvatar = "drawable://" + R.drawable.enter;
+		mUserAvatar = DEFAULT_USER_AVATAR;
         mK = "";
 
         try {

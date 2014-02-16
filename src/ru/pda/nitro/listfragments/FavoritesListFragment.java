@@ -35,7 +35,6 @@ import ru.pda.nitro.*;
  */
 public class FavoritesListFragment extends TopicsListFragment implements OnScrollListener
 {
-
 	
 	@Override
 	public void onScrollStateChanged(AbsListView p1, int p2)
@@ -88,7 +87,7 @@ public class FavoritesListFragment extends TopicsListFragment implements OnScrol
 		
 		listView.addFooterView(initialiseFooter());
 		listView.setAdapter(adapter);
-		registerForContextMenu(listView);
+//		registerForContextMenu(listView);
 		listView.setOnScrollListener(this);
 		
 		getPullToRefreshAttacher(listView);
@@ -135,8 +134,6 @@ public class FavoritesListFragment extends TopicsListFragment implements OnScrol
 		else
 		{
 			setFrom(getFrom());
-		//	topics = getLocalTopicsData(getActivity(), getUri());
-			
 			setOutCount(getOutCount());
 			if (topics.size() == 0)
 			{

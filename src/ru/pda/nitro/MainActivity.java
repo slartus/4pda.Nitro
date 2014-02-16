@@ -44,7 +44,7 @@ public class MainActivity extends BaseActivity
 	private FrameLayout frameDrawer;
 	private Fragment mContent;
 	private static ImageView avatar;
-	private Handler handler;
+	private Handler handler = new Handler();
 	private boolean profile_menu = false;
 	
 	private static MenuAdapter mAdapter;
@@ -71,6 +71,7 @@ public class MainActivity extends BaseActivity
 
 		menus = new ArrayList<BrickInfo>();
 		mAdapter = new MenuAdapter(this, R.layout.row, menus);
+		
 		getMenu();
 		
 		mDrawerList.addHeaderView(mainMenuHeader());
@@ -106,18 +107,9 @@ public class MainActivity extends BaseActivity
 		};
 
 		mDrawerLayout.setDrawerListener(mDrawerToggle);
+		
 		if (savedInstanceState == null)
-		{
-			handler = new Handler();
-			handler.post(new Runnable(){
-
-					@Override
-					public void run()
-					{
-						setDefaultContent(BaseState.isLogin());
-					}
-				});
-		}
+			setDefaultContent(BaseState.isLogin());
 
     }
 	
@@ -164,6 +156,7 @@ public class MainActivity extends BaseActivity
 		super.onPostCreate(savedInstanceState);
 		mDrawerToggle.syncState();
 	}
+	
 	@Override
 	public void onConfigurationChanged(Configuration newConfig)
 	{
@@ -198,13 +191,11 @@ public class MainActivity extends BaseActivity
 	{
 		BaseState.setMTitle(item.getTitle());
 		mDrawerLayout.closeDrawer(frameDrawer);
-		handler = new Handler();
 		handler.postDelayed(new Runnable(){
 
 				@Override
 				public void run()
 				{
-					
 					setContent(item.createFragment());
 					mDrawerList.setItemChecked(position, false);	
 				}
@@ -247,8 +238,7 @@ public class MainActivity extends BaseActivity
 	{
 		menu.setGroupVisible(R.id.group_groops, BaseState.isGroop_menu());
 		menu.setGroupVisible(R.id.group_profile, BaseState.isLogin_menu());
-	//	menu.getItem(R.id.menu_finish).setVisible(BaseState.isShowMenuItemCancel());
-		
+
 		return super.onPrepareOptionsMenu(menu);
 	}
 	

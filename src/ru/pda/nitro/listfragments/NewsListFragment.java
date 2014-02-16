@@ -34,17 +34,26 @@ import ru.pda.nitro.database.*;
  */
 public class NewsListFragment extends BaseListFragment implements FragmentLifecycle
 {
+	public final static String NEWS_LIST_FRAGMENT = "NEWS_LIST_FRAGMENT";
+	private final static String NEWS_URL = "ru.pda.nitro.listfragments.NewsListFragment.NEWS_URL";
+	private final static String NEWS_POSITION = "ru.pda.nitro.listfragments.NewsListFragment.NEWS_POSITION";
 	private int position = 0;
     private NewsList newsList = null;
     private String newsUrl = "";
     private NewsListAdapter adapter;
-	private boolean localNews = false;
 
     @Override
     public ArrayList<? extends IListItem> getList()
 	{
         return null;
     }
+	
+	
+	@Override
+	public String getClassName()
+	{
+		return NEWS_LIST_FRAGMENT;
+	}
 
 	@Override
 	public Uri getUri()
@@ -69,8 +78,8 @@ public class NewsListFragment extends BaseListFragment implements FragmentLifecy
         final NewsListFragment f = new NewsListFragment();
 
         Bundle args = new Bundle();
-        args.putString("_url", url);
-		args.putInt("_position", position);
+        args.putString(NEWS_URL, url);
+		args.putInt(NEWS_POSITION, position);
         f.setArguments(args);
 
         return f;
@@ -87,6 +96,7 @@ public class NewsListFragment extends BaseListFragment implements FragmentLifecy
     public void onActivityCreated(Bundle savedInstanceState)
 	{
         super.onActivityCreated(savedInstanceState);
+		
 		newsUrl = getArguments().getString("_url");
 		position = getArguments().getInt("_position");
 		
@@ -101,18 +111,7 @@ public class NewsListFragment extends BaseListFragment implements FragmentLifecy
 			getData();
 		}
     }
-
-/*	@Override
-	public void onResume()
-	{
-		super.onResume();
-		if(position == 0){
-			getData();
-		}
-	}*/
 	
-	
-
 	@Override
 	public void onResumeFragment()
 	{

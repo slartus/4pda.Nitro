@@ -43,6 +43,15 @@ public class NewsWidget extends ListWidget
 	}
 
 	@Override
+	protected String getClassName()
+	{
+		super.getClassName();
+		return NewsListFragment.NEWS_LIST_FRAGMENT;
+	}
+	
+	
+
+	@Override
 	public void setListClick(RemoteViews rv, Context context, int appWidgetId)
 	{
 		// TODO: Implement this method

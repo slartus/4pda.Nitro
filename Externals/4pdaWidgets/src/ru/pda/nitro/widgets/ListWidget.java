@@ -121,6 +121,8 @@ public abstract class ListWidget extends AppWidgetProvider
 	public abstract String getListKey();
 
 	public abstract String getWidgetTitle();
+	
+	protected String getClassName(){return null;}
 
 	@Override
 	public void onReceive(final Context context, Intent intent)
@@ -134,7 +136,7 @@ public abstract class ListWidget extends AppWidgetProvider
 			if (intent.getAction().equalsIgnoreCase(START_TOPICK_KEY))
 			{
 
-				WidgetsHelper.startItem(context, itemPos);
+				WidgetsHelper.startItem(context, itemPos, getClassName() );
 				updateAllWidgets(context);
 
 			}

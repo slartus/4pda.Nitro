@@ -28,7 +28,6 @@ public class NewsPagerFragment extends Fragment
 	{
 		View v = inflater.inflate(R.layout.view_pager, container, false);
 		mViewPager = (ViewPager) v.findViewById(R.id.pager);
-		
 		return v;
 	}
 

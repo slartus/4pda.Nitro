@@ -56,7 +56,7 @@ public class WidgetsHelper
 	 return false;
 	 }*/
 
-	public static void startItem(Context context, int itemPos){
+	public static void startItem(Context context, int itemPos, String className){
 		Cursor c = context.getContentResolver().query(Contract.Favorite.CONTENT_URI, null, null, null, Contract.Favorite.DEFAULT_SORT_ORDER);
 
 		if(c.moveToPosition(itemPos)){
@@ -65,7 +65,7 @@ public class WidgetsHelper
 			final CharSequence topicTitle = c.getString(c.getColumnIndex(Contract.Favorite.title));
 			final CharSequence navidate = "getnewpost";
 			TopicsListFragment.updateItem(context, itemPos);
-			TopicActivity.show(context, topicId,topicTitle, "Избранное", navidate);
+			TabsViewActivity.show(context, topicId,topicTitle, "Избранное", navidate, className);
 		}
 
 		c.close();

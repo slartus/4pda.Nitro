@@ -54,6 +54,15 @@ public class TopicsWidget extends ListWidget
 		rv.setPendingIntentTemplate(R.id.lvList, listClickPIntent);
 
 	}
+
+	@Override
+	protected String getClassName()
+	{
+		super.getClassName();
+		return TopicsListFragment.TOPICS_LIST_FRAGMENT;
+	}
+	
+	
 	
 	@Override
 	public Class<? extends ListWidget> getCurrentClass()

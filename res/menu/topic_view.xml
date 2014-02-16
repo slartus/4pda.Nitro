@@ -21,6 +21,10 @@
 				android:id="@+id/options"
 				android:title="@string/theme_options" >
 			</item>
+			<item
+				android:id="@+id/quickstart"
+				android:title="Быстрый доступ" >
+			</item>
 
 		</menu>
     </item>

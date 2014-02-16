@@ -53,28 +53,6 @@ public abstract class BaseListFragment extends BaseFragment
     public ListInfo listInfo;
 	public ListView listView;
 
-
-	public void setOld_from(int old_from)
-	{
-		this.old_from = old_from;
-	}
-
-	public int getOld_from()
-	{
-		return old_from;
-	}
-
-    public void setLoadmore(boolean loadmore)
-	{
-        this.loadmore = loadmore;
-    }
-
-    public boolean isLoadmore()
-	{
-        return loadmore;
-    }
-
-
     @Override
     public void onActivityCreated(Bundle savedInstanceState)
 	{
@@ -82,7 +60,7 @@ public abstract class BaseListFragment extends BaseFragment
         listView.setOnItemClickListener(this);
         listView.setOnCreateContextMenuListener(this);
 		BaseState.setMTitle(getTitle());
-		getActivity().getActionBar().setTitle(BaseState.getMTitle());
+		getActivity().getActionBar().setTitle(getTitle());
     }
 
 	@Override
@@ -99,17 +77,10 @@ public abstract class BaseListFragment extends BaseFragment
 	
 
     @Override
-    public void onItemClick(android.widget.AdapterView<?> adapterView, android.view.View view,
-                            int i, long l)
-	{
-
-    }
+    public void onItemClick(android.widget.AdapterView<?> adapterView, android.view.View view, int i, long l){}
 
     @Override
-    public void onCreateContextMenu(android.view.ContextMenu contextMenu, android.view.View view,
-                                    android.view.ContextMenu.ContextMenuInfo contextMenuInfo) {
-
-    }
+    public void onCreateContextMenu(android.view.ContextMenu contextMenu, android.view.View view, android.view.ContextMenu.ContextMenuInfo contextMenuInfo) {}
 
     public View initialiseListUi(View v)
 	{
@@ -276,6 +247,8 @@ public abstract class BaseListFragment extends BaseFragment
     protected void setFrom(int from){}
 
     protected void setNextPage(){}
+	
+	public abstract String getClassName();
 
     public abstract ArrayList<? extends IListItem> getList() throws ParseException, IOException;
 
@@ -285,5 +258,23 @@ public abstract class BaseListFragment extends BaseFragment
 
     public abstract void inExecute();
 
+	public void setOld_from(int old_from)
+	{
+		this.old_from = old_from;
+	}
 
+	public int getOld_from()
+	{
+		return old_from;
+	}
+
+    public void setLoadmore(boolean loadmore)
+	{
+        this.loadmore = loadmore;
+    }
+
+    public boolean isLoadmore()
+	{
+        return loadmore;
+    }
 }

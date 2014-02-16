@@ -39,9 +39,7 @@ public abstract class BaseFragment extends Fragment {
 	private void setCurrentFragmentMenu(){
 		BaseState.setLogin_menu(getName().equals(LoginBrick.NAME));
 		BaseState.setGroop_menu(getName().equals(GroopsBrick.NAME));
-		
-		
-		RefreshMenu.refreshActionBarMenu(getActivity());
+		refreshActionBarMenu(getActivity());
 	}
 	
 	
@@ -86,13 +84,10 @@ public abstract class BaseFragment extends Fragment {
 			});
 	}
 	
-	public static class RefreshMenu
-	{
-		public static void refreshActionBarMenu(FragmentActivity activity)
+	public static void refreshActionBarMenu(FragmentActivity activity)
 		{
 			activity.invalidateOptionsMenu();
 		}
-	}
 	
 	public void setLoading(boolean loading) {
         this.loading = loading;
@@ -131,9 +126,7 @@ public abstract class BaseFragment extends Fragment {
 	
 	public void setProgress(boolean loading)
 	{
-
         ((IRefreshActivity) getActivity()).getPullToRefreshAttacher().setRefreshing(loading);
-
     }
 	
 	public void getPullToRefreshAttacher(View view){

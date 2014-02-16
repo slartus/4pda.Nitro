@@ -1,6 +1,4 @@
 package ru.pda.nitro.topicsview;
-
-
 import android.app.ActionBar;
 import android.app.ActionBar.Tab;
 import android.app.Activity;
@@ -29,183 +27,11 @@ import ru.pda.nitro.BaseFragment;
 import ru.pda.nitro.R;
 import ru.pda.nitro.database.Contract;
 import ru.pda.nitro.dialogs.ThemeOptionsDialogFragment;
+import ru.pda.nitro.*;
 
 
-/**
- * Created by slinkin on 21.01.14.
- */
-public class TopicView extends Fragment {
-    private final static String TOPIC_BASEID_KEY = "ru.pda.nitro.topicsview.TopicView.TOPIC_BASEID_KEY";
-    private final String DEFAULT_TAG = "tag";
-    private Handler handler = new Handler();
-    private Uri mUri;
-    private boolean groop = false;
-
-    public void setGroop(boolean menuGroop) {
-        this.groop = menuGroop;
-    }
-
-    public boolean isGroop() {
-        return groop;
-    }
-
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        final ActionBar ab = getActivity().getActionBar();
-        ab.setDisplayHomeAsUpEnabled(true);
-        ab.setDisplayShowHomeEnabled(true);
-        ab.setDisplayShowTitleEnabled(true);
-        if (getActivity().getIntent().getStringExtra(TopicActivity.TOPIC_ID_KEY) != null)
-            showTab(getActivity().getIntent().getStringExtra(TopicActivity.TOPIC_TITLE_KEY), getActivity().getIntent().getStringExtra(TopicActivity.TOPIC_URL_KEY), null, DEFAULT_TAG);
-        else
-            showGroup();
-    }
-
-    private void showGroup() {
-        setGroop(true);
-        handler.post(new Runnable() {
-
-            @Override
-            public void run() {
-
-                mUri = getActivity().getIntent().getParcelableExtra(TopicActivity.TOPIC_GROOP_URI_KEY);
-                Cursor cursor = null;
-                try {
-                    cursor = getActivity().getContentResolver().query(mUri, null, null, null, Contract.Groop.DEFAULT_SORT_ORDER);
-
-                    if (cursor != null && cursor.moveToFirst()) {
-                        final ActionBar actionBar = getActivity().getActionBar();
-                        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-
-                        do {
-                            CharSequence topicId = cursor.getString(cursor.getColumnIndexOrThrow(Contract.Groop.id));
-                            String text = cursor.getString(cursor.getColumnIndexOrThrow(Contract.Groop.title));
-                            long baseId = cursor.getLong(cursor.getColumnIndexOrThrow(BaseColumns._ID));
-
-                            addNewTab(text, null, topicId, baseId, topicId.toString());
-
-                        } while (cursor.moveToNext());
-
-
-                    }
-                } finally {
-                    if (cursor != null)
-                        cursor.close();
-                }
-
-            }
-        });
-
-    }
-
-    public class TabListener<T extends Fragment> implements ActionBar.TabListener {
-        private Fragment mFragment;
-        private final Activity mActivity;
-        private final CharSequence topicUrl;
-        private final CharSequence topicId;
-        private final String mTag;
-        private final long baseId;
-
-
-        public TabListener(Activity activity, CharSequence url, CharSequence id, long lid, String tag) {
-            mActivity = activity;
-            topicUrl = url;
-            topicId = id;
-            baseId = lid;
-            mTag = tag;
-        }
-
-        public void onTabSelected(Tab tab, FragmentTransaction ft) {
-            FragmentManager fm = getActivity().getSupportFragmentManager();
-            if (mFragment == null) {
-
-                mFragment = new Topic();
-                Bundle args = new Bundle();
-
-                if (topicUrl != null)
-                    args.putCharSequence(TopicActivity.TOPIC_URL_KEY, topicUrl);
-
-                if (topicId != null) {
-                    args.putCharSequence(TopicActivity.TOPIC_ID_KEY, topicId);
-                    args.putCharSequence(TopicActivity.NAVIGATE_ACTION_KEY, TopicApi.NAVIGATE_VIEW_NEW_POST);
-                    args.putLong(TOPIC_BASEID_KEY, baseId);
-                }
-
-
-                mFragment.setArguments(args);
-
-                fm.beginTransaction()
-                        .add(R.id.topic, mFragment, mTag)
-                        .commit();
-
-            } else {
-                if (tab.getText().equals(R.string.stoping))
-                    tab.setText(R.string.downloads);
-
-                fm.beginTransaction()
-                        .attach(mFragment)
-                        .commit();
-            }
-
-        }
-
-        public void onTabUnselected(Tab tab, FragmentTransaction ft) {
-            if (getActivity() != null && mFragment != null) {
-                if (tab.getText().equals(R.string.downloads))
-                    tab.setText(R.string.stoping);
-
-                getActivity().getSupportFragmentManager().beginTransaction()
-                        .detach(mFragment)
-                        .commit();
-            }
-        }
-
-        public void onTabReselected(Tab tab, FragmentTransaction ft) {
-        }
-    }
-
-    private void addNewTab(String text, CharSequence topicUrl, CharSequence topicId, long baseId, String tag) {
-        final ActionBar actionBar = getActivity().getActionBar();
-
-        actionBar
-                .addTab(actionBar.newTab()
-                        .setText(text)
-                        .setTag(tag)
-                        .setTabListener(new TabListener(getActivity(), topicUrl, topicId, baseId, tag)));
-    }
-
-    private void showTab(String text, CharSequence url, CharSequence id, String tag) {
-        final ActionBar actionBar = getActivity().getActionBar();
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-
-
-        for (int index = 0; index < actionBar.getNavigationItemCount(); index++) {
-            if (actionBar.getTabAt(index).getTag().equals(tag)) {
-                actionBar.setSelectedNavigationItem(index);
-                return;
-            }
-        }
-        addNewTab(text, url, id, -1, tag);
-        actionBar.setSelectedNavigationItem(actionBar.getNavigationItemCount() - 1);
-    }
-
-    private void closeTab() {
-        if (getActivity() != null) {
-            final ActionBar actionBar = getActivity().getActionBar();
-            if (actionBar.getTabCount() > 1)
-                actionBar.removeTab(actionBar.getSelectedTab());
-            else {
-                getActivity().finish();
-            }
-        }
-    }
-
-
-    public class Topic extends BaseFragment
-	implements LoaderManager.LoaderCallbacks<TopicResult>
-	/* , FragmentLifecycle*/ {
+public class TopicView extends BaseFragment
+	implements LoaderManager.LoaderCallbacks<TopicResult>{
 
 		@Override
 		public String getName()
@@ -220,7 +46,7 @@ public class TopicView extends Fragment {
 		}
 
 
-        public Topic() {
+        public TopicView() {
         }
 
         private CharSequence topicUrl = null;
@@ -236,7 +62,7 @@ public class TopicView extends Fragment {
             setRetainInstance(true);
             getPullToRefreshAttacher(getWebView());
 
-            if (getArguments().getString(TopicActivity.TOPIC_URL_KEY) != null | getArguments().getString(TopicActivity.TOPIC_ID_KEY) != null)
+            if (getArguments().getString(TabsViewActivity.TOPIC_URL_KEY) != null | getArguments().getString(TabsViewActivity.TOPIC_ID_KEY) != null)
                 bundle = getArguments();
             else
                 bundle = getActivity().getIntent().getExtras();
@@ -295,14 +121,14 @@ public class TopicView extends Fragment {
         }
 
         private void showNewTab(CharSequence topicUrl) {
-            showTab(getActivity().getResources().getString(R.string.downloads), topicUrl, null, topicUrl.toString());
+            TabsViewFragment.showTab(getActivity(),TopicView.class, getActivity().getResources().getString(R.string.downloads), topicUrl, null, topicUrl.toString());
 
         }
 
         private void showTopic(CharSequence topicUrl) {
             setRefresh(true);
             Bundle bundle = new Bundle();
-            bundle.putCharSequence(TopicActivity.TOPIC_URL_KEY, topicUrl);
+            bundle.putCharSequence(TabsViewActivity.TOPIC_ID_KEY, topicUrl);
             getLoaderManager().restartLoader(0, bundle, this);
         }
 
@@ -313,18 +139,18 @@ public class TopicView extends Fragment {
             setLoading(true);
             setProgress(true);
 
-            if (bundle.containsKey(TopicActivity.TOPIC_ID_KEY)) {
-                CharSequence topicId = bundle.getCharSequence(TopicActivity.TOPIC_ID_KEY);
+            if (bundle.containsKey(TabsViewActivity.TOPIC_ID_KEY)) {
+                CharSequence topicId = bundle.getCharSequence(TabsViewActivity.TOPIC_ID_KEY);
 
-                if (bundle.containsKey(TopicActivity.NAVIGATE_ACTION_KEY))
-                    topicUrl = TopicApi.getTopicUrl(topicId, bundle.getCharSequence(TopicActivity.NAVIGATE_ACTION_KEY));
+                if (bundle.containsKey(TabsViewActivity.NAVIGATE_ACTION_KEY))
+                    topicUrl = TopicApi.getTopicUrl(topicId, bundle.getCharSequence(TabsViewActivity.NAVIGATE_ACTION_KEY));
                 else
                     topicUrl = TopicApi.getTopicUrl(topicId, null);
-            } else if (bundle.containsKey(TopicActivity.TOPIC_URL_KEY))
-                topicUrl = bundle.getCharSequence(TopicActivity.TOPIC_URL_KEY);
+            } else if (bundle.containsKey(TabsViewActivity.TOPIC_URL_KEY))
+                topicUrl = bundle.getCharSequence(TabsViewActivity.TOPIC_URL_KEY);
 
             topicId = TopicApi.getTopicId(topicUrl);
-            RefreshMenu.refreshActionBarMenu(getActivity());
+            refreshActionBarMenu(getActivity());
 
             return new TopicLoader(getActivity(), topicUrl);
         }
@@ -339,7 +165,7 @@ public class TopicView extends Fragment {
 
                     for (int index = 0; index < actionBar.getNavigationItemCount(); index++) {
                         Object tag = actionBar.getTabAt(index).getTag();
-                        if (tag.equals(DEFAULT_TAG)) {
+                        if (tag.equals(TabsViewFragment.DEFAULT_TAG)) {
                             actionBar.getTabAt(index).setTag(topicUrl);
                         }
                         if (tag.equals(topicUrl)) {
@@ -360,7 +186,7 @@ public class TopicView extends Fragment {
                 setLoading(false);
                 setProgress(false);
 
-                RefreshMenu.refreshActionBarMenu(getActivity());
+                refreshActionBarMenu(getActivity());
 
             }
         }
@@ -371,41 +197,20 @@ public class TopicView extends Fragment {
 
         }
 
-	/*	@Override
-        public void onPrepareOptionsMenu(Menu menu)
+		@Override
+		public boolean onOptionsItemSelected(MenuItem item)
 		{
-			super.onPrepareOptionsMenu(menu);
+			switch(item.getItemId()){
+				case R.id.options:
+					showThemeOptionsDialog(topicId);
+			}
+			return super.onOptionsItemSelected(item);
+		}
 		
-		}*/
-
-
-        @Override
-        public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-            super.onCreateOptionsMenu(menu, inflater);
-            inflater.inflate(R.menu.topic_view, menu);
-        }
-
-        @Override
-        public boolean onOptionsItemSelected(MenuItem item) {
-            switch (item.getItemId()) {
-                case android.R.id.home:
-                    getActivity().finish();
-                    break;
-                case R.id.close_tab:
-                    closeTab();
-                    break;
-                case R.id.options:
-                    showThemeOptionsDialog(topicId);
-                    break;
-
-            }
-            return super.onOptionsItemSelected(item);
-        }
-
-        public void showThemeOptionsDialog(CharSequence topicId) {
-            DialogFragment dialog = ThemeOptionsDialogFragment.newInstance(topicId, topicTitle);
-            dialog.show(getFragmentManager().beginTransaction(), "dialog");
-        }
+	public void showThemeOptionsDialog(CharSequence topicId) {
+		DialogFragment dialog = ThemeOptionsDialogFragment.newInstance(topicId, topicTitle);
+		dialog.show(getFragmentManager().beginTransaction(), "dialog");
+	}
 
 
         @Override
@@ -416,6 +221,3 @@ public class TopicView extends Fragment {
 
 
     }
-
-
-}

@@ -17,7 +17,6 @@ public class BaseActivity extends FragmentActivity implements IRefreshActivity
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
-		// TODO: Implement this method
 		super.onCreate(savedInstanceState);
 		ab = getActionBar();
 		mPullToRefreshAttacher = new PullToRefreshAttacher(this);
@@ -30,7 +29,7 @@ public class BaseActivity extends FragmentActivity implements IRefreshActivity
 	
 	public static void showActionViewActivity(Activity activity, String url){
 		Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-		activity.startActivity(intent);
+		activity.startActivity(Intent.createChooser(intent, "Открыть в..."));
 		
 	}
 }

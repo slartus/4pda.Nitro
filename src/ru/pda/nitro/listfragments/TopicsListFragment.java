@@ -33,7 +33,7 @@ import ru.pda.nitro.R;
 import ru.pda.nitro.adapters.TopicListAdapter;
 import ru.pda.nitro.database.Contract;
 import ru.pda.nitro.dialogs.ThemeOptionsDialogFragment;
-import ru.pda.nitro.topicsview.TopicActivity;
+import ru.pda.nitro.TabsViewActivity;
 import android.net.*;
 import android.content.*;
 import ru.pda.nitro.WidgetsHelper;
@@ -63,6 +63,14 @@ public abstract class TopicsListFragment extends BaseListFragment {
     public ArrayList<? extends IListItem> getList() throws ParseException, IOException {
         return getTopicsList();
     }
+	
+	public final static String TOPICS_LIST_FRAGMENT = "TOPICS_LIST_FRAGMENT";
+
+	@Override
+	public String getClassName()
+	{
+		return TOPICS_LIST_FRAGMENT;
+	}
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -159,7 +167,7 @@ public abstract class TopicsListFragment extends BaseListFragment {
         topic.setHasUnreadPosts(false);
         updateItem(getActivity(),i);
         updateAdapter(adapter);
-        TopicActivity.show(getActivity(), topic.getId(), topic.getTitle(), getTitle(), navigateAction);
+        TabsViewActivity.show(getActivity(), topic.getId(), topic.getTitle(), getTitle(), navigateAction, getClassName());
     }
 
     public abstract ArrayList<Topic> getTopicsList() throws ParseException, IOException;
@@ -167,7 +175,8 @@ public abstract class TopicsListFragment extends BaseListFragment {
     protected boolean getTopics() throws Throwable {
         return false;
     }
-
+	
+	
     public static void updateItem(final Context context, final int i) {
       Handler  handler = new Handler();
         handler.post(new Runnable() {
