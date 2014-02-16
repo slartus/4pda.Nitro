@@ -38,7 +38,7 @@ import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import fr.castorflex.android.smoothprogressbar.*;
-import android.view.animation.*;
+import android.view.animation.AccelerateDecelerateInterpolator;
 
 /**
  * FIXME
@@ -593,7 +593,7 @@ public class PullToRefreshAttacher implements View.OnTouchListener {
         public void onViewCreated(Activity activity, View headerView) {
             // Get ProgressBar and TextView. Also set initial text on TextView
             mHeaderProgressBar = (ProgressBar) headerView.findViewById(R.id.ptr_progress);
-			mHeaderProgressBar.setIndeterminateDrawable(new SmoothProgressDrawable.Builder(activity).interpolator(new DecelerateInterpolator()).build());
+			mHeaderProgressBar.setIndeterminateDrawable(new SmoothProgressDrawable.Builder(activity).interpolator(new AccelerateDecelerateInterpolator()).build());
 			
             mHeaderTextView = (TextView) headerView.findViewById(R.id.ptr_text);
 
@@ -654,7 +654,7 @@ public class PullToRefreshAttacher implements View.OnTouchListener {
         public void onRefreshStarted() {
             if (mHeaderTextView != null) {
 				mHeaderTextView.setVisibility(View.GONE);
-             //   mHeaderTextView.setText(mRefreshingLabel);
+                mHeaderTextView.setText(mRefreshingLabel);
             }
             if (mHeaderProgressBar != null) {
                 mHeaderProgressBar.setVisibility(View.VISIBLE);
