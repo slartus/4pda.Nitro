@@ -10,26 +10,27 @@ import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
-import ru.pda.nitro.database.*;
+
 import ru.pda.nitro.R;
+import ru.pda.nitro.database.Contract;
 
 public class RenameDialogFragment extends DialogFragment {
 
-	private static final String RENAME_URI_KEY = "ru.pda.nitro.dialogs.RenameDialogsFragment.RENAME_URI_KEY";
+    private static final String RENAME_URI_KEY = "ru.pda.nitro.dialogs.RenameDialogsFragment.RENAME_URI_KEY";
     private static final String RENAME_NAME_KEY = "ru.pda.nitro.dialogs.RenameDialogsFragment.RENAME_NAME_KEY";
-	
-	private Uri mUri;
+
+    private Uri mUri;
     private String mName;
-	
-	public static RenameDialogFragment newInstance(Uri mUri, String name){
-		RenameDialogFragment dialog = new RenameDialogFragment();
-		Bundle args = new Bundle();
-		args.putParcelable(RENAME_URI_KEY, mUri);
-		args.putString(RENAME_NAME_KEY, name);
-		dialog.setArguments(args);
-		
-		return dialog;
-	}
+
+    public static RenameDialogFragment newInstance(Uri mUri, String name) {
+        RenameDialogFragment dialog = new RenameDialogFragment();
+        Bundle args = new Bundle();
+        args.putParcelable(RENAME_URI_KEY, mUri);
+        args.putString(RENAME_NAME_KEY, name);
+        dialog.setArguments(args);
+
+        return dialog;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

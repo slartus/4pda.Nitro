@@ -15,7 +15,6 @@ import ru.forpda.http.AdvCookieStore;
 import ru.forpda.http.HttpHelper;
 import ru.forpda.http.HttpSupport;
 import ru.forpda.http.SimpleCookie;
-import ru.forpda.common.Log;
 
 
 /**

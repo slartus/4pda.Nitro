@@ -6,10 +6,12 @@ import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.ContentUris;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
@@ -30,15 +32,10 @@ import ru.forpda.interfaces.forum.IListItem;
 import ru.forpda.interfaces.forum.Topic;
 import ru.pda.nitro.App;
 import ru.pda.nitro.R;
+import ru.pda.nitro.TabsViewActivity;
 import ru.pda.nitro.adapters.TopicListAdapter;
 import ru.pda.nitro.database.Contract;
 import ru.pda.nitro.dialogs.ThemeOptionsDialogFragment;
-import ru.pda.nitro.TabsViewActivity;
-import android.net.*;
-import android.content.*;
-import ru.pda.nitro.WidgetsHelper;
-import ru.pda.nitro.*;
-import android.widget.*;
 
 
 /**
@@ -219,7 +216,7 @@ public abstract class TopicsListFragment extends BaseListFragment {
 
         if (!getCount())
             showFooter(false);
-		setDataInAdapter(adapter, (ArrayList<IListItem>)topics);
+        setDataInAdapter(adapter, topics);
         updateAdapter(adapter);	
     }
 
@@ -406,7 +403,7 @@ public abstract class TopicsListFragment extends BaseListFragment {
 	public void getLocalDataOnStart()
 	{
 		topics = getLocalTopicsData(getActivity(), getUri());
-		setDataInAdapter(adapter,(ArrayList<IListItem>)topics);
-		updateAdapter(adapter);
+        setDataInAdapter(adapter, topics);
+        updateAdapter(adapter);
 	}
 }

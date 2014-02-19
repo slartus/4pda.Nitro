@@ -1,17 +1,18 @@
 package ru.pda.nitro.adapters;
-import android.widget.*;
-import android.view.*;
-import java.util.*;
 
+import android.content.Context;
+import android.graphics.Color;
+import android.graphics.Typeface;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
+
+import java.util.ArrayList;
+
+import ru.forpda.interfaces.forum.IListItem;
 import ru.forpda.interfaces.forum.Topic;
 import ru.pda.nitro.R;
-
-import android.content.*;
-
-import android.util.*;
-import ru.forpda.common.*;
-import android.graphics.*;
-import ru.forpda.interfaces.forum.*;
 
 
 public class TopicListAdapter extends BaseListAdapter
@@ -32,8 +33,7 @@ public class TopicListAdapter extends BaseListAdapter
 	}
 
 	@Override
-	public void setData(ArrayList<IListItem> data)
-	{
+    public void setData(ArrayList<? extends IListItem> data) {
 		this.topics = (ArrayList<Topic>) data;
 	}
 	

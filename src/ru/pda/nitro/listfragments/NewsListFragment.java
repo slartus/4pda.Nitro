@@ -1,7 +1,9 @@
 package ru.pda.nitro.listfragments;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,12 +23,7 @@ import ru.pda.nitro.R;
 import ru.pda.nitro.adapters.NewsListAdapter;
 import ru.pda.nitro.bricks.NewsBrick;
 import ru.pda.nitro.database.Contract;
-import android.content.*;
-import android.preference.*;
-import android.util.*;
-import android.net.*;
-import uk.co.senab.actionbarpulltorefresh.library.*;
-import ru.pda.nitro.database.*;
+import ru.pda.nitro.database.LocalDataHelper;
 
 
 /**
@@ -96,11 +93,12 @@ public class NewsListFragment extends BaseListFragment implements FragmentLifecy
     public void onActivityCreated(Bundle savedInstanceState)
 	{
         super.onActivityCreated(savedInstanceState);
-		
-		newsUrl = getArguments().getString("_url");
-		position = getArguments().getInt("_position");
-		
-		newsList = new NewsList(new HttpHelper(App.getInstance()), newsUrl);
+
+        newsUrl = getArguments().getString(NEWS_URL);
+
+        position = getArguments().getInt(NEWS_POSITION);
+
+        newsList = new NewsList(new HttpHelper(App.getInstance()), newsUrl);
 		adapter = new NewsListAdapter(getActivity(), newsList, imageLoader);
         
 		listView.addFooterView(initialiseFooter());
@@ -159,7 +157,7 @@ public class NewsListFragment extends BaseListFragment implements FragmentLifecy
     @Override
     public void inExecute()
 	{
-		setDataInAdapter(adapter, (ArrayList<IListItem>) newsList);
+        setDataInAdapter(adapter, newsList);
         updateAdapter(adapter);
     }
 	

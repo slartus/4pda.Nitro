@@ -1,5 +1,6 @@
 package ru.pda.nitro.listfragments;
 
+import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -22,14 +23,10 @@ import ru.forpda.interfaces.forum.IListItem;
 import ru.pda.nitro.BaseFragment;
 import ru.pda.nitro.BaseState;
 import ru.pda.nitro.R;
+import ru.pda.nitro.WidgetsHelper;
+import ru.pda.nitro.adapters.BaseListAdapter;
 import ru.pda.nitro.bricks.FavoritesBrick;
-import ru.pda.nitro.bricks.GroopsBrick;
 import ru.pda.nitro.bricks.NewsBrick;
-import android.content.*;
-import android.os.*;
-import android.widget.*;
-import ru.pda.nitro.*;
-import ru.pda.nitro.adapters.*;
 
 
 /**
@@ -133,9 +130,9 @@ public abstract class BaseListFragment extends BaseFragment
 		WidgetsHelper.updateAllWidgets(getActivity());
 
 	}
-	
-	public void setDataInAdapter(BaseListAdapter adapter, ArrayList<IListItem> data){
-		adapter.setData(data);
+
+    public void setDataInAdapter(BaseListAdapter adapter, ArrayList<? extends IListItem> data) {
+        adapter.setData(data);
 	}
 
 
