@@ -12,6 +12,10 @@ import android.support.v4.app.*;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import ru.pda.nitro.bricks.BricksProfile.*;
 import ru.pda.nitro.bricks.*;
+import android.text.*;
+import android.text.style.*;
+import android.app.*;
+import ru.pda.nitro.classes.*;
 
 public abstract class BaseFragment extends Fragment {
     public LinearLayout linearProgress;
@@ -41,7 +45,6 @@ public abstract class BaseFragment extends Fragment {
 		BaseState.setGroop_menu(getName().equals(GroopsBrick.NAME));
 		refreshActionBarMenu(getActivity());
 	}
-	
 	
 
     public View initialiseUi(View v) {

@@ -128,7 +128,7 @@ public class TopicView extends BaseFragment
         private void showTopic(CharSequence topicUrl) {
             setRefresh(true);
             Bundle bundle = new Bundle();
-            bundle.putCharSequence(TabsViewActivity.TOPIC_ID_KEY, topicUrl);
+            bundle.putCharSequence(TabsViewActivity.TOPIC_URL_KEY, topicUrl);
             getLoaderManager().restartLoader(0, bundle, this);
         }
 
@@ -169,7 +169,7 @@ public class TopicView extends BaseFragment
                             actionBar.getTabAt(index).setTag(topicUrl);
                         }
                         if (tag.equals(topicUrl)) {
-                            actionBar.getTabAt(index).setText(topicTitle);
+                            actionBar.getTabAt(index).setText(BaseState.getSpannable(getActivity(), topicTitle));
                         }
                     }
 

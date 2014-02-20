@@ -57,7 +57,7 @@ public abstract class BaseListFragment extends BaseFragment
         listView.setOnItemClickListener(this);
         listView.setOnCreateContextMenuListener(this);
 		BaseState.setMTitle(getTitle());
-		getActivity().getActionBar().setTitle(getTitle());
+		getActivity().getActionBar().setTitle(BaseState.getSpannable(getActivity(), getTitle()));
     }
 
 	@Override

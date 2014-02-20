@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Generated with http://android-holo-colors.com -->
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <style name="main" parent="@style/_main"/>
+
+  <style name="_main" parent="@android:style/Theme.Holo.Light.DarkActionBar">
+
+    <item name="android:editTextBackground">@drawable/main_edit_text_holo_light</item>
+
+    <item name="android:textColorHighlight">#994973b9</item>
+    <item name="android:textSelectHandleLeft">@drawable/main_text_select_handle_left</item>
+    <item name="android:textSelectHandleRight">@drawable/main_text_select_handle_right</item>
+    <item name="android:textSelectHandle">@drawable/main_text_select_handle_middle</item>
+
+    <item name="android:autoCompleteTextViewStyle">@style/AutoCompleteTextViewmain</item>
+
+    <item name="android:listChoiceIndicatorMultiple">@drawable/main_btn_check_holo_light</item>
+
+    <item name="android:listChoiceIndicatorSingle">@drawable/main_btn_radio_holo_light</item>
+
+    <item name="android:buttonStyle">@style/Buttonmain</item>
+
+    <item name="android:imageButtonStyle">@style/ImageButtonmain</item>
+
+    <item name="android:dropDownSpinnerStyle">@style/Spinnermain</item>
+
+    <item name="android:progressBarStyleHorizontal">@style/ProgressBarmain</item>
+
+    <item name="android:seekBarStyle">@style/SeekBarmain</item>
+
+    <item name="android:ratingBarStyle">@style/RatingBarmain</item>
+
+    <item name="android:ratingBarStyleIndicator">@style/RatingBarBigmain</item>
+
+    <item name="android:ratingBarStyleSmall">@style/RatingBarSmallmain</item>
+
+    <item name="android:buttonStyleToggle">@style/Togglemain</item>
+
+    <item name="android:listChoiceBackgroundIndicator">@drawable/main_list_selector_holo_light</item>
+
+    <item name="android:activatedBackgroundIndicator">@drawable/main_activated_background_holo_light</item>
+
+    <item name="android:fastScrollThumbDrawable">@drawable/main_fastscroll_thumb_holo</item>
+
+  </style>
+
+</resources>

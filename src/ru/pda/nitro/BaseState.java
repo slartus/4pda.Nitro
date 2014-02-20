@@ -1,4 +1,9 @@
 package ru.pda.nitro;
+import android.text.*;
+import ru.pda.nitro.classes.*;
+import android.app.*;
+import android.text.style.*;
+import android.graphics.*;
 
 public class BaseState
 {
@@ -13,6 +18,13 @@ public class BaseState
 	private static boolean showMenuItemCancel = false;
 	private static CharSequence mTitle ;
 
+	
+	public static SpannableString getSpannable(Activity activity, CharSequence title){
+		SpannableString s = new SpannableString(title);
+		s.setSpan(new TypefacesSpan(activity, "RobotoCondensed-Regular.ttf"), 0, s.length(),Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+		return s;
+	}
+	
 	public static void setLogin_menu(boolean login_menu)
 	{
 		BaseState.login_menu = login_menu;

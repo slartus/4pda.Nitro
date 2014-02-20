@@ -19,6 +19,7 @@ public class BaseActivity extends FragmentActivity implements IRefreshActivity
 	{
 		super.onCreate(savedInstanceState);
 		ab = getActionBar();
+		ab.setIcon(R.drawable.ab_4pda);
 		mPullToRefreshAttacher = new PullToRefreshAttacher(this);
 		
 	}

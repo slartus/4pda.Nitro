@@ -51,12 +51,15 @@ public class MainActivity extends BaseActivity
 	private static ArrayList<BrickInfo> menus;
 	public static UserProfile profile;
 	public static TextView textNick;
-
+	private static Typeface face, current_face;
+	
 	@Override
     protected void onCreate(Bundle savedInstanceState)
 	{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.content_frame_drawer);
+		current_face = Typeface.createFromAsset(getAssets(), "4pda/fonts/RobotoCondensed-Bold.ttf");
+		face = Typeface.createFromAsset(getAssets(), "4pda/fonts/RobotoCondensed-Regular.ttf");
 		
 		profile = new UserProfile();
 		BaseState.setLogin(profile.isLogined());
@@ -93,7 +96,7 @@ public class MainActivity extends BaseActivity
 												  R .drawable.ic_drawer_white , R.string.app_menu , R.string.app_name) {
 			public void onDrawerClosed(View view)
 			{
-				ab. setTitle(BaseState.getMTitle());
+				ab. setTitle(BaseState.getSpannable(MainActivity.this,  BaseState.getMTitle()));
 				//	invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
 				mAdapter.notifyDataSetChanged();
 
@@ -101,7 +104,7 @@ public class MainActivity extends BaseActivity
 
 			public void onDrawerOpened(View drawerView)
 			{
-				ab.setTitle(R.string.app_menu);
+				ab.setTitle(BaseState.getSpannable(MainActivity.this, getResources().getString( R.string.app_menu)));
 				//	invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
 			}
 		};
@@ -145,7 +148,8 @@ public class MainActivity extends BaseActivity
 	
 	
 	public static void setUserData(){
-		textNick.setText(profile.getLogin());
+		textNick.setText( profile.getLogin());
+		textNick.setTypeface(face);
 		imageLoader.displayImage(profile.getAvatar(), avatar);
 		
 	}
@@ -301,7 +305,6 @@ public class MainActivity extends BaseActivity
         final LayoutInflater inflater;
 		private Context context;
 		SharedPreferences prefs;
-		private Typeface face, current_face;
 		
 		public void setData(ArrayList<BrickInfo> data) {
             if (getCount() > 0)
@@ -322,8 +325,6 @@ public class MainActivity extends BaseActivity
 			this.context = context;
             inflater = LayoutInflater.from(context);
 			prefs = PreferenceManager.getDefaultSharedPreferences(context);
-			current_face = Typeface.createFromAsset(context.getAssets(), "4pda/fonts/Roboto-Black.ttf");
-			face = Typeface.createFromAsset(context.getAssets(), "4pda/fonts/Roboto-Regular.ttf");
 			
 		}
 		

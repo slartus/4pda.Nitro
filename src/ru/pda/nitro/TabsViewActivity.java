@@ -41,7 +41,7 @@ public class TabsViewActivity extends BaseActivity {
             Bundle extras = intent.getExtras();
             if (extras != null) {
                 if (extras.containsKey(TOPIC_LIST_TITLE_KEY))
-                    setTitle(extras.getString(TOPIC_LIST_TITLE_KEY));
+                    setTitle(BaseState.getSpannable(this, extras.getString(TOPIC_LIST_TITLE_KEY)));
             }
         }
 

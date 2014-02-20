@@ -154,7 +154,7 @@ public class TabsViewFragment extends Fragment
 					.commit();
 			} else {
 				if (tab.getText().equals(R.string.stoping))
-                    tab.setText(R.string.downloads);
+                    tab.setText(BaseState.getSpannable(mActivity, mActivity.getResources().getString( R.string.downloads)));
 				
 				fm.beginTransaction()
 					.attach(mFragment)
@@ -166,7 +166,7 @@ public class TabsViewFragment extends Fragment
         public void onTabUnselected(Tab tab, FragmentTransaction ft) {
             if (mActivity != null && mFragment != null) {
                 if (tab.getText().equals(R.string.downloads))
-                    tab.setText(R.string.stoping);
+                    tab.setText(BaseState.getSpannable(mActivity, mActivity.getResources().getString( R.string.stoping)));
 
                 mActivity.getSupportFragmentManager().beginTransaction()
 					.detach(mFragment)
@@ -183,7 +183,7 @@ public class TabsViewFragment extends Fragment
 
         actionBar
 			.addTab(actionBar.newTab()
-					.setText(text)
+					.setText(BaseState.getSpannable(activity, text))
 					.setTag(tag)
 					.setTabListener(new TabListener(activity,clz , topicUrl, topicId, baseId, tag)));
     }
