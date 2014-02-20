@@ -18,8 +18,10 @@ public class BricksList {
         ArrayList<BrickInfo> res = new ArrayList<BrickInfo>();
 		res.add(new GroopsBrick(prefs));
         res.add(new NewsBrick(prefs));
-		if(BaseState.isLogin())
+		if(BaseState.isLogin()){
         res.add(new FavoritesBrick(prefs));
+		res.add(new SubscribesBrick(prefs));
+		}
         res.add(new ForumsBrick(prefs));
         
 		return res;

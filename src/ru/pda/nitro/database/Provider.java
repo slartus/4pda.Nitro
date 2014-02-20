@@ -17,6 +17,8 @@ public class Provider extends ContentProvider
 	private static final int NEWS_ID = 2;
 	private static final int FAVORITE = 3;
 	private static final int FAVORITE_ID = 4;
+	private static final int SUBSCRIBE = 11;
+	private static final int SUBSCRIBE_ID = 12;
 	
 	private static final int GROOP = 9;
 	private static final int GROOP_ID = 10;
@@ -55,7 +57,11 @@ public class Provider extends ContentProvider
                 qb.setTables(Contract.Favorite.TABLE_NAME);
                 defaultSortOrder = Contract.Favorite.DEFAULT_SORT_ORDER;
 				break;
-	
+				
+			case SUBSCRIBE:
+                qb.setTables(Contract.Subscribes.TABLE_NAME);
+                defaultSortOrder = Contract.Subscribes.DEFAULT_SORT_ORDER;
+				break;
 			case GROOP:
                 qb.setTables(Contract.Groop.TABLE_NAME);
                 defaultSortOrder = Contract.Groop.DEFAULT_SORT_ORDER;
@@ -111,6 +117,10 @@ public class Provider extends ContentProvider
 				return Contract.Favorite.CONTENT_TYPE;
 			case FAVORITE_ID:
 				return Contract.Favorite.CONTENT_ITEM_TYPE;
+			case SUBSCRIBE:
+				return Contract.Subscribes.CONTENT_TYPE;
+			case SUBSCRIBE_ID:
+				return Contract.Subscribes.CONTENT_ITEM_TYPE;
 			case GROOPS:
 				return Contract.Groop.CONTENT_TYPE;
 			case GROOPS_ID:
@@ -132,6 +142,9 @@ public class Provider extends ContentProvider
                 break;
 			case FAVORITE:
                 tableName = Contract.Favorite.TABLE_NAME;
+                break;
+			case SUBSCRIBE:
+                tableName = Contract.Subscribes.TABLE_NAME;
                 break;
 			case GROOPS:
                 tableName = Contract.Groops.TABLE_NAME;
@@ -165,6 +178,9 @@ public class Provider extends ContentProvider
                 break;
 			case FAVORITE:
                 tableName = Contract.Favorite.TABLE_NAME;
+                break;
+			case SUBSCRIBE:
+                tableName = Contract.Subscribes.TABLE_NAME;
                 break;
 			case GROOPS_ID:
                 tableName = Contract.Groops.TABLE_NAME;
@@ -207,6 +223,10 @@ public class Provider extends ContentProvider
                 tableName = Contract.Favorite.TABLE_NAME;
                 selection = "_id=" + uri.getLastPathSegment() + (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : "");
 				break;
+			case SUBSCRIBE_ID:
+                tableName = Contract.Subscribes.TABLE_NAME;
+                selection = "_id=" + uri.getLastPathSegment() + (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : "");
+				break;
 			case GROOPS_ID:
                 tableName = Contract.Groops.TABLE_NAME;
                 selection = "_id=" + uri.getLastPathSegment() + (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : "");
@@ -239,6 +259,9 @@ public class Provider extends ContentProvider
 		
         sUriMatcher.addURI(Contract.AUTHORITY, "Favorite", FAVORITE);
 		sUriMatcher.addURI(Contract.AUTHORITY, "Favorite/#", FAVORITE_ID);
+		sUriMatcher.addURI(Contract.AUTHORITY, "Subscribe", SUBSCRIBE);
+		sUriMatcher.addURI(Contract.AUTHORITY, "Subscribe/#", SUBSCRIBE_ID);
+		
 		sUriMatcher.addURI(Contract.AUTHORITY, "News", NEWS);
 		sUriMatcher.addURI(Contract.AUTHORITY, "News/#", NEWS_ID);
 

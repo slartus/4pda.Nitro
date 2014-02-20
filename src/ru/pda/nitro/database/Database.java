@@ -8,7 +8,7 @@ import android.provider.BaseColumns;
 public class Database extends SQLiteOpenHelper
 {
 	private static final String DATABASE_NAME = "nitro.db";
-    private static final int DATABASE_VERSION = 11;
+    private static final int DATABASE_VERSION = 12;
 
 
     public Database(Context context)
@@ -30,6 +30,18 @@ public class Database extends SQLiteOpenHelper
                 + Contract.Groop.groop + " TEXT " + "REFERENCES " + Contract.Groops.TABLE_NAME + "(" + BaseColumns._ID + ")" + ","
                 + Contract.Groop.id + " TEXT,"
 				   + Contract.Groop.title + " TEXT"
+				   + ")");
+				   
+		db.execSQL("CREATE TABLE " + Contract.Subscribes.TABLE_NAME + " ("
+				   + BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+				   + Contract.Favorite.id + " TEXT,"
+				   + Contract.Favorite.title + " TEXT,"
+				   + Contract.Favorite.lastAvtor + " TEXT,"
+				   + Contract.Favorite.lastDate + " TEXT,"
+				   + Contract.Favorite.description + " TEXT,"
+				   + Contract.Favorite.hasUnreadPosts + " INTEGER,"
+				   + Contract.Favorite.forumTitle + " TEXT"
+
 				   + ")");
 
         db.execSQL("CREATE TABLE " + Contract.Favorite.TABLE_NAME + " ("

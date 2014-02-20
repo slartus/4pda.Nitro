@@ -31,7 +31,7 @@ public class NewsListAdapter extends BaseListAdapter
 	@Override
 	public void setData(ArrayList<? extends IListItem> data)
 	{
-		this.newsList = (NewsList) data;
+		this.newsList = (ArrayList<News>) data;
 	}
 	
 	@Override

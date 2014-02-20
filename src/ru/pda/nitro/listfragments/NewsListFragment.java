@@ -24,6 +24,8 @@ import ru.pda.nitro.adapters.NewsListAdapter;
 import ru.pda.nitro.bricks.NewsBrick;
 import ru.pda.nitro.database.Contract;
 import ru.pda.nitro.database.LocalDataHelper;
+import ru.forpda.api.*;
+import ru.forpda.interfaces.*;
 
 
 /**
@@ -31,18 +33,27 @@ import ru.pda.nitro.database.LocalDataHelper;
  */
 public class NewsListFragment extends BaseListFragment implements FragmentLifecycle
 {
+	private ArrayList<News> newsList = null;
 	public final static String NEWS_LIST_FRAGMENT = "NEWS_LIST_FRAGMENT";
 	private final static String NEWS_URL = "ru.pda.nitro.listfragments.NewsListFragment.NEWS_URL";
 	private final static String NEWS_POSITION = "ru.pda.nitro.listfragments.NewsListFragment.NEWS_POSITION";
 	private int position = 0;
-    private NewsList newsList = null;
+//    private NewsList newsList = null;
     private String newsUrl = "";
     private NewsListAdapter adapter;
 
     @Override
     public ArrayList<? extends IListItem> getList()
 	{
-        return null;
+        try
+		{
+			return NewsApi.getNews(new HttpHelper(App.getInstance()), newsUrl, listInfo);
+		}
+		catch (ParseException e)
+		{}
+		catch (IOException e)
+		{}
+		return null;
     }
 	
 	
@@ -97,8 +108,10 @@ public class NewsListFragment extends BaseListFragment implements FragmentLifecy
         newsUrl = getArguments().getString(NEWS_URL);
 
         position = getArguments().getInt(NEWS_POSITION);
-
-        newsList = new NewsList(new HttpHelper(App.getInstance()), newsUrl);
+		
+		listInfo = new ListInfo();
+		newsList = new ArrayList<News>();
+     //   newsList = new NewsList(new HttpHelper(App.getInstance()), newsUrl);
 		adapter = new NewsListAdapter(getActivity(), newsList, imageLoader);
         
 		listView.addFooterView(initialiseFooter());
@@ -121,8 +134,6 @@ public class NewsListFragment extends BaseListFragment implements FragmentLifecy
     @Override
     public boolean inBackground()
 	{
-        try
-		{
 
 			if (!isRefresh() && !isLoadmore() && getLocalNewsData())
 			{
@@ -131,27 +142,26 @@ public class NewsListFragment extends BaseListFragment implements FragmentLifecy
 			}
 			else if (isRefresh() && !isLoadmore())
 			{
-				newsList = new NewsList(new HttpHelper(App.getInstance()), newsUrl);
+				newsList = new ArrayList<News>();
+				//	newsList = new NewsList(new HttpHelper(App.getInstance()), newsUrl);
 			}
 			else if (isLoadmore())
 			{
-				newsList.loadNextNewsPage();
+				for(News item : (ArrayList<News>)getList()){
+					newsList.add(item);
+				}
+			//	newsList.loadNextNewsPage();
 				return true;
 			}
+			newsList = (ArrayList<News>) getList();
 			
-			newsList.loadNextNewsPage();
+		//	newsList.loadNextNewsPage();
+		if(newsList != null){
 			setLocalData(getActivity(),newsList, getUri(), newsUrl);
 			return true;
-
-        }
-		catch (ParseException e)
-		{
-        }
-		catch (IOException e)
-		{
-        }
-
-        return false;
+			}
+			
+		return false;
     }
 
     @Override
@@ -178,6 +188,7 @@ public class NewsListFragment extends BaseListFragment implements FragmentLifecy
 	{
 		if ((firstVisibleItem + visibleItemCount) == totalItemCount && !loadMore && !isLoading())
 		{
+			if(newsList.size() > 0)
 			showFooter(true);
 		}
 
@@ -225,31 +236,31 @@ public class NewsListFragment extends BaseListFragment implements FragmentLifecy
         return false;
     }
 
-    public static void setLocalData(Context context, ArrayList<News> topics, Uri uri, String url)
+    public static void setLocalData(Context context, ArrayList<News> news, Uri uri, String url)
 	{
 
 		if (url.equals(""))
 		{
 			deleteAllLocalData(context,uri);
 			ContentValues cv = new ContentValues();
-			for(News topic : topics){
-			cv.put(Contract.News.description, topic.getDescription() != null ? topic.getDescription().toString() : "");
-			cv.put(Contract.News.title,topic.getTitle() != null ? topic.getTitle().toString() : "");
-			cv.put(Contract.News.id,topic.getId() != null ? topic.getId().toString() : "");
-			cv.put(Contract.News.author, topic.getAuthor() != null ? topic.getAuthor().toString() : "");
-			cv.put(Contract.News.newsDate,topic.getNewsDate() != null ? topic.getNewsDate().toString() : "");
-			cv.put(Contract.News.imgUrl, topic.getImgUrl() != null ? topic.getImgUrl().toString() : "");
+			for(News item : news){
+			cv.put(Contract.News.description, item.getDescription() != null ? item.getDescription().toString() : "");
+			cv.put(Contract.News.title,item.getTitle() != null ? item.getTitle().toString() : "");
+			cv.put(Contract.News.id,item.getId() != null ? item.getId().toString() : "");
+			cv.put(Contract.News.author, item.getAuthor() != null ? item.getAuthor().toString() : "");
+			cv.put(Contract.News.newsDate,item.getNewsDate() != null ? item.getNewsDate().toString() : "");
+			cv.put(Contract.News.imgUrl, item.getImgUrl() != null ? item.getImgUrl().toString() : "");
 			
-			cv.put(Contract.News.commentsCount, topic.getCommentsCount());
+			cv.put(Contract.News.commentsCount, item.getCommentsCount());
 			
-			if(topic.getSourceTitle() != null){
-			cv.put(Contract.News.sourceTitle, topic.getSourceTitle().toString());
-			cv.put(Contract.News.sourseUrl, topic.getSourceUrl().toString());
+			if(item.getSourceTitle() != null){
+			cv.put(Contract.News.sourceTitle, item.getSourceTitle().toString());
+			cv.put(Contract.News.sourseUrl, item.getSourceUrl().toString());
 			}
-			if(topic.getTagLink()!= null){
-			cv.put(Contract.News.tagLink, topic.getTagLink().toString());
-			cv.put(Contract.News.tagName, topic.getTagName().toString());
-			cv.put(Contract.News.tagTitle, topic.getTagTitle().toString());
+			if(item.getTagLink()!= null){
+			cv.put(Contract.News.tagLink, item.getTagLink().toString());
+			cv.put(Contract.News.tagName, item.getTagName().toString());
+			cv.put(Contract.News.tagTitle, item.getTagTitle().toString());
 			}
 			context.getContentResolver().insert(uri, cv);
 			}

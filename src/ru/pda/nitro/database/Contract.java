@@ -66,6 +66,30 @@ public final class Contract
 
     }
 	
+	public static final class Subscribes
+    {
+		private Subscribes()
+		{}
+
+        public static final String TABLE_NAME = "Subscribe";
+        public static final String id = "id";
+		public static final String title = "title";
+		public static final String lastAvtor = "lastAvtor";
+		public static final String lastDate = "lastDate";
+		public static final String forumTitle = "forumTitle";
+		public static final String description = "description";
+		public static final String hasUnreadPosts = "hasUnreadPosts";
+
+		public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/Subscribe");
+		public static final String CONTENT_TYPE = "vnd.android.cursor.dir/vnd." + AUTHORITY + ".Subscribe";
+		public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/vnd." + AUTHORITY + ".Subscribe";
+
+		public static final String DEFAULT_SORT_ORDER = BaseColumns._ID + " ASC";
+
+    }
+	
+	
+	
 	public static final class News
     {
 		private News()
