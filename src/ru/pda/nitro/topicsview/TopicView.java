@@ -28,6 +28,8 @@ import ru.pda.nitro.R;
 import ru.pda.nitro.database.Contract;
 import ru.pda.nitro.dialogs.ThemeOptionsDialogFragment;
 import ru.pda.nitro.*;
+import android.content.*;
+import ru.pda.nitro.listfragments.*;
 
 
 public class TopicView extends BaseFragment
@@ -218,6 +220,5 @@ public class TopicView extends BaseFragment
             super.onResume();
             setProgress(isLoading());
         }
-
-
+		
     }

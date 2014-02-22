@@ -11,12 +11,23 @@ public class BaseState
 	private static boolean groop_menu = false;
 	private static boolean login_menu = false;
 	private static boolean refresh_favorite = true;
+	private static boolean refresh_subscribe = true;
 	private static boolean refresh_news = true;
 	private static boolean favorite;
 	private static boolean subscribe;
 	private static boolean login;
 	private static boolean showMenuItemCancel = false;
 	private static CharSequence mTitle ;
+
+	public static void setRefresh_subscribe(boolean refresh_subscribe)
+	{
+		BaseState.refresh_subscribe = refresh_subscribe;
+	}
+
+	public static boolean isRefresh_subscribe()
+	{
+		return refresh_subscribe;
+	}
 
 	
 	public static SpannableString getSpannable(Activity activity, CharSequence title){

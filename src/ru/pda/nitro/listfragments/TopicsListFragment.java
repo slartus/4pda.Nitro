@@ -36,35 +36,66 @@ import ru.pda.nitro.TabsViewActivity;
 import ru.pda.nitro.adapters.TopicListAdapter;
 import ru.pda.nitro.database.Contract;
 import ru.pda.nitro.dialogs.ThemeOptionsDialogFragment;
+import android.view.*;
+import ru.forpda.interfaces.*;
+import android.widget.*;
 
 
 /**
  * Created by slartus on 12.01.14.
  * базовый класс для списков тем
  */
-public abstract class TopicsListFragment extends BaseListFragment {
+public abstract class TopicsListFragment extends BaseListFragment  {
 
-    public static ArrayList<Topic> topics = new ArrayList<Topic>();
-    public static TopicListAdapter adapter;
+	public final static String TOPICS_LIST_FRAGMENT = "TOPICS_LIST_FRAGMENT";
+    private static ArrayList<Topic> topics = new ArrayList<Topic>();
+    private TopicListAdapter adapter;
     public static final int NAVIGATE_DIALOG_FRAGMENT = 1;
     private int selectedItem;
+	private ListInfo listInfo;
+	private ListView listView;
+	
+	
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+	{
+
+        View v = inflater.inflate(R.layout.list_topic, container, false);
+		listView = (ListView) v.findViewById(R.id.listViewTopic);
+
+        return initialiseUi(v);
+    }
+
 
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState)
 	{
 		super.onActivityCreated(savedInstanceState);
-	}
+		//	getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
 
+		listInfo = new ListInfo();
+		adapter = new TopicListAdapter(getActivity(), topics);
+		listView.setOnItemClickListener(this);
+		listView.setOnCreateContextMenuListener(this);
+		
+		listView.addFooterView(initialiseFooter());
+		listView.setAdapter(adapter);
+		listView.setOnScrollListener(this);
+
+		getPullToRefreshAttacher(listView);
+	}
 	
     @Override
     public ArrayList<? extends IListItem> getList() throws ParseException, IOException {
-        return getTopicsList();
+        return getTopicsList(listInfo);
     }
 	
-	public final static String TOPICS_LIST_FRAGMENT = "TOPICS_LIST_FRAGMENT";
-
+	public abstract ArrayList<Topic> getTopicsList(ListInfo listInfo) throws ParseException, IOException;
+	
+	
+	
 	@Override
-	public String getClassName()
+	public static String getClassName()
 	{
 		return TOPICS_LIST_FRAGMENT;
 	}
@@ -73,7 +104,7 @@ public abstract class TopicsListFragment extends BaseListFragment {
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
         if (l < 0) return;
         Topic topic = topics.get(i);
-
+		
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(App.getInstance());
         String navigateAction = prefs.getString(getName() + ".navigate_action", null);
         if (navigateAction == null) {
@@ -81,16 +112,16 @@ public abstract class TopicsListFragment extends BaseListFragment {
             showNavigateDialog(topic);
             return;
         }
-
-       showTopicActivity(i, topic, navigateAction);
+	
+       	showTopicActivity(i, topic, navigateAction);
     }
 
 
-    public void setSelectedItem(int selectedItem) {
+    private void setSelectedItem(int selectedItem) {
         this.selectedItem = selectedItem;
     }
 
-    public int getSelectedItem() {
+    private int getSelectedItem() {
         return selectedItem;
     }
 
@@ -159,6 +190,7 @@ public abstract class TopicsListFragment extends BaseListFragment {
             showTopicActivity(itemId, topic, navigateAction);
         }
     }
+	
 
     private void showTopicActivity(int i, Topic topic, CharSequence navigateAction) {
         topic.setHasUnreadPosts(false);
@@ -167,11 +199,10 @@ public abstract class TopicsListFragment extends BaseListFragment {
         TabsViewActivity.show(getActivity(), topic.getId(), topic.getTitle(), getTitle(), navigateAction, getClassName());
     }
 
-    public abstract ArrayList<Topic> getTopicsList() throws ParseException, IOException;
-
-    protected boolean getTopics() throws Throwable {
+    
+/*    protected boolean getTopics() throws Throwable {
         return false;
-    }
+    }*/
 	
 	
     public static void updateItem(final Context context, final int i) {
@@ -203,12 +234,56 @@ public abstract class TopicsListFragment extends BaseListFragment {
     @Override
     public boolean inBackground() {
         try {
-            return getTopics();
+            if (isRefresh())
+			{
+				if(isLoadmore()){
+					ArrayList<Topic> data = (ArrayList<Topic>) getList();
+					if(data.size() > 0){
+						for(Topic topic : data){
+							topics.add(topic);
+						}
+						deleteAllLocalData(getActivity(), getUri());
+						setLocalData(getActivity(),topics, getUri());
+						return true;
+					}
+				}else{
+					topics = (ArrayList<Topic>) getList();
+					if (topics.size() > 0)
+					{
+						setOutCount(listInfo.getOutCount());
+						deleteAllLocalData(getActivity(),getUri());
+						setLocalData(getActivity(),topics, getUri());
+						return true;
+					}
+				}
+			}
+			else
+			{
+				setFrom(getFrom());
+				setOutCount(getOutCount());
+				if (topics.size() == 0)
+				{
+					topics = (ArrayList<Topic>) getList();
+					if (topics.size() > 0)
+					{
+						setOutCount(listInfo.getOutCount());
+						setLocalData(getActivity(),topics, getUri());
+						return true;
+					}
+				}
+
+				else
+					setLoading(false);
+				return true;
+			}
+
+			
         } catch (Throwable e) {
 
         }
 
-        return false;
+        setFrom(getOld_from());
+		return false;
     }
 
     @Override
@@ -220,17 +295,17 @@ public abstract class TopicsListFragment extends BaseListFragment {
         updateAdapter(adapter);	
     }
 
-    public int getFrom() {
+    private int getFrom() {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        return prefs.getInt("_topics_from" + getName(), 0);
+        return prefs.getInt("_topics_from_" + getName(), 0);
     }
 
-    public int getOutCount() {
+    private int getOutCount() {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        return prefs.getInt("_topics_out_count" + getName(), 0);
+        return prefs.getInt("_topics_out_count_" + getName(), 0);
     }
 
-    public boolean getCount() {
+    private boolean getCount() {
         return getOutCount() == 0 | getFrom() < getOutCount();
     }
 
@@ -240,6 +315,38 @@ public abstract class TopicsListFragment extends BaseListFragment {
             task.execute();
         } else
             setProgress(false);
+
+    }
+	
+	@Override
+	protected void setFrom(int from){
+		this.from = from;
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+		SharedPreferences.Editor e = prefs.edit();
+		e.putInt("_topics_from_" + getName(), from).commit();
+		listInfo.setFrom(from);
+	}
+
+
+
+	private void setOutCount(int count){
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+		SharedPreferences.Editor e = prefs.edit();
+		e.putInt("_topics_out_count_"+ getName(), count).commit();
+	}
+
+    @Override
+    protected void setNextPage() {
+		setOld_from(from);
+        setFrom(topics.size());
+    }
+
+    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+		if ((firstVisibleItem + visibleItemCount) == totalItemCount && !loadMore && getCount() && !isLoading())
+		{
+			showFooter(true);
+
+		}
 
     }
 
@@ -399,6 +506,22 @@ public abstract class TopicsListFragment extends BaseListFragment {
 
 
     }
+	
+	@Override
+	public void onResume()
+	{
+		super.onResume();
+		getData();
+
+	}
+	
+	@Override
+	public void onStart()
+	{
+		super.onStart();
+		getLocalDataOnStart();
+	}
+	
 	@Override
 	public void getLocalDataOnStart()
 	{

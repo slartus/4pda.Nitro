@@ -33,14 +33,17 @@ import ru.pda.nitro.database.Contract;
 import ru.pda.nitro.dialogs.DeleteDialogFragment;
 import ru.pda.nitro.dialogs.RenameDialogFragment;
 import ru.pda.nitro.TabsViewActivity;
+import android.widget.*;
 
 public class GroopsListFragment extends BaseListFragment implements LoaderManager.LoaderCallbacks<Cursor> {
     private CursorAdapter mAdapter;
-
+	private ListView listView;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.list_topic, container, false);
-        return initialiseListUi(v);
+        listView = (ListView) v.findViewById(R.id.listViewTopic);
+		
+		return initialiseUi(v);
     }
 
 

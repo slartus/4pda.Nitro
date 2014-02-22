@@ -10,6 +10,7 @@ import android.preference.*;
 import android.view.View.*;
 import android.view.*;
 import ru.pda.nitro.*;
+import ru.pda.nitro.listfragments.*;
 
 
 public class QuickStartDialogFragment extends BaseDialogFragment {
@@ -49,16 +50,10 @@ public class QuickStartDialogFragment extends BaseDialogFragment {
 		public void onClick(DialogInterface p1, int p2)
 		{
 			BrickInfo item = adapter.getItem(p2);
-			
+			QuickStartActivity.show(getActivity(), item.getName());
 		}
-
 	};
-	private Intent getIntent(CharSequence topicId, CharSequence navigateAction) {
-		Intent intent = getActivity().getIntent();
-		intent.putExtra(NAVIGATE_ACTION_KEY, navigateAction);
-		intent.putExtra(TOPIC_ID_KEY, topicId);
-		return intent;
-	}
+	
 
 	public class MenuAdapter extends ArrayAdapter<BrickInfo>
     {

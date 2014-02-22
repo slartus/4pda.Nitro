@@ -19,6 +19,7 @@ import ru.pda.nitro.R;
 import ru.pda.nitro.adapters.ForumsListAdapter;
 import ru.pda.nitro.bricks.ForumsBrick;
 import android.net.*;
+import android.widget.*;
 
 
 /**
@@ -86,6 +87,7 @@ public class ForumsListFragment extends BaseListFragment
 	private Task task;
 	private ForumsListAdapter adapter;
 	private ArrayList<Forum> forums = new ArrayList<Forum>();
+	private ListView listView;
 	@Override
     public ArrayList<? extends IListItem> getList() {
         return ForumsApi.getForums(new HttpHelper(App.getInstance()));
@@ -106,7 +108,9 @@ public class ForumsListFragment extends BaseListFragment
 	{
 
         View v = inflater.inflate(R.layout.list_topic, container, false);
-        return initialiseListUi(v);
+        listView = (ListView) v.findViewById(R.id.listViewTopic);
+		
+		return initialiseUi(v);
     }
 
 	@Override

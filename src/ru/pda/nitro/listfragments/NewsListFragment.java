@@ -26,6 +26,7 @@ import ru.pda.nitro.database.Contract;
 import ru.pda.nitro.database.LocalDataHelper;
 import ru.forpda.api.*;
 import ru.forpda.interfaces.*;
+import android.widget.*;
 
 
 /**
@@ -41,7 +42,8 @@ public class NewsListFragment extends BaseListFragment implements FragmentLifecy
 //    private NewsList newsList = null;
     private String newsUrl = "";
     private NewsListAdapter adapter;
-
+	private ListInfo listInfo;
+	private ListView listView;
     @Override
     public ArrayList<? extends IListItem> getList()
 	{
@@ -97,7 +99,9 @@ public class NewsListFragment extends BaseListFragment implements FragmentLifecy
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
         View v = inflater.inflate(R.layout.list_topic, container, false);
-        return initialiseListUi(v);
+        listView = (ListView) v.findViewById(R.id.listViewTopic);
+		
+		return initialiseUi(v);
     }
 
     @Override

@@ -46,6 +46,11 @@
 				<category android:name="android.intent.category.DEFAULT"></category> 
 			</intent-filter>
         </activity>
+		<activity
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:name=".QuickStartActivity"
+            android:label="Быстрый доступ" />
+			
         <activity
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:name=".TabsViewActivity"

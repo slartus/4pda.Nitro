@@ -27,6 +27,7 @@ import ru.pda.nitro.WidgetsHelper;
 import ru.pda.nitro.adapters.BaseListAdapter;
 import ru.pda.nitro.bricks.FavoritesBrick;
 import ru.pda.nitro.bricks.NewsBrick;
+import ru.pda.nitro.bricks.*;
 
 
 /**
@@ -38,6 +39,7 @@ public abstract class BaseListFragment extends BaseFragment
         implements AbsListView.OnScrollListener,
         AdapterView.OnItemClickListener,
         android.view.View.OnCreateContextMenuListener {
+	public final static String QUICK_START_LIST_ITEM_SELECT = "ru.pda.nitro.listfragments.BaseListFragment.QUICK_START_LIST_ITEM_SELECT";
 	public Task task;
     private boolean loadmore = false;
     public int from = -1;
@@ -47,15 +49,13 @@ public abstract class BaseListFragment extends BaseFragment
     public TextView textMore;
     public ProgressBar progressMore;
     public boolean loadMore = false;
-    public ListInfo listInfo;
-	public ListView listView;
-
+	
     @Override
     public void onActivityCreated(Bundle savedInstanceState)
 	{
         super.onActivityCreated(savedInstanceState);
-        listView.setOnItemClickListener(this);
-        listView.setOnCreateContextMenuListener(this);
+   //     listView.setOnItemClickListener(this);
+   //     listView.setOnCreateContextMenuListener(this);
 		BaseState.setMTitle(getTitle());
 		getActivity().getActionBar().setTitle(BaseState.getSpannable(getActivity(), getTitle()));
     }
@@ -79,11 +79,10 @@ public abstract class BaseListFragment extends BaseFragment
     @Override
     public void onCreateContextMenu(android.view.ContextMenu contextMenu, android.view.View view, android.view.ContextMenu.ContextMenuInfo contextMenuInfo) {}
 
-    public View initialiseListUi(View v)
+  /*  public View initialiseListUi(View v)
 	{
-		listView = (ListView) v.findViewById(R.id.listViewTopic);
 		return initialiseUi(v);
-    }
+    }*/
 
 
     public View initialiseFooter()
@@ -210,6 +209,9 @@ public abstract class BaseListFragment extends BaseFragment
 		}else if(FavoritesBrick.NAME.equals(getName()) && BaseState.isRefresh_favorite()){
 			BaseState.setRefresh_favorite(false);
 			return true;
+		}else if(SubscribesBrick.NAME.equals(getName()) && BaseState.isRefresh_subscribe()){
+			BaseState.setRefresh_subscribe(false);
+			return true;
 		}
 		return false;
 	}
@@ -228,16 +230,6 @@ public abstract class BaseListFragment extends BaseFragment
 		if(task != null)
 			task.cancel(true);
 	}
-
-	@Override
-	public void onStart()
-	{
-		super.onStart();
-		getLocalDataOnStart();
-	}
-	
-	
-	
 	
 	protected void getLocalDataOnStart(){}
 
