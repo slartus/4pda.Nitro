@@ -26,4 +26,8 @@ public class SubscribesBrick extends BrickInfo
     public Fragment createFragment() {
         return new SubscribesListFragment();
     }
+	
+	public Class<? extends Fragment> getClassList(){
+		return SubscribesListFragment.class;
+	}
 }

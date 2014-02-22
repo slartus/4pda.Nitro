@@ -26,4 +26,8 @@ public class NewsBrick extends BrickInfo
     public Fragment createFragment() {
         return new NewsPagerFragment();
     }
+	
+	public Class<? extends Fragment> getClassList(){
+		return NewsPagerFragment.class;
+	}
 }

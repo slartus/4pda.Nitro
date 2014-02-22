@@ -10,6 +10,7 @@ public abstract class BrickInfo {
     private String title;
 	private boolean selected;
 	private boolean favorite;
+	
 
     public BrickInfo(String name,String title, boolean selected, boolean favorite){
         this.name=name;
@@ -49,4 +50,5 @@ public abstract class BrickInfo {
     }
 	
     public abstract Fragment createFragment();
+	public abstract Class<? extends Fragment> getClassList();
 }

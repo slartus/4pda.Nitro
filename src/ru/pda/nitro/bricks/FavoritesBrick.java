@@ -26,4 +26,8 @@ public class FavoritesBrick extends BrickInfo
     public Fragment createFragment() {
         return new FavoritesListFragment();
     }
+	
+	public Class<? extends Fragment> getClassList(){
+		return FavoritesListFragment.class;
+	}
 }

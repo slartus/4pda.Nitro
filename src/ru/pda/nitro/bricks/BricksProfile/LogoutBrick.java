@@ -22,4 +22,8 @@ public class LogoutBrick extends BrickInfo
     public Fragment createFragment() {
         return new LogoutFragment();
     }
+	
+	public Class<? extends Fragment> getClassList(){
+		return LogoutFragment.class;
+	}
 }

@@ -5,6 +5,8 @@ import android.content.*;
 import ru.pda.nitro.profile.*;
 import ru.pda.nitro.bricks.BricksProfile.*;
 import ru.pda.nitro.*;
+import android.support.v4.app.*;
+import ru.pda.nitro.listfragments.*;
 
 /**
  * Created by slartus on 12.01.14.
@@ -40,4 +42,6 @@ public class BricksList {
 		res.add(new LogoutBrick());
 		return res;
 	}
+	
+	
 }

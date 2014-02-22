@@ -25,4 +25,8 @@ public class ForumsBrick extends BrickInfo
     public Fragment createFragment() {
         return new ForumsListFragment();
     }
+	
+	public Class<? extends Fragment> getClassList(){
+		return ForumsListFragment.class;
+	}
 }

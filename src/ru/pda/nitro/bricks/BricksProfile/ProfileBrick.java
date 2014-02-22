@@ -22,4 +22,7 @@ public class ProfileBrick extends BrickInfo
     public Fragment createFragment() {
         return new ProfileFragment();
     }
+	public Class<? extends Fragment> getClassList(){
+		return ProfileFragment.class;
+	}
 }

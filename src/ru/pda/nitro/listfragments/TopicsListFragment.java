@@ -313,9 +313,9 @@ public abstract class TopicsListFragment extends BaseListFragment  {
         if (!isLoading()) {
             task = new Task();
             task.execute();
-        } else
+        }/* else
             setProgress(false);
-
+*/
     }
 	
 	@Override

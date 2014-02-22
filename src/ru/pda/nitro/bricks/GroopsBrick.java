@@ -18,4 +18,8 @@ public class GroopsBrick extends BrickInfo
     public Fragment createFragment() {
         return new GroopsListFragment();
     }
+	
+	public Class<? extends Fragment> getClassList(){
+		return GroopsListFragment.class;
+	}
 }

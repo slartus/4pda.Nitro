@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ActionBar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+
 import android.support.v4.app.DialogFragment;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
@@ -35,6 +36,9 @@ import ru.pda.nitro.dialogs.*;
 import ru.pda.nitro.bricks.*;
 import java.util.ArrayList;
 import ru.forpda.common.*;
+import android.support.v4.app.*;
+import com.trablone.fragmentattacher.FragmentAttacher.*;
+import com.trablone.fragmentattacher.FragmentAttacher;
 
 public class MainActivity extends BaseActivity
 {
@@ -52,7 +56,7 @@ public class MainActivity extends BaseActivity
 	public static UserProfile profile;
 	public static TextView textNick;
 	private static Typeface face, current_face;
-	
+	private FragmentAttacher attacher;
 	@Override
     protected void onCreate(Bundle savedInstanceState)
 	{
@@ -60,7 +64,7 @@ public class MainActivity extends BaseActivity
         setContentView(R.layout.content_frame_drawer);
 		current_face = Typeface.createFromAsset(getAssets(), "4pda/fonts/RobotoCondensed-Bold.ttf");
 		face = Typeface.createFromAsset(getAssets(), "4pda/fonts/RobotoCondensed-Regular.ttf");
-		
+		attacher = new FragmentAttacher();
 		profile = new UserProfile();
 		BaseState.setLogin(profile.isLogined());
 		BaseState.setMTitle(getTitle());
@@ -200,29 +204,35 @@ public class MainActivity extends BaseActivity
 				@Override
 				public void run()
 				{
-					setContent(item.createFragment());
+					setContent(position);
 					mDrawerList.setItemChecked(position, false);	
 				}
 			}, 1000);
 			
 			}
 			
-	private void setContent(Fragment fragment){
+	private void setContent(int position){
 
-		getSupportFragmentManager()
+		mListener listener = (MainActivity.mListener) attacher.getItem(position);
+		listener.onFragmentUnselected(getSupportFragmentManager());
+		listener.onFragmentSelected(getSupportFragmentManager());
+		
+		/*	getSupportFragmentManager()
 			.beginTransaction()
 			.replace(R.id.content_frame , fragment)
-			.commit();
+			.commit();*/
 	}
 			
 	private void setDefaultContent(boolean login){
-
+		int position;
 		if(login){
-			mContent = menus.get(getPosition()).createFragment();
+			position = getPosition();
+		//	mContent = menus.get(position).createFragment();
 		}else{
-			mContent = menus.get(1).createFragment();
+			position = 1;
+		//	mContent = menus.get(1).createFragment();
 		}
-		setContent(mContent);
+		setContent(position);
 	}
 
 	private int getPosition(){
@@ -281,6 +291,9 @@ public class MainActivity extends BaseActivity
 		 menus.clear();
 		 SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 		 menus = BricksList.getBricks(prefs);
+		 for(BrickInfo item : menus){
+			 attacher.AddFragment(new mListener(MainActivity.this, item.getClassList()));
+		 }
 		 setAdapter(menus);
 	 }
 	 
@@ -451,4 +464,45 @@ public class MainActivity extends BaseActivity
         }
     }
 
+	
+	public static class mListener<T extends Fragment> implements FragmentAttacher.FragmentListener
+	{
+
+        private Class<T>mClass;
+		private Fragment mFragment;
+        private final FragmentActivity mActivity;
+
+
+        public mListener(FragmentActivity activity, Class<T>clz) {
+            mActivity = activity;
+			mClass = clz;
+        }
+
+		@Override
+		public void onFragmentSelected(FragmentManager fm)
+		{
+			if ( mFragment == null) {
+				mFragment = Fragment.instantiate(mActivity, mClass.getName());
+			
+				fm.beginTransaction()
+					.add(R.id.content_frame, mFragment)
+					.commit();
+			} else {
+
+				fm.beginTransaction()
+					.attach(mFragment)
+					.commit();
+			}
+		}
+
+		@Override
+		public void onFragmentUnselected(FragmentManager fm)
+		{
+			if(mFragment != null)
+			fm.beginTransaction()
+				.detach(mFragment)
+				.commit();
+		}
+
+	}
 }

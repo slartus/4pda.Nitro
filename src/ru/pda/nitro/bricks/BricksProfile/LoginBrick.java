@@ -22,4 +22,8 @@ public class LoginBrick extends BrickInfo
     public Fragment createFragment() {
         return new LoginFragment();
     }
+	
+	public Class<? extends Fragment> getClassList(){
+		return LoginFragment.class;
+	}
 }
