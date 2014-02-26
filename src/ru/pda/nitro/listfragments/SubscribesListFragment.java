@@ -31,10 +31,6 @@ import ru.pda.nitro.*;
 import ru.pda.nitro.bricks.*;
 import android.widget.*;
 
-
-/**
- * Created by slartus on 12.01.14.
- */
 public class SubscribesListFragment extends TopicsListFragment implements OnScrollListener
 {
 
@@ -48,23 +44,26 @@ public class SubscribesListFragment extends TopicsListFragment implements OnScro
 	@Override
     public ArrayList<Topic> getTopicsList(ListInfo listInfo) throws ParseException, IOException
 	{
-
+		super.getTopicsList(listInfo);
         return TopicsApi.getSubscribes(new HttpHelper(App.getInstance()), listInfo);
     }
 
     public String getTitle()
 	{
+		super.getTitle();
         return SubscribesBrick.TITLE;
     }
 
 	@Override
 	public Uri getUri()
 	{
+		super.getUri();
 		return SubscribesBrick.URI;
 	}
 
     public String getName()
 	{
+		super.getName();
         return SubscribesBrick.NAME;
     }
 

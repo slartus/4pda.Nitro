@@ -16,9 +16,13 @@ import android.text.*;
 import android.text.style.*;
 import android.app.*;
 import ru.pda.nitro.classes.*;
+import android.view.*;
 
-public abstract class BaseFragment extends Fragment {
-    public LinearLayout linearProgress;
+
+
+public abstract class BaseFragment extends Fragment{
+//    private PullToRefreshAttacher mPullToRefreshAttacher;
+	public LinearLayout linearProgress;
     public LinearLayout linearError;
 	public LinearLayout linearData;
 	public ProgressBar progressBarData;
@@ -31,14 +35,31 @@ public abstract class BaseFragment extends Fragment {
 
 	protected ImageLoader imageLoader = ImageLoader.getInstance();
 	
-    public abstract void getData();
+    protected void getData()
+	{}
 
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+	{
+	//	mPullToRefreshAttacher = new PullToRefreshAttacher(getActivity());
+		
+		// TODO: Implement this method
+		return super.onCreateView(inflater, container, savedInstanceState);
+		
+	}
+	
+	
+	
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState)
 	{
 		super.onActivityCreated(savedInstanceState);
 		setCurrentFragmentMenu();
-	}
+		}
+	
+/*	public PullToRefreshAttacher getPullToRefreshAttacher() {
+        return mPullToRefreshAttacher;
+    }*/
 	
 	private void setCurrentFragmentMenu(){
 		BaseState.setLogin_menu(getName().equals(LoginBrick.NAME));
@@ -48,8 +69,7 @@ public abstract class BaseFragment extends Fragment {
 	
 
     public View initialiseUi(View v) {
-		
-        linearProgress = (LinearLayout) v.findViewById(R.id.linearProgress);
+		linearProgress = (LinearLayout) v.findViewById(R.id.linearProgress);
         linearError = (LinearLayout) v.findViewById(R.id.linearError);
         buttonError = (TextView) v.findViewById(R.id.buttonErrorRefresh);
 		buttonErrorOk = (TextView)v.findViewById(R.id.buttonErrorOk);
@@ -129,11 +149,11 @@ public abstract class BaseFragment extends Fragment {
 	
 	public void setProgress(boolean loading)
 	{
-        ((IRefreshActivity) getActivity()).getPullToRefreshAttacher().setRefreshing(loading);
+        ((IRefreshActivity)getActivity()).getPullToRefreshAttacher().setRefreshing(loading);
     }
-	
+
 	public void getPullToRefreshAttacher(View view){
-		((IRefreshActivity) getActivity()).getPullToRefreshAttacher().setRefreshableView(view, new PullToRefreshAttacher.OnRefreshListener() {
+		((IRefreshActivity)getActivity()).getPullToRefreshAttacher().setRefreshableView(view, new PullToRefreshAttacher.OnRefreshListener() {
 				@Override
 				public void onRefreshStarted(View view)
 				{
@@ -143,7 +163,7 @@ public abstract class BaseFragment extends Fragment {
 	}
 	
 	protected void refreshData(){};
-	public abstract String getName();
+	protected String getName(){return null;}
 
-    public abstract String getTitle();
+    protected String getTitle(){return null;}
 }

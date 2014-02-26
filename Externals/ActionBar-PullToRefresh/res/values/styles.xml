@@ -18,10 +18,11 @@
 
     <style name="Widget.ProgressBar.PullToRefresh" parent="SmoothProgressBar">
         <item name="android:minHeight">4dp</item>
+		
     </style>
-	<style name="Widget.Holo.ProgressBar.Horizontal.Center"
-           parent="android:Widget.Holo.ProgressBar.Horizontal">
+	<style name="Widget.Holo.ProgressBar.Horizontal.Center" parent="android:Widget.Holo.ProgressBar.Horizontal">
         <item name="android:progressDrawable">@drawable/progress_horizontal_holo_center</item>
+		<item name="android:color">#ffffff</item>
     </style>
 
 </resources>

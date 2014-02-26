@@ -14,13 +14,14 @@ import android.graphics.*;
 
 public class NewsListAdapter extends BaseListAdapter
 {
-	private ArrayList<News> newsList;
+//	private ArrayList<News> newsList;
+	private NewsList newsList;
 	private Typeface face;
 	private Context context;
 	final LayoutInflater inflater;
 	private ImageLoader imageLoader;
 	
-	public NewsListAdapter(Context context, ArrayList<News> newsList, ImageLoader imageLoader){
+	public NewsListAdapter(Context context, NewsList newsList, ImageLoader imageLoader){
 		inflater = (LayoutInflater)context.getSystemService(context.LAYOUT_INFLATER_SERVICE);
 		face = Typeface.createFromAsset(context.getAssets(), "4pda/fonts/RobotoSlab-Light.ttf");
 		this.imageLoader = imageLoader;
@@ -31,7 +32,7 @@ public class NewsListAdapter extends BaseListAdapter
 	@Override
 	public void setData(ArrayList<? extends IListItem> data)
 	{
-		this.newsList = (ArrayList<News>) data;
+		this.newsList = (NewsList) data;
 	}
 	
 	@Override

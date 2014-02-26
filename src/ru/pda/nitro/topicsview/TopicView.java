@@ -55,6 +55,26 @@ public class TopicView extends BaseFragment
         private CharSequence topicTitle = null;
         private CharSequence topicId;
         private Bundle bundle = null;
+		
+	private boolean refresh = false;
+	private boolean loading = false;
+
+
+	public void setLoading(boolean loading) {
+        this.loading = loading;
+    }
+
+    public boolean isLoading() {
+        return loading;
+    }
+
+	public void setRefresh(boolean refresh) {
+        this.refresh = refresh;
+    }
+
+    public boolean isRefresh() {
+        return refresh;
+    }
 
         @Override
         public void onActivityCreated(Bundle savedInstanceState) {

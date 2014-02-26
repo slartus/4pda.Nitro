@@ -6,6 +6,7 @@ import ru.pda.nitro.listfragments.FavoritesListFragment;
 import android.content.*;
 import android.net.*;
 import ru.pda.nitro.database.*;
+import ru.pda.nitro.listfragments.*;
 
 
 /**

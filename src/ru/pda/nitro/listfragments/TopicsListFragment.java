@@ -45,10 +45,10 @@ import android.widget.*;
  * Created by slartus on 12.01.14.
  * базовый класс для списков тем
  */
-public abstract class TopicsListFragment extends BaseListFragment  {
+public class TopicsListFragment extends BaseListFragment implements FragmentLifecycle{
 
 	public final static String TOPICS_LIST_FRAGMENT = "TOPICS_LIST_FRAGMENT";
-    private static ArrayList<Topic> topics = new ArrayList<Topic>();
+    private ArrayList<Topic> topics = new ArrayList<Topic>();
     private TopicListAdapter adapter;
     public static final int NAVIGATE_DIALOG_FRAGMENT = 1;
     private int selectedItem;
@@ -56,13 +56,23 @@ public abstract class TopicsListFragment extends BaseListFragment  {
 	private ListView listView;
 	
 	
+	
+	@Override
+	public void onResumeFragment()
+	{
+		getPullToRefreshAttacher(listView);
+		
+		if(isLoading())
+			setProgress(true);
+	}
+	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
 
         View v = inflater.inflate(R.layout.list_topic, container, false);
 		listView = (ListView) v.findViewById(R.id.listViewTopic);
-
+		
         return initialiseUi(v);
     }
 
@@ -71,26 +81,36 @@ public abstract class TopicsListFragment extends BaseListFragment  {
 	public void onActivityCreated(Bundle savedInstanceState)
 	{
 		super.onActivityCreated(savedInstanceState);
-		//	getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
 
 		listInfo = new ListInfo();
-		adapter = new TopicListAdapter(getActivity(), topics);
 		listView.setOnItemClickListener(this);
 		listView.setOnCreateContextMenuListener(this);
-		
 		listView.addFooterView(initialiseFooter());
+		adapter = new TopicListAdapter(getActivity(), topics);
 		listView.setAdapter(adapter);
-		listView.setOnScrollListener(this);
 
-		getPullToRefreshAttacher(listView);
+		listView.setOnScrollListener(this);
+		
 	}
+
+	@Override
+	public void onScrollStateChanged(AbsListView p1, int p2)
+	{
+		// TODO: Implement this method
+	}
+	
+	
+	public void getNewAdapter(){
+			}
 	
     @Override
     public ArrayList<? extends IListItem> getList() throws ParseException, IOException {
         return getTopicsList(listInfo);
     }
 	
-	public abstract ArrayList<Topic> getTopicsList(ListInfo listInfo) throws ParseException, IOException;
+	protected ArrayList<Topic> getTopicsList(ListInfo listInfo) throws ParseException, IOException{
+		return null;
+	}
 	
 	
 	
@@ -198,11 +218,6 @@ public abstract class TopicsListFragment extends BaseListFragment  {
         updateAdapter(adapter);
         TabsViewActivity.show(getActivity(), topic.getId(), topic.getTitle(), getTitle(), navigateAction, getClassName());
     }
-
-    
-/*    protected boolean getTopics() throws Throwable {
-        return false;
-    }*/
 	
 	
     public static void updateItem(final Context context, final int i) {
@@ -230,7 +245,7 @@ public abstract class TopicsListFragment extends BaseListFragment  {
             }
         });
     }
-
+	
     @Override
     public boolean inBackground() {
         try {
@@ -288,7 +303,6 @@ public abstract class TopicsListFragment extends BaseListFragment  {
 
     @Override
     public void inExecute() {
-
         if (!getCount())
             showFooter(false);
         setDataInAdapter(adapter, topics);
@@ -309,14 +323,7 @@ public abstract class TopicsListFragment extends BaseListFragment  {
         return getOutCount() == 0 | getFrom() < getOutCount();
     }
 
-    public void getData() {
-        if (!isLoading()) {
-            task = new Task();
-            task.execute();
-        }/* else
-            setProgress(false);
-*/
-    }
+    
 	
 	@Override
 	protected void setFrom(int from){
@@ -351,7 +358,7 @@ public abstract class TopicsListFragment extends BaseListFragment  {
     }
 
     public static ArrayList<Topic> getLocalTopicsData(Context context, Uri uri) {
-        topics = new ArrayList<Topic>();
+        ArrayList<Topic> topics = new ArrayList<Topic>();
         if (uri != null) {
             Cursor cursor = null;
             try {

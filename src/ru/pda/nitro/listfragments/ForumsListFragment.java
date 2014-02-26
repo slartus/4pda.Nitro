@@ -25,8 +25,16 @@ import android.widget.*;
 /**
  * Created by slartus on 12.01.14.
  */
-public class ForumsListFragment extends BaseListFragment
+public class ForumsListFragment extends BaseListFragment implements FragmentLifecycle
 {
+		@Override
+	public void onResumeFragment()
+	{
+	//	getPullToRefreshAttacher(listView);
+		// TODO: Implement this method
+	}
+
+	
 
 	@Override
 	public String getClassName()
@@ -121,6 +129,7 @@ public class ForumsListFragment extends BaseListFragment
 		adapter = new ForumsListAdapter();
 		listView.setAdapter(adapter);
 		getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+	//	getPullToRefreshAttacher(listView);
 		
 		getData();
 	}

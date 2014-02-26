@@ -19,7 +19,7 @@ public class FragmentAttacher
 			fragments.remove(position);
 	}
 
-	public void ClearFragmentAttacher(){
+	public void clear(){
 		if(fragments.size() > 0)
 			fragments.clear();
 	}

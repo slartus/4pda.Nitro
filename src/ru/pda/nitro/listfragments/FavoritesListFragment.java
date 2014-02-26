@@ -36,36 +36,37 @@ import android.widget.*;
  */
 public class FavoritesListFragment extends TopicsListFragment 
 {
-	
-
 
 	@Override
 	public void onScrollStateChanged(AbsListView p1, int p2)
 	{
 		// TODO: Implement this method
 	}
-
+	
 
 	@Override
     public ArrayList<Topic> getTopicsList(ListInfo listInfo) throws ParseException, IOException
 	{
-
+		super.getTopicsList(listInfo);
         return TopicsApi.getFavorites(new HttpHelper(App.getInstance()), listInfo);
     }
 
     public String getTitle()
 	{
+		super.getTitle();
         return FavoritesBrick.TITLE;
     }
 	
 	@Override
 	public Uri getUri()
 	{
+		super.getUri();
 		return FavoritesBrick.URI;
 	}
 
     public String getName()
 	{
+		super.getName();
         return FavoritesBrick.NAME;
     }
 	

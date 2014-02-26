@@ -34,16 +34,18 @@ import android.widget.*;
  */
 public class NewsListFragment extends BaseListFragment implements FragmentLifecycle
 {
-	private ArrayList<News> newsList = null;
+//	private ArrayList<News> newsList = null;
 	public final static String NEWS_LIST_FRAGMENT = "NEWS_LIST_FRAGMENT";
 	private final static String NEWS_URL = "ru.pda.nitro.listfragments.NewsListFragment.NEWS_URL";
 	private final static String NEWS_POSITION = "ru.pda.nitro.listfragments.NewsListFragment.NEWS_POSITION";
 	private int position = 0;
-//    private NewsList newsList = null;
+    private NewsList newsList = null;
     private String newsUrl = "";
     private NewsListAdapter adapter;
-	private ListInfo listInfo;
 	private ListView listView;
+	private ListInfo listInfo;
+	
+	
     @Override
     public ArrayList<? extends IListItem> getList()
 	{
@@ -57,8 +59,8 @@ public class NewsListFragment extends BaseListFragment implements FragmentLifecy
 		{}
 		return null;
     }
-	
-	
+
+
 	@Override
 	public String getClassName()
 	{
@@ -100,7 +102,6 @@ public class NewsListFragment extends BaseListFragment implements FragmentLifecy
 	{
         View v = inflater.inflate(R.layout.list_topic, container, false);
         listView = (ListView) v.findViewById(R.id.listViewTopic);
-		
 		return initialiseUi(v);
     }
 
@@ -112,21 +113,22 @@ public class NewsListFragment extends BaseListFragment implements FragmentLifecy
         newsUrl = getArguments().getString(NEWS_URL);
 
         position = getArguments().getInt(NEWS_POSITION);
-		
+
 		listInfo = new ListInfo();
-		newsList = new ArrayList<News>();
-     //   newsList = new NewsList(new HttpHelper(App.getInstance()), newsUrl);
+		//	newsList = new ArrayList<News>();
+        newsList = new NewsList(new HttpHelper(App.getInstance()), newsUrl);
 		adapter = new NewsListAdapter(getActivity(), newsList, imageLoader);
-        
+
 		listView.addFooterView(initialiseFooter());
         listView.setAdapter(adapter);
         listView.setOnScrollListener(this);
-		if (position == 0){
-			getPullToRefreshAttacher(listView);
+	//	getPullToRefreshAttacher(listView);
+		if (position == 0)
+		{
 			getData();
 		}
     }
-	
+
 	@Override
 	public void onResumeFragment()
 	{
@@ -138,7 +140,8 @@ public class NewsListFragment extends BaseListFragment implements FragmentLifecy
     @Override
     public boolean inBackground()
 	{
-
+		try
+		{
 			if (!isRefresh() && !isLoadmore() && getLocalNewsData())
 			{
 				setLoading(false);				
@@ -146,25 +149,33 @@ public class NewsListFragment extends BaseListFragment implements FragmentLifecy
 			}
 			else if (isRefresh() && !isLoadmore())
 			{
-				newsList = new ArrayList<News>();
-				//	newsList = new NewsList(new HttpHelper(App.getInstance()), newsUrl);
+				//	newsList = new ArrayList<News>();
+				newsList = new NewsList(new HttpHelper(App.getInstance()), newsUrl);
 			}
 			else if (isLoadmore())
 			{
-				for(News item : (ArrayList<News>)getList()){
+				for (News item : (ArrayList<News>)getList())
+				{
 					newsList.add(item);
 				}
-			//	newsList.loadNextNewsPage();
+
+				newsList.loadNextNewsPage();
+
 				return true;
 			}
-			newsList = (ArrayList<News>) getList();
-			
-		//	newsList.loadNextNewsPage();
-		if(newsList != null){
-			setLocalData(getActivity(),newsList, getUri(), newsUrl);
-			return true;
+			//	newsList = (ArrayList<News>) getList();
+
+			newsList.loadNextNewsPage();
+			if (newsList != null)
+			{
+				setLocalData(getActivity(), newsList, getUri(), newsUrl);
+				return true;
 			}
-			
+		}
+		catch (ParseException e)
+		{}
+		catch (IOException e)
+		{}
 		return false;
     }
 
@@ -174,26 +185,14 @@ public class NewsListFragment extends BaseListFragment implements FragmentLifecy
         setDataInAdapter(adapter, newsList);
         updateAdapter(adapter);
     }
-	
-	
 
-    public void getData()
-	{
-        if (!isLoading())
-		{
-            task = new Task();
-            task.execute();
-        }
-		else
-            setProgress(false);
-    }
 
 	public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount)
 	{
 		if ((firstVisibleItem + visibleItemCount) == totalItemCount && !loadMore && !isLoading())
 		{
-			if(newsList.size() > 0)
-			showFooter(true);
+			if (newsList.size() > 0)
+				showFooter(true);
 		}
 
     }
@@ -205,34 +204,38 @@ public class NewsListFragment extends BaseListFragment implements FragmentLifecy
 
     }
 
-/*	@Override
-	public void getLocalDataOnStart()
-	{
-		newsList.clear();
-		localNews = getLocalNewsData();
-		if(localNews){
-			setDataInAdapter(adapter, (ArrayList<IListItem>)newsList);
-			updateAdapter(adapter);
-		}
-	}*/
+	/*	@Override
+	 public void getLocalDataOnStart()
+	 {
+	 newsList.clear();
+	 localNews = getLocalNewsData();
+	 if(localNews){
+	 setDataInAdapter(adapter, (ArrayList<IListItem>)newsList);
+	 updateAdapter(adapter);
+	 }
+	 }*/
 
-	
+
 
     public boolean getLocalNewsData()
 	{
-		
+
         if (newsUrl.equals(""))
 		{
 			Cursor cursor = null;
-			try{
-			cursor = getActivity().getContentResolver().query(Contract.News.CONTENT_URI, null, null, null, Contract.Favorite.DEFAULT_SORT_ORDER);
-			for(News item : LocalDataHelper.getLocalNews(cursor)){
-				newsList.add(item);
+			try
+			{
+				cursor = getActivity().getContentResolver().query(Contract.News.CONTENT_URI, null, null, null, Contract.Favorite.DEFAULT_SORT_ORDER);
+				for (News item : LocalDataHelper.getLocalNews(cursor))
+				{
+					newsList.add(item);
+				}
+
+				return true;
+
 			}
-			
-			return true;
-			
-			} finally {
+			finally
+			{
                 if (cursor != null)
                     cursor.close();
             }
@@ -245,28 +248,31 @@ public class NewsListFragment extends BaseListFragment implements FragmentLifecy
 
 		if (url.equals(""))
 		{
-			deleteAllLocalData(context,uri);
+			deleteAllLocalData(context, uri);
 			ContentValues cv = new ContentValues();
-			for(News item : news){
-			cv.put(Contract.News.description, item.getDescription() != null ? item.getDescription().toString() : "");
-			cv.put(Contract.News.title,item.getTitle() != null ? item.getTitle().toString() : "");
-			cv.put(Contract.News.id,item.getId() != null ? item.getId().toString() : "");
-			cv.put(Contract.News.author, item.getAuthor() != null ? item.getAuthor().toString() : "");
-			cv.put(Contract.News.newsDate,item.getNewsDate() != null ? item.getNewsDate().toString() : "");
-			cv.put(Contract.News.imgUrl, item.getImgUrl() != null ? item.getImgUrl().toString() : "");
-			
-			cv.put(Contract.News.commentsCount, item.getCommentsCount());
-			
-			if(item.getSourceTitle() != null){
-			cv.put(Contract.News.sourceTitle, item.getSourceTitle().toString());
-			cv.put(Contract.News.sourseUrl, item.getSourceUrl().toString());
-			}
-			if(item.getTagLink()!= null){
-			cv.put(Contract.News.tagLink, item.getTagLink().toString());
-			cv.put(Contract.News.tagName, item.getTagName().toString());
-			cv.put(Contract.News.tagTitle, item.getTagTitle().toString());
-			}
-			context.getContentResolver().insert(uri, cv);
+			for (News item : news)
+			{
+				cv.put(Contract.News.description, item.getDescription() != null ? item.getDescription().toString() : "");
+				cv.put(Contract.News.title, item.getTitle() != null ? item.getTitle().toString() : "");
+				cv.put(Contract.News.id, item.getId() != null ? item.getId().toString() : "");
+				cv.put(Contract.News.author, item.getAuthor() != null ? item.getAuthor().toString() : "");
+				cv.put(Contract.News.newsDate, item.getNewsDate() != null ? item.getNewsDate().toString() : "");
+				cv.put(Contract.News.imgUrl, item.getImgUrl() != null ? item.getImgUrl().toString() : "");
+
+				cv.put(Contract.News.commentsCount, item.getCommentsCount());
+
+				if (item.getSourceTitle() != null)
+				{
+					cv.put(Contract.News.sourceTitle, item.getSourceTitle().toString());
+					cv.put(Contract.News.sourseUrl, item.getSourceUrl().toString());
+				}
+				if (item.getTagLink() != null)
+				{
+					cv.put(Contract.News.tagLink, item.getTagLink().toString());
+					cv.put(Contract.News.tagName, item.getTagName().toString());
+					cv.put(Contract.News.tagTitle, item.getTagTitle().toString());
+				}
+				context.getContentResolver().insert(uri, cv);
 			}
 		}
     }

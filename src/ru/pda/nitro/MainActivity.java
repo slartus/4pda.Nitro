@@ -39,6 +39,7 @@ import ru.forpda.common.*;
 import android.support.v4.app.*;
 import com.trablone.fragmentattacher.FragmentAttacher.*;
 import com.trablone.fragmentattacher.FragmentAttacher;
+import ru.pda.nitro.listfragments.*;
 
 public class MainActivity extends BaseActivity
 {
@@ -47,6 +48,7 @@ public class MainActivity extends BaseActivity
 	private ListView mDrawerList ;
 	private FrameLayout frameDrawer;
 	private Fragment mContent;
+	private MainPagerFragment mPager;
 	private static ImageView avatar;
 	private Handler handler = new Handler();
 	private boolean profile_menu = false;
@@ -56,7 +58,6 @@ public class MainActivity extends BaseActivity
 	public static UserProfile profile;
 	public static TextView textNick;
 	private static Typeface face, current_face;
-	private FragmentAttacher attacher;
 	@Override
     protected void onCreate(Bundle savedInstanceState)
 	{
@@ -64,7 +65,7 @@ public class MainActivity extends BaseActivity
         setContentView(R.layout.content_frame_drawer);
 		current_face = Typeface.createFromAsset(getAssets(), "4pda/fonts/RobotoCondensed-Bold.ttf");
 		face = Typeface.createFromAsset(getAssets(), "4pda/fonts/RobotoCondensed-Regular.ttf");
-		attacher = new FragmentAttacher();
+		mPager = new MainPagerFragment();
 		profile = new UserProfile();
 		BaseState.setLogin(profile.isLogined());
 		BaseState.setMTitle(getTitle());
@@ -109,6 +110,7 @@ public class MainActivity extends BaseActivity
 			public void onDrawerOpened(View drawerView)
 			{
 				ab.setTitle(BaseState.getSpannable(MainActivity.this, getResources().getString( R.string.app_menu)));
+				mAdapter.notifyDataSetChanged();
 				//	invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
 			}
 		};
@@ -212,18 +214,19 @@ public class MainActivity extends BaseActivity
 			}
 			
 	private void setContent(int position){
-
-		mListener listener = (MainActivity.mListener) attacher.getItem(position);
-		listener.onFragmentUnselected(getSupportFragmentManager());
-		listener.onFragmentSelected(getSupportFragmentManager());
+		mPager.setPageView(position);
 		
-		/*	getSupportFragmentManager()
+	}
+	
+	private void setContent(){
+		getSupportFragmentManager()
 			.beginTransaction()
-			.replace(R.id.content_frame , fragment)
-			.commit();*/
+			.replace(R.id.content_frame ,mPager)
+			.commit();
 	}
 			
 	private void setDefaultContent(boolean login){
+		setContent();
 		int position;
 		if(login){
 			position = getPosition();
@@ -232,7 +235,8 @@ public class MainActivity extends BaseActivity
 			position = 1;
 		//	mContent = menus.get(1).createFragment();
 		}
-		setContent(position);
+	//	setContent(position);
+		
 	}
 
 	private int getPosition(){
@@ -291,9 +295,7 @@ public class MainActivity extends BaseActivity
 		 menus.clear();
 		 SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 		 menus = BricksList.getBricks(prefs);
-		 for(BrickInfo item : menus){
-			 attacher.AddFragment(new mListener(MainActivity.this, item.getClassList()));
-		 }
+		 
 		 setAdapter(menus);
 	 }
 	 
@@ -463,46 +465,4 @@ public class MainActivity extends BaseActivity
             stopDeleteMode(false);
         }
     }
-
-	
-	public static class mListener<T extends Fragment> implements FragmentAttacher.FragmentListener
-	{
-
-        private Class<T>mClass;
-		private Fragment mFragment;
-        private final FragmentActivity mActivity;
-
-
-        public mListener(FragmentActivity activity, Class<T>clz) {
-            mActivity = activity;
-			mClass = clz;
-        }
-
-		@Override
-		public void onFragmentSelected(FragmentManager fm)
-		{
-			if ( mFragment == null) {
-				mFragment = Fragment.instantiate(mActivity, mClass.getName());
-			
-				fm.beginTransaction()
-					.add(R.id.content_frame, mFragment)
-					.commit();
-			} else {
-
-				fm.beginTransaction()
-					.attach(mFragment)
-					.commit();
-			}
-		}
-
-		@Override
-		public void onFragmentUnselected(FragmentManager fm)
-		{
-			if(mFragment != null)
-			fm.beginTransaction()
-				.detach(mFragment)
-				.commit();
-		}
-
-	}
 }

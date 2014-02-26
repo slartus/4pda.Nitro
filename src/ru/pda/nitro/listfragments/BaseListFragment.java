@@ -28,7 +28,8 @@ import ru.pda.nitro.adapters.BaseListAdapter;
 import ru.pda.nitro.bricks.FavoritesBrick;
 import ru.pda.nitro.bricks.NewsBrick;
 import ru.pda.nitro.bricks.*;
-
+import android.widget.*;
+import ru.forpda.common.*;
 
 /**
  * Created by slartus on 12.01.14.
@@ -38,9 +39,11 @@ import ru.pda.nitro.bricks.*;
 public abstract class BaseListFragment extends BaseFragment
         implements AbsListView.OnScrollListener,
         AdapterView.OnItemClickListener,
-        android.view.View.OnCreateContextMenuListener {
+        android.view.View.OnCreateContextMenuListener{
+	
+	
 	public final static String QUICK_START_LIST_ITEM_SELECT = "ru.pda.nitro.listfragments.BaseListFragment.QUICK_START_LIST_ITEM_SELECT";
-	public Task task;
+	private Task task;
     private boolean loadmore = false;
     public int from = -1;
 	private int old_from;
@@ -54,10 +57,9 @@ public abstract class BaseListFragment extends BaseFragment
     public void onActivityCreated(Bundle savedInstanceState)
 	{
         super.onActivityCreated(savedInstanceState);
-   //     listView.setOnItemClickListener(this);
-   //     listView.setOnCreateContextMenuListener(this);
-		BaseState.setMTitle(getTitle());
+        BaseState.setMTitle(getTitle());
 		getActivity().getActionBar().setTitle(BaseState.getSpannable(getActivity(), getTitle()));
+		
     }
 
 	@Override
@@ -78,11 +80,6 @@ public abstract class BaseListFragment extends BaseFragment
 
     @Override
     public void onCreateContextMenu(android.view.ContextMenu contextMenu, android.view.View view, android.view.ContextMenu.ContextMenuInfo contextMenuInfo) {}
-
-  /*  public View initialiseListUi(View v)
-	{
-		return initialiseUi(v);
-    }*/
 
 
     public View initialiseFooter()
@@ -108,6 +105,17 @@ public abstract class BaseListFragment extends BaseFragment
         return footer;
     }
 
+	@Override
+	protected void getData()
+	{
+		if(!isLoading())
+			task = new Task();
+			task.execute();
+			
+		super.getData();
+	}
+
+	
 
     public void setProgressMore(boolean show)
 	{
@@ -140,6 +148,7 @@ public abstract class BaseListFragment extends BaseFragment
         relativeMore.setVisibility(show ? View.VISIBLE : View.GONE);
     }
 	
+	
 
     public class Task extends AsyncTask<Void, Void, Boolean>
 	{
@@ -156,9 +165,18 @@ public abstract class BaseListFragment extends BaseFragment
         @Override
         protected Boolean doInBackground(Void[] p1)
 		{
+			
             return inBackground();
         }
 
+		@Override
+		protected void onCancelled()
+		{
+			// TODO: Implement this method
+			super.onCancelled();
+		}
+		
+		
 
         @Override
         protected void onPostExecute(Boolean result)
@@ -186,16 +204,16 @@ public abstract class BaseListFragment extends BaseFragment
             setProgressMore(false);
 			if (getActivity() != null)
 				setProgress(false);
-
+/*
 				if(!isLoading() && checkStatus()){
 					setProgress(true);
 					refreshData();
-				}else{
+				}else{*/
 				
             setLoading(false);
             setLoadmore(false);
             loadMore = false;
-			}
+		//	}
 
         }
 
@@ -222,13 +240,30 @@ public abstract class BaseListFragment extends BaseFragment
 			context.getContentResolver().delete(mUri, null, null);
     }
 
+	@Override
+	public void onDestroyView()
+	{
+		Log.d("onDestroyView");
+		super.onDestroyView();
+	}
+
+	@Override
+	public void onDetach()
+	{
+		Log.e("onDetach");
+		super.onDetach();
+	}
+
+	
 	
 	@Override
 	public void onDestroy()
 	{
-		super.onDestroy();
+		Log.e("onDestroy");
 		if(task != null)
 			task.cancel(true);
+		super.onDestroy();
+	
 	}
 	
 	protected void getLocalDataOnStart(){}
@@ -241,7 +276,7 @@ public abstract class BaseListFragment extends BaseFragment
 
     public abstract ArrayList<? extends IListItem> getList() throws ParseException, IOException;
 
-	public abstract Uri getUri();
+	protected Uri getUri(){return null;}
 
     public abstract boolean inBackground();
 

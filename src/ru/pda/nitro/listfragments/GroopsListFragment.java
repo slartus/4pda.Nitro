@@ -35,29 +35,40 @@ import ru.pda.nitro.dialogs.RenameDialogFragment;
 import ru.pda.nitro.TabsViewActivity;
 import android.widget.*;
 
-public class GroopsListFragment extends BaseListFragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public class GroopsListFragment extends BaseListFragment implements LoaderManager.LoaderCallbacks<Cursor> , FragmentLifecycle{
     private CursorAdapter mAdapter;
 	private ListView listView;
-    @Override
+   
+	@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.list_topic, container, false);
         listView = (ListView) v.findViewById(R.id.listViewTopic);
 		
 		return initialiseUi(v);
     }
+	
+	@Override
+	public void onResumeFragment()
+	{
+	//	getPullToRefreshAttacher(listView);
+		// TODO: Implement this method
+	}
+	
 
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-
+    //     getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+		super.onActivityCreated(savedInstanceState);
+		listView.setOnItemClickListener(this);
+        listView.setOnCreateContextMenuListener(this);
+		
         mAdapter = new SetDetailCursorAdapter(getActivity(), null, 0);
         listView.setAdapter(mAdapter);
-        registerForContextMenu(listView);
+     //   registerForContextMenu(listView);
         getLoaderManager().restartLoader(0, null, this);
         setProgress(false);
-
+		
     }
 
     @Override
