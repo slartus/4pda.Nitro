@@ -32,7 +32,7 @@ import android.widget.*;
 /**
  * Created by slartus on 12.01.14.
  */
-public class NewsListFragment extends BaseListFragment implements FragmentLifecycle
+public class NewsListFragment extends BaseListFragment/* implements FragmentLifecycle*/
 {
 //	private ArrayList<News> newsList = null;
 	public final static String NEWS_LIST_FRAGMENT = "NEWS_LIST_FRAGMENT";
@@ -109,7 +109,7 @@ public class NewsListFragment extends BaseListFragment implements FragmentLifecy
     public void onActivityCreated(Bundle savedInstanceState)
 	{
         super.onActivityCreated(savedInstanceState);
-
+		
         newsUrl = getArguments().getString(NEWS_URL);
 
         position = getArguments().getInt(NEWS_POSITION);
@@ -122,19 +122,24 @@ public class NewsListFragment extends BaseListFragment implements FragmentLifecy
 		listView.addFooterView(initialiseFooter());
         listView.setAdapter(adapter);
         listView.setOnScrollListener(this);
-	//	getPullToRefreshAttacher(listView);
-		if (position == 0)
+	if (position == 0)
 		{
+			getPullToRefreshAttacher(listView);
+			
 			getData();
 		}
+		
     }
 
 	@Override
 	public void onResumeFragment()
 	{
+		
 		getPullToRefreshAttacher(listView);
 		if (newsList != null && newsList.size() == 0)
 			getData();
+		
+		super.onResumeFragment();
 	}
 
     @Override

@@ -1,4 +1,4 @@
-package ru.pda.nitro.listfragments;
+package ru.pda.nitro.listfragments.pagers;
 
 import android.app.ActionBar;
 import android.app.FragmentTransaction;
@@ -20,6 +20,7 @@ import ru.pda.nitro.*;
 import com.astuetz.PagerSlidingTabStrip;
 import android.util.*;
 import android.graphics.*;
+import ru.pda.nitro.listfragments.*;
 
 
 public class NewsPagerFragment extends Fragment implements FragmentLifecycle
@@ -56,10 +57,6 @@ public class NewsPagerFragment extends Fragment implements FragmentLifecycle
 		mPagerAdapter = new PagerAdapter(getActivity().getSupportFragmentManager());
 		mViewPager.setAdapter(mPagerAdapter);
 	
-		final int pageMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4, getResources()
-															   .getDisplayMetrics());
-		mViewPager.setPageMargin(pageMargin);
-
 		tabs.setViewPager(mViewPager);
 		
 		tabs.setIndicatorHeight(6);

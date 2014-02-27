@@ -4,7 +4,7 @@ import android.support.v4.app.Fragment;
 
 import ru.pda.nitro.listfragments.NewsListFragment;
 import android.content.*;
-import ru.pda.nitro.listfragments.*;
+import ru.pda.nitro.listfragments.pagers.*;
 import android.net.*;
 import ru.pda.nitro.database.*;
 

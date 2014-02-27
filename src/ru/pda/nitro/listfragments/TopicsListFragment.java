@@ -45,7 +45,7 @@ import android.widget.*;
  * Created by slartus on 12.01.14.
  * базовый класс для списков тем
  */
-public class TopicsListFragment extends BaseListFragment implements FragmentLifecycle{
+public class TopicsListFragment extends BaseListFragment/* implements FragmentLifecycle*/{
 
 	public final static String TOPICS_LIST_FRAGMENT = "TOPICS_LIST_FRAGMENT";
     private ArrayList<Topic> topics = new ArrayList<Topic>();
@@ -64,6 +64,8 @@ public class TopicsListFragment extends BaseListFragment implements FragmentLife
 		
 		if(isLoading())
 			setProgress(true);
+		
+		super.onResumeFragment();
 	}
 	
 	@Override
@@ -81,7 +83,7 @@ public class TopicsListFragment extends BaseListFragment implements FragmentLife
 	public void onActivityCreated(Bundle savedInstanceState)
 	{
 		super.onActivityCreated(savedInstanceState);
-
+		
 		listInfo = new ListInfo();
 		listView.setOnItemClickListener(this);
 		listView.setOnCreateContextMenuListener(this);
@@ -90,7 +92,7 @@ public class TopicsListFragment extends BaseListFragment implements FragmentLife
 		listView.setAdapter(adapter);
 
 		listView.setOnScrollListener(this);
-		
+	
 	}
 
 	@Override

@@ -17,10 +17,11 @@ import android.text.style.*;
 import android.app.*;
 import ru.pda.nitro.classes.*;
 import android.view.*;
+import ru.pda.nitro.listfragments.*;
 
 
 
-public abstract class BaseFragment extends Fragment{
+public abstract class BaseFragment extends Fragment implements FragmentLifecycle{
 //    private PullToRefreshAttacher mPullToRefreshAttacher;
 	public LinearLayout linearProgress;
     public LinearLayout linearError;
@@ -38,17 +39,8 @@ public abstract class BaseFragment extends Fragment{
     protected void getData()
 	{}
 
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-	{
-	//	mPullToRefreshAttacher = new PullToRefreshAttacher(getActivity());
-		
-		// TODO: Implement this method
-		return super.onCreateView(inflater, container, savedInstanceState);
-		
-	}
 	
-	
+	public void onResumeFragment(){}
 	
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState)

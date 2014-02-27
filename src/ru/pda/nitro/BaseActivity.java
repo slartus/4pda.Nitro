@@ -13,9 +13,6 @@ public class BaseActivity extends FragmentActivity implements IRefreshActivity
 	@Override
 	public PullToRefreshAttacher getPullToRefreshAttacher()
 	{
-	//	mPullToRefreshAttacher = new PullToRefreshAttacher(this);
-		
-		// TODO: Implement this method
 		return mPullToRefreshAttacher;
 	}
 
@@ -29,6 +26,7 @@ public class BaseActivity extends FragmentActivity implements IRefreshActivity
 	{
 		super.onCreate(savedInstanceState);
 		ab = getActionBar();
+		ab.setIcon(R.drawable.ab_4pda);
 		mPullToRefreshAttacher = new PullToRefreshAttacher(this);
 	}
 	

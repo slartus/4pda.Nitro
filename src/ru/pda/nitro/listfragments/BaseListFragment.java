@@ -57,8 +57,8 @@ public abstract class BaseListFragment extends BaseFragment
     public void onActivityCreated(Bundle savedInstanceState)
 	{
         super.onActivityCreated(savedInstanceState);
-        BaseState.setMTitle(getTitle());
-		getActivity().getActionBar().setTitle(BaseState.getSpannable(getActivity(), getTitle()));
+     //   BaseState.setMTitle(getTitle());
+	//	getActivity().getActionBar().setTitle(BaseState.getSpannable(getActivity(), getTitle()));
 		
     }
 
@@ -108,10 +108,10 @@ public abstract class BaseListFragment extends BaseFragment
 	@Override
 	protected void getData()
 	{
-		if(!isLoading())
+		if(!isLoading()){
 			task = new Task();
 			task.execute();
-			
+		}
 		super.getData();
 	}
 

@@ -37,9 +37,7 @@ import ru.pda.nitro.bricks.*;
 import java.util.ArrayList;
 import ru.forpda.common.*;
 import android.support.v4.app.*;
-import com.trablone.fragmentattacher.FragmentAttacher.*;
-import com.trablone.fragmentattacher.FragmentAttacher;
-import ru.pda.nitro.listfragments.*;
+import ru.pda.nitro.listfragments.pagers.*;
 
 public class MainActivity extends BaseActivity
 {
@@ -47,8 +45,7 @@ public class MainActivity extends BaseActivity
 	private DrawerLayout mDrawerLayout ;
 	private ListView mDrawerList ;
 	private FrameLayout frameDrawer;
-	private Fragment mContent;
-	private MainPagerFragment mPager;
+	private static MainPagerFragment mPager;
 	private static ImageView avatar;
 	private Handler handler = new Handler();
 	private boolean profile_menu = false;
@@ -119,7 +116,7 @@ public class MainActivity extends BaseActivity
 		
 		if (savedInstanceState == null)
 			setDefaultContent(BaseState.isLogin());
-
+		
     }
 	
 	private View mainMenuHeader(){
@@ -226,29 +223,7 @@ public class MainActivity extends BaseActivity
 	}
 			
 	private void setDefaultContent(boolean login){
-		setContent();
-		int position;
-		if(login){
-			position = getPosition();
-		//	mContent = menus.get(position).createFragment();
-		}else{
-			position = 1;
-		//	mContent = menus.get(1).createFragment();
-		}
-	//	setContent(position);
-		
-	}
-
-	private int getPosition(){
-		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-		for(int i = 0; i < menus.size(); i++){
-
-			if(menus.get(i).getName().equals(prefs.getString("mainFavorite_", "favorites"))){
-				BaseState.setMTitle(menus.get(i).getTitle());
-				return i;
-			}
-		}
-		return 0;
+		setContent();		
 	}
 
 	@Override
@@ -295,7 +270,6 @@ public class MainActivity extends BaseActivity
 		 menus.clear();
 		 SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 		 menus = BricksList.getBricks(prefs);
-		 
 		 setAdapter(menus);
 	 }
 	 
@@ -308,11 +282,13 @@ public class MainActivity extends BaseActivity
 		menus.clear();
 		menus = BricksList.getLoginMenu();
 		setAdapter(menus);
+		
 	}
-	 
+	
 	 private static void setAdapter(ArrayList<BrickInfo> menus){
 		 mAdapter.setData(menus);
 		 mAdapter.notifyDataSetChanged();
+		 
 	 }
 	 
 	public class MenuAdapter extends ArrayAdapter<BrickInfo>
