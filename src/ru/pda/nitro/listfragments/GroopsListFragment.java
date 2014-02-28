@@ -50,6 +50,7 @@ public class GroopsListFragment extends BaseListFragment implements LoaderManage
 	@Override
 	public void onResumeFragment()
 	{
+		super.onResumeFragment();
 	//	getPullToRefreshAttacher(listView);
 		// TODO: Implement this method
 	}
@@ -60,6 +61,7 @@ public class GroopsListFragment extends BaseListFragment implements LoaderManage
     public void onActivityCreated(Bundle savedInstanceState) {
     //     getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
 		super.onActivityCreated(savedInstanceState);
+		
 		listView.setOnItemClickListener(this);
         listView.setOnCreateContextMenuListener(this);
 		

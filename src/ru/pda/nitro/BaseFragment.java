@@ -40,20 +40,24 @@ public abstract class BaseFragment extends Fragment implements FragmentLifecycle
 	{}
 
 	
-	public void onResumeFragment(){}
+	public void onResumeFragment(){
+		setCurrentFragmentMenu();
+	}
 	
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState)
 	{
 		super.onActivityCreated(savedInstanceState);
-		setCurrentFragmentMenu();
+		setHasOptionsMenu(true);
+		setRetainInstance(true);
+		
 		}
 	
 /*	public PullToRefreshAttacher getPullToRefreshAttacher() {
         return mPullToRefreshAttacher;
     }*/
 	
-	private void setCurrentFragmentMenu(){
+	public void setCurrentFragmentMenu(){
 		BaseState.setLogin_menu(getName().equals(LoginBrick.NAME));
 		BaseState.setGroop_menu(getName().equals(GroopsBrick.NAME));
 		refreshActionBarMenu(getActivity());

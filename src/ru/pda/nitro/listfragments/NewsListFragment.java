@@ -124,7 +124,7 @@ public class NewsListFragment extends BaseListFragment/* implements FragmentLife
         listView.setOnScrollListener(this);
 	if (position == 0)
 		{
-			getPullToRefreshAttacher(listView);
+		//	getPullToRefreshAttacher(listView);
 			
 			getData();
 		}

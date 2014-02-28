@@ -39,6 +39,7 @@ import ru.pda.nitro.dialogs.ThemeOptionsDialogFragment;
 import android.view.*;
 import ru.forpda.interfaces.*;
 import android.widget.*;
+import ru.forpda.common.*;
 
 
 /**
@@ -54,8 +55,6 @@ public class TopicsListFragment extends BaseListFragment/* implements FragmentLi
     private int selectedItem;
 	private ListInfo listInfo;
 	private ListView listView;
-	
-	
 	
 	@Override
 	public void onResumeFragment()
@@ -92,7 +91,15 @@ public class TopicsListFragment extends BaseListFragment/* implements FragmentLi
 		listView.setAdapter(adapter);
 
 		listView.setOnScrollListener(this);
-	
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
+		final String favorite = prefs.getString("mainFavorite_", "favorites");
+			if (getName().equals(favorite)){
+				getPullToRefreshAttacher(listView);
+				setCurrentFragmentMenu();
+				}
+		
+		getLocalDataOnStart();
+		getData();
 	}
 
 	@Override
@@ -100,10 +107,6 @@ public class TopicsListFragment extends BaseListFragment/* implements FragmentLi
 	{
 		// TODO: Implement this method
 	}
-	
-	
-	public void getNewAdapter(){
-			}
 	
     @Override
     public ArrayList<? extends IListItem> getList() throws ParseException, IOException {
@@ -113,8 +116,6 @@ public class TopicsListFragment extends BaseListFragment/* implements FragmentLi
 	protected ArrayList<Topic> getTopicsList(ListInfo listInfo) throws ParseException, IOException{
 		return null;
 	}
-	
-	
 	
 	@Override
 	public static String getClassName()
@@ -212,7 +213,6 @@ public class TopicsListFragment extends BaseListFragment/* implements FragmentLi
             showTopicActivity(itemId, topic, navigateAction);
         }
     }
-	
 
     private void showTopicActivity(int i, Topic topic, CharSequence navigateAction) {
         topic.setHasUnreadPosts(false);
@@ -220,7 +220,6 @@ public class TopicsListFragment extends BaseListFragment/* implements FragmentLi
         updateAdapter(adapter);
         TabsViewActivity.show(getActivity(), topic.getId(), topic.getTitle(), getTitle(), navigateAction, getClassName());
     }
-	
 	
     public static void updateItem(final Context context, final int i) {
       Handler  handler = new Handler();
@@ -324,8 +323,6 @@ public class TopicsListFragment extends BaseListFragment/* implements FragmentLi
     private boolean getCount() {
         return getOutCount() == 0 | getFrom() < getOutCount();
     }
-
-    
 	
 	@Override
 	protected void setFrom(int from){
@@ -520,7 +517,7 @@ public class TopicsListFragment extends BaseListFragment/* implements FragmentLi
 	public void onResume()
 	{
 		super.onResume();
-		getData();
+		
 
 	}
 	
@@ -528,7 +525,7 @@ public class TopicsListFragment extends BaseListFragment/* implements FragmentLi
 	public void onStart()
 	{
 		super.onStart();
-		getLocalDataOnStart();
+		
 	}
 	
 	@Override

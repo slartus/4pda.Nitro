@@ -30,6 +30,8 @@ import ru.pda.nitro.bricks.NewsBrick;
 import ru.pda.nitro.bricks.*;
 import android.widget.*;
 import ru.forpda.common.*;
+import android.content.*;
+import android.preference.*;
 
 /**
  * Created by slartus on 12.01.14.
@@ -52,8 +54,8 @@ public abstract class BaseListFragment extends BaseFragment
     public TextView textMore;
     public ProgressBar progressMore;
     public boolean loadMore = false;
-	
-    @Override
+    
+	@Override
     public void onActivityCreated(Bundle savedInstanceState)
 	{
         super.onActivityCreated(savedInstanceState);

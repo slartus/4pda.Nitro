@@ -38,6 +38,7 @@ import java.util.ArrayList;
 import ru.forpda.common.*;
 import android.support.v4.app.*;
 import ru.pda.nitro.listfragments.pagers.*;
+import ru.pda.nitro.listfragments.*;
 
 public class MainActivity extends BaseActivity
 {

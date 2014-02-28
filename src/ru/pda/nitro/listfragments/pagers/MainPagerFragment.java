@@ -27,7 +27,7 @@ import android.widget.*;
 import ru.pda.nitro.listfragments.*;
 
 
-public class MainPagerFragment extends Fragment implements BrickListSetter
+public class MainPagerFragment extends Fragment implements FragmentLifecycle
 {
 
 	private ViewPager mViewPager;
@@ -46,6 +46,8 @@ public class MainPagerFragment extends Fragment implements BrickListSetter
 	public void onActivityCreated(Bundle savedInstanceState)
 	{
 		super.onActivityCreated(savedInstanceState);
+		setHasOptionsMenu(true);
+		setRetainInstance(true);
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
 
 		list = BricksList.getBricks(prefs);
@@ -53,6 +55,7 @@ public class MainPagerFragment extends Fragment implements BrickListSetter
 		mViewPager.setAdapter(mPagerAdapter);
 		mViewPager.setOffscreenPageLimit(list.size());
 		setPageView(getPosition());
+		
 		mViewPager.setOnPageChangeListener(
             new ViewPager.SimpleOnPageChangeListener() {
 
@@ -60,15 +63,21 @@ public class MainPagerFragment extends Fragment implements BrickListSetter
                 public void onPageSelected(int position)
 				{
 					setTitle(position);
-					FragmentLifecycle fragmentToShow = (FragmentLifecycle)mPagerAdapter.getItem(position);
-					fragmentToShow.onResumeFragment();
-
-                }
+					onResumePager(position);                }
             });	
-
-
-
 	}
+	
+	@Override
+	public void onResumeFragment()
+	{
+		onResumePager(mViewPager.getCurrentItem());
+	}
+	
+	private void onResumePager(int position){
+		FragmentLifecycle fragmentToShow = (FragmentLifecycle)mPagerAdapter.getItem(position);
+		fragmentToShow.onResumeFragment();
+	}
+	
 	private void setTitle(int position)
 	{
 		BrickInfo item = list.get(position);
@@ -79,20 +88,21 @@ public class MainPagerFragment extends Fragment implements BrickListSetter
 	private int getPosition()
 	{
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
+		String favorite = prefs.getString("mainFavorite_", "favorites");
 		for (int i = 0; i < list.size(); i++)
 		{
-			if (list.get(i).getName().equals(prefs.getString("mainFavorite_", "favorites")))
+			if (list.get(i).getName().equals(favorite))
 			{
 				setTitle(i);
 				return i;
 			}
 		}
-		return 0;
+		return 1;
 	}
 
 	public void setPageView(int position)
 	{
-		mViewPager.setCurrentItem(position);
+		mViewPager.setCurrentItem(position, false);
 	}
 
 	public class PagerAdapter extends FragmentStatePagerAdapter
@@ -120,16 +130,6 @@ public class MainPagerFragment extends Fragment implements BrickListSetter
 		{
 			return fragments.size();
 		}
-
-	}
-	@Override
-	public void setBrickList(ArrayList<BrickInfo>list)
-	{
-		this.list = list;
-		mPagerAdapter = new PagerAdapter(getActivity().getSupportFragmentManager());
-		mViewPager.setAdapter(mPagerAdapter);
-		mViewPager.setOffscreenPageLimit(list.size());
-
 	}
 
 }

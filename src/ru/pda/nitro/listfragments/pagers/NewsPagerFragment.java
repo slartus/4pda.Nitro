@@ -44,6 +44,13 @@ public class NewsPagerFragment extends Fragment implements FragmentLifecycle
 	@Override
 	public void onResumeFragment()
 	{
+		onResumePager(mViewPager.getCurrentItem());
+	}
+	
+	private void onResumePager(int position){
+		FragmentLifecycle fragmentToShow = (FragmentLifecycle)mPagerAdapter.getItem(position);
+		fragmentToShow.onResumeFragment();
+		
 	}
 	
 
@@ -56,7 +63,7 @@ public class NewsPagerFragment extends Fragment implements FragmentLifecycle
 		
 		mPagerAdapter = new PagerAdapter(getActivity().getSupportFragmentManager());
 		mViewPager.setAdapter(mPagerAdapter);
-	
+		
 		tabs.setViewPager(mViewPager);
 		
 		tabs.setIndicatorHeight(6);
@@ -65,10 +72,7 @@ public class NewsPagerFragment extends Fragment implements FragmentLifecycle
 			
 				@Override
                 public void onPageSelected(int position) {
-                    
-					FragmentLifecycle fragmentToShow = (FragmentLifecycle)mPagerAdapter.getItem(position);
-					fragmentToShow.onResumeFragment();
-				
+                    onResumePager(position);
                 }
             });	
 	
@@ -98,6 +102,14 @@ public class NewsPagerFragment extends Fragment implements FragmentLifecycle
     public Fragment getItem(int i) {
       return fragments.get(i);
     }
+
+	@Override
+	public int getItemPosition(Object object)
+	{
+		return super.getItemPosition(object);
+	}
+	
+	
 
     @Override
     public int getCount() {
