@@ -54,16 +54,13 @@ public class TopicsListFragment extends BaseListFragment/* implements FragmentLi
     public static final int NAVIGATE_DIALOG_FRAGMENT = 1;
     private int selectedItem;
 	private ListInfo listInfo;
-	private ListView listView;
+//	private ListView listView;
 	
 	@Override
 	public void onResumeFragment()
 	{
 		getPullToRefreshAttacher(listView);
-		
-		if(isLoading())
-			setProgress(true);
-		
+		setProgressStatus();
 		super.onResumeFragment();
 	}
 	
@@ -91,12 +88,6 @@ public class TopicsListFragment extends BaseListFragment/* implements FragmentLi
 		listView.setAdapter(adapter);
 
 		listView.setOnScrollListener(this);
-		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
-		final String favorite = prefs.getString("mainFavorite_", "favorites");
-			if (getName().equals(favorite)){
-				getPullToRefreshAttacher(listView);
-				setCurrentFragmentMenu();
-				}
 		
 		getLocalDataOnStart();
 		getData();
@@ -279,6 +270,7 @@ public class TopicsListFragment extends BaseListFragment/* implements FragmentLi
 				setOutCount(getOutCount());
 				if (topics.size() == 0)
 				{
+					setDownload(true);
 					topics = (ArrayList<Topic>) getList();
 					if (topics.size() > 0)
 					{
@@ -304,8 +296,7 @@ public class TopicsListFragment extends BaseListFragment/* implements FragmentLi
 
     @Override
     public void inExecute() {
-        if (!getCount())
-            showFooter(false);
+        showFooter(getCount());
         setDataInAdapter(adapter, topics);
         updateAdapter(adapter);	
     }
@@ -350,7 +341,7 @@ public class TopicsListFragment extends BaseListFragment/* implements FragmentLi
     public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
 		if ((firstVisibleItem + visibleItemCount) == totalItemCount && !loadMore && getCount() && !isLoading())
 		{
-			showFooter(true);
+			showFooter(false);
 
 		}
 

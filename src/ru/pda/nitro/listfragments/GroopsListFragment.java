@@ -37,7 +37,7 @@ import android.widget.*;
 
 public class GroopsListFragment extends BaseListFragment implements LoaderManager.LoaderCallbacks<Cursor> , FragmentLifecycle{
     private CursorAdapter mAdapter;
-	private ListView listView;
+//	private ListView listView;
    
 	@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -67,7 +67,6 @@ public class GroopsListFragment extends BaseListFragment implements LoaderManage
 		
         mAdapter = new SetDetailCursorAdapter(getActivity(), null, 0);
         listView.setAdapter(mAdapter);
-     //   registerForContextMenu(listView);
         getLoaderManager().restartLoader(0, null, this);
         setProgress(false);
 		

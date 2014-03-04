@@ -42,7 +42,7 @@ public class NewsListFragment extends BaseListFragment/* implements FragmentLife
     private NewsList newsList = null;
     private String newsUrl = "";
     private NewsListAdapter adapter;
-	private ListView listView;
+//	private ListView listView;
 	private ListInfo listInfo;
 	
 	
@@ -138,7 +138,7 @@ public class NewsListFragment extends BaseListFragment/* implements FragmentLife
 		getPullToRefreshAttacher(listView);
 		if (newsList != null && newsList.size() == 0)
 			getData();
-		
+		setProgressStatus();
 		super.onResumeFragment();
 	}
 
@@ -159,17 +159,19 @@ public class NewsListFragment extends BaseListFragment/* implements FragmentLife
 			}
 			else if (isLoadmore())
 			{
-				for (News item : (ArrayList<News>)getList())
+			/*	for (News item : (ArrayList<News>)getList())
 				{
 					newsList.add(item);
-				}
+				}*/
 
 				newsList.loadNextNewsPage();
 
 				return true;
 			}
 			//	newsList = (ArrayList<News>) getList();
-
+			if(newsList.size() == 0)
+				setDownload(true);
+				
 			newsList.loadNextNewsPage();
 			if (newsList != null)
 			{
@@ -197,7 +199,7 @@ public class NewsListFragment extends BaseListFragment/* implements FragmentLife
 		if ((firstVisibleItem + visibleItemCount) == totalItemCount && !loadMore && !isLoading())
 		{
 			if (newsList.size() > 0)
-				showFooter(true);
+				showFooter(false);
 		}
 
     }

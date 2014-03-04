@@ -54,13 +54,41 @@ public abstract class BaseListFragment extends BaseFragment
     public TextView textMore;
     public ProgressBar progressMore;
     public boolean loadMore = false;
-    
+	public boolean download = false;
+	public boolean reload = false;
+    public ListView listView;
+
+	public void setReload(boolean reload)
+	{
+		this.reload = reload;
+	}
+
+	public boolean isReload()
+	{
+		return reload;
+	}
+
+	public void setDownload(boolean download)
+	{
+		this.download = download;
+	}
+
+	public boolean isDownload()
+	{
+		return download;
+	}
 	@Override
     public void onActivityCreated(Bundle savedInstanceState)
 	{
         super.onActivityCreated(savedInstanceState);
      //   BaseState.setMTitle(getTitle());
 	//	getActivity().getActionBar().setTitle(BaseState.getSpannable(getActivity(), getTitle()));
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
+		final String favorite = prefs.getString("mainFavorite_", "favorites");
+		if (getName().equals(favorite)){
+			getPullToRefreshAttacher(listView);
+			setCurrentFragmentMenu();
+		}
 		
     }
 
@@ -106,6 +134,14 @@ public abstract class BaseListFragment extends BaseFragment
 			});
         return footer;
     }
+	
+	public void setProgressStatus(){
+		if(!isLoadmore() && !isDownload())
+		showFooter(isRefresh());
+		
+		if(isLoading() && !isDownload() && !isLoadmore())
+			setProgress(true);
+	}
 
 	@Override
 	protected void getData()
@@ -113,6 +149,8 @@ public abstract class BaseListFragment extends BaseFragment
 		if(!isLoading()){
 			task = new Task();
 			task.execute();
+		}else if(isLoadmore() | isDownload()){
+			setProgress(false);
 		}
 		super.getData();
 	}
@@ -147,7 +185,7 @@ public abstract class BaseListFragment extends BaseFragment
 
     public void showFooter(boolean show)
 	{
-        relativeMore.setVisibility(show ? View.VISIBLE : View.GONE);
+        relativeMore.setVisibility(show ? View.GONE : View.VISIBLE);
     }
 	
 	
@@ -161,6 +199,8 @@ public abstract class BaseListFragment extends BaseFragment
             super.onPreExecute();
             setLoading(true);
             showStatus(linearProgress, linearError,false);
+			
+			setProgressStatus();
         }
 
 
@@ -200,22 +240,22 @@ public abstract class BaseListFragment extends BaseFragment
 				{
 					textMore.setText("Загрузить еще...");
 					showStatus(linearProgress,linearError,true);
-					showFooter(false);
+					showFooter(true);
 				}
             }
             setProgressMore(false);
 			if (getActivity() != null)
 				setProgress(false);
-/*
-				if(!isLoading() && checkStatus()){
+
+			/*	if(!isLoading() && checkStatus()){
 					setProgress(true);
 					refreshData();
 				}else{*/
-				
+			setDownload(false);
             setLoading(false);
             setLoadmore(false);
             loadMore = false;
-		//	}
+	//		}
 
         }
 

@@ -95,7 +95,7 @@ public class ForumsListFragment extends BaseListFragment implements FragmentLife
 	private Task task;
 	private ForumsListAdapter adapter;
 	private ArrayList<Forum> forums = new ArrayList<Forum>();
-	private ListView listView;
+//	private ListView listView;
 	@Override
     public ArrayList<? extends IListItem> getList() {
         return ForumsApi.getForums(new HttpHelper(App.getInstance()));
