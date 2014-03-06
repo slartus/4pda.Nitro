@@ -36,15 +36,14 @@ public class NewsListFragment extends BaseListFragment/* implements FragmentLife
 {
 //	private ArrayList<News> newsList = null;
 	public final static String NEWS_LIST_FRAGMENT = "NEWS_LIST_FRAGMENT";
-	private final static String NEWS_URL = "ru.pda.nitro.listfragments.NewsListFragment.NEWS_URL";
-	private final static String NEWS_POSITION = "ru.pda.nitro.listfragments.NewsListFragment.NEWS_POSITION";
-	private int position = 0;
+	public final static String NEWS_POSITION = "ru.pda.nitro.listfragments.NewsListFragment.NEWS_POSITION";
+	public final static String NEWS_URL = "ru.pda.nitro.listfragments.NewsListFragment.NEWS_URL";
     private NewsList newsList = null;
     private String newsUrl = "";
     private NewsListAdapter adapter;
 //	private ListView listView;
 	private ListInfo listInfo;
-	
+	private int news_position;
 	
     @Override
     public ArrayList<? extends IListItem> getList()
@@ -111,9 +110,7 @@ public class NewsListFragment extends BaseListFragment/* implements FragmentLife
         super.onActivityCreated(savedInstanceState);
 		
         newsUrl = getArguments().getString(NEWS_URL);
-
-        position = getArguments().getInt(NEWS_POSITION);
-
+		news_position = getArguments().getInt(NEWS_POSITION);
 		listInfo = new ListInfo();
 		//	newsList = new ArrayList<News>();
         newsList = new NewsList(new HttpHelper(App.getInstance()), newsUrl);
@@ -122,13 +119,15 @@ public class NewsListFragment extends BaseListFragment/* implements FragmentLife
 		listView.addFooterView(initialiseFooter());
         listView.setAdapter(adapter);
         listView.setOnScrollListener(this);
-	if (position == 0)
-		{
-		//	getPullToRefreshAttacher(listView);
-			
+		if(news_position == 0){
+		getPullToRefreshAttacher(listView);
+		if (newsList != null && newsList.size() == 0){
+			setDownload(true);
+			showFooter(true);
 			getData();
 		}
-		
+		setProgressStatus();
+		}
     }
 
 	@Override
@@ -136,8 +135,11 @@ public class NewsListFragment extends BaseListFragment/* implements FragmentLife
 	{
 		
 		getPullToRefreshAttacher(listView);
-		if (newsList != null && newsList.size() == 0)
+		if (newsList != null && newsList.size() == 0){
+			setDownload(true);
+			showFooter(true);
 			getData();
+			}
 		setProgressStatus();
 		super.onResumeFragment();
 	}

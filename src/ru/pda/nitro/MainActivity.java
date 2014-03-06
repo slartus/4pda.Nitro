@@ -50,7 +50,9 @@ public class MainActivity extends BaseActivity
 	private static ImageView avatar;
 	private Handler handler = new Handler();
 	private boolean profile_menu = false;
-	
+	private int pagerMainItem = 0;
+	private int pagerLoginItem = 0;
+	private int pagerLogoutItem = 0;
 	private static MenuAdapter mAdapter;
 	private static ArrayList<BrickInfo> menus;
 	public static UserProfile profile;
@@ -135,19 +137,29 @@ public class MainActivity extends BaseActivity
 						imageNavigation.setImageResource(R.drawable.ic_action_collapse);
 					if(profile.getLogin().equals("гость") | profile.getLogin().equals("")){
 						getLoginMenu();
+					//	pagerLoginItem = setPagerList(pagerLoginItem);
 					}else{
 						getLogOutMenu();
+					//	pagerLogoutItem = setPagerList(pagerLogoutItem);
 					}
 					profile_menu = true;
 					}else{
 						imageNavigation.setImageResource(R.drawable.ic_action_expand);
 						getMenu();
+					//	pagerMainItem = setPagerList(pagerMainItem);
 						profile_menu = false;
 					}
+					
 				}
 			});
 				setUserData();
 		return header;
+	}
+	
+	private static void setPagerList(ArrayList<BrickInfo> data){
+		PagersLifecycle pagers = mPager;
+		pagers.setPagersList(data);
+		
 	}
 	
 	
@@ -271,6 +283,12 @@ public class MainActivity extends BaseActivity
 		 menus.clear();
 		 SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 		 menus = BricksList.getBricks(prefs);
+		/* for (BrickInfo item : BricksList.getBricks(prefs)) {
+			 if(!DeleteMode && item.isSelected())
+				 menus.add(item);
+			 else if(DeleteMode)
+				 menus.add(item);
+		 }*/
 		 setAdapter(menus);
 	 }
 	 
@@ -417,6 +435,15 @@ public class MainActivity extends BaseActivity
 		getMenu();
         mDrawerList.setSelection(AbsListView.CHOICE_MODE_NONE);
         mAdapter.notifyDataSetChanged();
+//		setPagerList(menus);
+	/*	SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+		final String favorite = prefs.getString("mainFavorite_", "favorites");
+		for(int i = 0; i < menus.size(); i++){
+		if (menus.get(i).getName().equals(favorite)){
+			pagerMainItem = setPagerList(i);
+			break;
+		}
+		}*/
     }
 
 	private final class AnActionModeOfEpicProportions implements ActionMode.Callback {

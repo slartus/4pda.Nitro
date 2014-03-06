@@ -2,7 +2,6 @@ package ru.pda.nitro.bricks;
 
 import android.support.v4.app.Fragment;
 
-import ru.pda.nitro.listfragments.NewsListFragment;
 import android.content.*;
 import ru.pda.nitro.listfragments.pagers.*;
 import android.net.*;
@@ -24,10 +23,10 @@ public class NewsBrick extends BrickInfo
 
     @Override
     public Fragment createFragment() {
-        return new NewsPagerFragment();
+        return new NewsSpinnerFragment();
     }
 	
 	public Class<? extends Fragment> getClassList(){
-		return NewsPagerFragment.class;
+		return NewsSpinnerFragment.class;
 	}
 }

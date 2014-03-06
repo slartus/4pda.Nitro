@@ -28,7 +28,7 @@ public class NewsPagerFragment extends Fragment implements FragmentLifecycle
 	private PagerSlidingTabStrip tabs;
 	private ViewPager mViewPager;
 	private PagerAdapter mPagerAdapter;
-    private String[] urls = {"", "news/", "software/", "games/", "reviews/"};
+    private String[] urls = {"", "news/", "software", "games", "reviews/"};
     private String[] title = {"Все", "Новости", "Софт", "Игры", "Обзоры"};
 	private String currentColor = "#4973b9";
 	
@@ -45,8 +45,9 @@ public class NewsPagerFragment extends Fragment implements FragmentLifecycle
 	public void onResumeFragment()
 	{
 		onResumePager(mViewPager.getCurrentItem());
+	//	showTabs();
 	}
-	
+	//4pda.ru/software/tag/programs-for-windows-phone-7/
 	private void onResumePager(int position){
 		FragmentLifecycle fragmentToShow = (FragmentLifecycle)mPagerAdapter.getItem(position);
 		fragmentToShow.onResumeFragment();
@@ -73,6 +74,7 @@ public class NewsPagerFragment extends Fragment implements FragmentLifecycle
 				@Override
                 public void onPageSelected(int position) {
                     onResumePager(position);
+				//	showTabs();
                 }
             });	
 	
@@ -81,15 +83,26 @@ public class NewsPagerFragment extends Fragment implements FragmentLifecycle
 		
 	}
 	
+	private void showTabs(){
+		if(mViewPager.getCurrentItem() == 2 | mViewPager.getCurrentItem() ==3)
+			tabs.setVisibility(View.GONE);
+		else
+			tabs.setVisibility(View.VISIBLE);
+	}
+	
 	public class PagerAdapter extends FragmentStatePagerAdapter {
     private List<Fragment> fragments;
 
 	public PagerAdapter(FragmentManager fm) {
 		super(fm);
 		this.fragments = new ArrayList<Fragment>();
-		for(int i = 0; i < urls.length; i++){
-            fragments.add(NewsListFragment.newInstance(urls[i], i));
-        }
+	//	for(int i = 0; i < urls.length; i++){
+        fragments.add(NewsListFragment.newInstance(urls[0], 0));
+		fragments.add(NewsListFragment.newInstance(urls[1], 1));
+		fragments.add(SoftTagPagerFragment.newInstance(urls[2]));
+		fragments.add(GamesTagPagerFragment.newInstance(urls[3]));
+		fragments.add(NewsListFragment.newInstance(urls[4], 4));
+      //  }
 	}
 	
 		@Override

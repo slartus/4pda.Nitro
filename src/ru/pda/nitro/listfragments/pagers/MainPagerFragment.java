@@ -27,12 +27,13 @@ import android.widget.*;
 import ru.pda.nitro.listfragments.*;
 
 
-public class MainPagerFragment extends Fragment implements FragmentLifecycle
+public class MainPagerFragment extends Fragment implements FragmentLifecycle, PagersLifecycle
 {
 
 	private ViewPager mViewPager;
 	private PagerAdapter mPagerAdapter;
 	private ArrayList<BrickInfo> list;
+	private int old_position = 0;
 
     @Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -51,11 +52,15 @@ public class MainPagerFragment extends Fragment implements FragmentLifecycle
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
 
 		list = BricksList.getBricks(prefs);
+		setAdapter(getPosition());
+	}
+	
+	private void setAdapter(int position){
 		mPagerAdapter = new PagerAdapter(getActivity().getSupportFragmentManager());
 		mViewPager.setAdapter(mPagerAdapter);
 		mViewPager.setOffscreenPageLimit(list.size());
-		setPageView(getPosition());
-		
+		setPageView(position);
+
 		mViewPager.setOnPageChangeListener(
             new ViewPager.SimpleOnPageChangeListener() {
 
@@ -65,7 +70,19 @@ public class MainPagerFragment extends Fragment implements FragmentLifecycle
 					setTitle(position);
 					onResumePager(position);                }
             });	
+			
+		
 	}
+	
+	@Override
+	public void setPagersList(ArrayList<BrickInfo> list)
+	{
+		this.list = list;
+	//	old_position = mViewPager.getCurrentItem();
+		setAdapter(getPosition());
+		
+	}
+	
 	
 	@Override
 	public void onResumeFragment()
@@ -76,6 +93,9 @@ public class MainPagerFragment extends Fragment implements FragmentLifecycle
 	private void onResumePager(int position){
 		FragmentLifecycle fragmentToShow = (FragmentLifecycle)mPagerAdapter.getItem(position);
 		fragmentToShow.onResumeFragment();
+		if(position != 1)
+			getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+		
 	}
 	
 	private void setTitle(int position)
@@ -109,6 +129,16 @@ public class MainPagerFragment extends Fragment implements FragmentLifecycle
 	{
 		private List<Fragment> fragments;
 
+		public void setData(ArrayList<BrickInfo> data){
+			this.fragments = new ArrayList<Fragment>();
+			for (BrickInfo info : data)
+			{
+				fragments.add(info.createFragment());
+			}
+			
+			this.notifyDataSetChanged();
+		}
+		
 		public PagerAdapter(FragmentManager fm)
 		{
 			super(fm);
