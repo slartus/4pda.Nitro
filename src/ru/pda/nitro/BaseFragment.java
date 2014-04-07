@@ -18,10 +18,11 @@ import android.app.*;
 import ru.pda.nitro.classes.*;
 import android.view.*;
 import ru.pda.nitro.listfragments.*;
+import android.support.v4.widget.*;
 
 
 
-public abstract class BaseFragment extends Fragment implements FragmentLifecycle{
+public abstract class BaseFragment extends Fragment implements FragmentLifecycle, SwipeRefreshLayout.OnRefreshListener{
 //    private PullToRefreshAttacher mPullToRefreshAttacher;
 	public LinearLayout linearProgress;
     public LinearLayout linearError;
@@ -33,6 +34,7 @@ public abstract class BaseFragment extends Fragment implements FragmentLifecycle
 	private boolean refresh = false;
 	private boolean loading = false;
     public Handler handler;
+	public SwipeRefreshLayout mSwipeRefreshLayout;
 
 	protected ImageLoader imageLoader = ImageLoader.getInstance();
 	
@@ -53,10 +55,6 @@ public abstract class BaseFragment extends Fragment implements FragmentLifecycle
 		
 		}
 	
-/*	public PullToRefreshAttacher getPullToRefreshAttacher() {
-        return mPullToRefreshAttacher;
-    }*/
-	
 	public void setCurrentFragmentMenu(){
 		BaseState.setLogin_menu(getName().equals(LoginBrick.NAME));
 		BaseState.setGroop_menu(getName().equals(GroopsBrick.NAME));
@@ -65,6 +63,7 @@ public abstract class BaseFragment extends Fragment implements FragmentLifecycle
 	
 
     public View initialiseUi(View v) {
+		mSwipeRefreshLayout = (SwipeRefreshLayout)v.findViewById(R.id.refresh);
 		linearProgress = (LinearLayout) v.findViewById(R.id.linearProgress);
         linearError = (LinearLayout) v.findViewById(R.id.linearError);
         buttonError = (TextView) v.findViewById(R.id.buttonErrorRefresh);
@@ -74,7 +73,7 @@ public abstract class BaseFragment extends Fragment implements FragmentLifecycle
             @Override
             public void onClick(View p1) {
                 hideError();
-				setProgress(true);
+				mSwipeRefreshLayout.setRefreshing(true);
 				getData();
             }
         });
@@ -86,8 +85,24 @@ public abstract class BaseFragment extends Fragment implements FragmentLifecycle
 					hideError();
 				}
 			});
+			
+		mSwipeRefreshLayout.setOnRefreshListener(this);
+        
+	/*	mSwipeRefreshLayout.setColorScheme
+		(R.color.red, R.color.red,
+		 R.color.red, R.color.red);*/
         return v;
     }
+
+	@Override
+	public void onRefresh()
+	{
+		mSwipeRefreshLayout.setRefreshing(true);
+		refreshData();
+	}
+
+	
+	
 	
 	public void initialiseDataUi(View rootView){
 		linearData =(LinearLayout)rootView.findViewById(R.id.linearLayoutData);
@@ -143,12 +158,12 @@ public abstract class BaseFragment extends Fragment implements FragmentLifecycle
         linearProgress.setVisibility(View.GONE);
     }
 	
-	public void setProgress(boolean loading)
+/*	public void setProgress(boolean loading)
 	{
         ((IRefreshActivity)getActivity()).getPullToRefreshAttacher().setRefreshing(loading);
-    }
+    }*/
 
-	public void getPullToRefreshAttacher(View view){
+/*	public void getPullToRefreshAttacher(View view){
 		((IRefreshActivity)getActivity()).getPullToRefreshAttacher().setRefreshableView(view, new PullToRefreshAttacher.OnRefreshListener() {
 				@Override
 				public void onRefreshStarted(View view)
@@ -156,7 +171,7 @@ public abstract class BaseFragment extends Fragment implements FragmentLifecycle
 					refreshData();
 				}
 			});
-	}
+	}*/
 	
 	protected void refreshData(){};
 	protected String getName(){return null;}

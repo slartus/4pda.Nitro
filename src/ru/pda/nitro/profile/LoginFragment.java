@@ -60,7 +60,7 @@ public class LoginFragment extends BaseFragment
 			getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
 			getActivity().getActionBar().setTitle(getTitle());
 			checBoxPrivacy.setChecked(isChecked());
-			setProgress(false);
+			mSwipeRefreshLayout.setRefreshing(true);
 		}
 		
 		private boolean isChecked(){

@@ -120,7 +120,7 @@ public class NewsListFragment extends BaseListFragment/* implements FragmentLife
         listView.setAdapter(adapter);
         listView.setOnScrollListener(this);
 		if(news_position == 0){
-		getPullToRefreshAttacher(listView);
+	//	getPullToRefreshAttacher(listView);
 		if (newsList != null && newsList.size() == 0){
 			setDownload(true);
 			showFooter(true);
@@ -134,7 +134,7 @@ public class NewsListFragment extends BaseListFragment/* implements FragmentLife
 	public void onResumeFragment()
 	{
 		
-		getPullToRefreshAttacher(listView);
+	//	getPullToRefreshAttacher(listView);
 		if (newsList != null && newsList.size() == 0){
 			setDownload(true);
 			showFooter(true);

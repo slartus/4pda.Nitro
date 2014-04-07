@@ -66,6 +66,7 @@ public class NewsSpinnerFragment extends Fragment implements FragmentLifecycle, 
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		bar.setListNavigationCallbacks(adapter, this);
 		setContent(0);
+		
 	}
 
 	@Override

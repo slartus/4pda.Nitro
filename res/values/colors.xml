@@ -11,8 +11,8 @@
     <color name="fon_news_dk">#1e1f23</color>
     <color name="fon_fragment">#f2f2f2</color>
     <color name="fon_news">#fff</color>
-    <color name="color_title">#848484</color>
-    <color name="transparent_bg">#ffffff</color>
-    <color name="market_fon">#1b6d1b</color>
-    <color name="error_fon">#be1c26</color>
+    <color name="blue">#1F3ADA</color>
+    <color name="yellow">#ffffff</color>
+    <color name="green">#1b6d1b</color>
+    <color name="red">#BEB0B0B0</color>
 </resources>

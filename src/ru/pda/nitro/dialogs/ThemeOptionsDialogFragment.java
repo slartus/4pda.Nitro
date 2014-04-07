@@ -50,6 +50,7 @@ public class ThemeOptionsDialogFragment extends BaseDialogFragment
 	{
 		String[] data = {"Добавить в избранное", "Удалить из избранного", "Подписаться", "Отписаться", "Добавить в группу", "Удалить из группы"};
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+		builder.setTitle(getTopicTitle());
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),	android.R.layout.simple_list_item_1, data);
 		builder.setAdapter(adapter, myClickListener);
 

@@ -54,12 +54,11 @@ public class TopicsListFragment extends BaseListFragment/* implements FragmentLi
     public static final int NAVIGATE_DIALOG_FRAGMENT = 1;
     private int selectedItem;
 	private ListInfo listInfo;
-//	private ListView listView;
 	
 	@Override
 	public void onResumeFragment()
 	{
-		getPullToRefreshAttacher(listView);
+	//	getPullToRefreshAttacher(listView);
 		setProgressStatus();
 		super.onResumeFragment();
 	}
@@ -149,6 +148,7 @@ public class TopicsListFragment extends BaseListFragment/* implements FragmentLi
     @Override
     public boolean onContextItemSelected(MenuItem item) {
 
+		if(getTitle().equals(getActivity().getActionBar().getTitle())){
         AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
         Topic topic = topics.get(info.position);
 
@@ -166,6 +166,7 @@ public class TopicsListFragment extends BaseListFragment/* implements FragmentLi
                 showThemeOptionsDialog(topic.getId(), topic.getTitle());
                 break;
         }
+		}
         return super.onContextItemSelected(item);
     }
 

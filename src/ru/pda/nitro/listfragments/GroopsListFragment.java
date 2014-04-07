@@ -68,7 +68,7 @@ public class GroopsListFragment extends BaseListFragment implements LoaderManage
         mAdapter = new SetDetailCursorAdapter(getActivity(), null, 0);
         listView.setAdapter(mAdapter);
         getLoaderManager().restartLoader(0, null, this);
-        setProgress(false);
+        mSwipeRefreshLayout.setRefreshing(false);
 		
     }
 

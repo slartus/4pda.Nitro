@@ -82,7 +82,7 @@ public class TopicView extends BaseFragment
 
             setHasOptionsMenu(true);
             setRetainInstance(true);
-            getPullToRefreshAttacher(getWebView());
+         //   getPullToRefreshAttacher(getWebView());
 
             if (getArguments().getString(TabsViewActivity.TOPIC_URL_KEY) != null | getArguments().getString(TabsViewActivity.TOPIC_ID_KEY) != null)
                 bundle = getArguments();
@@ -119,7 +119,7 @@ public class TopicView extends BaseFragment
             if (!isLoading()) {
                 showTopic(topicUrl);
             } else
-                setProgress(false);
+                mSwipeRefreshLayout.setRefreshing(false);
         }
 
         class JsObject {
@@ -159,7 +159,7 @@ public class TopicView extends BaseFragment
             if (bundle == null) return null;
 
             setLoading(true);
-            setProgress(true);
+            mSwipeRefreshLayout.setRefreshing(true);
 
             if (bundle.containsKey(TabsViewActivity.TOPIC_ID_KEY)) {
                 CharSequence topicId = bundle.getCharSequence(TabsViewActivity.TOPIC_ID_KEY);
@@ -206,7 +206,7 @@ public class TopicView extends BaseFragment
                 hideProgress();
                 setRefresh(false);
                 setLoading(false);
-                setProgress(false);
+                mSwipeRefreshLayout.setRefreshing(false);
 
                 refreshActionBarMenu(getActivity());
 
@@ -238,7 +238,7 @@ public class TopicView extends BaseFragment
         @Override
         public void onResume() {
             super.onResume();
-            setProgress(isLoading());
+            mSwipeRefreshLayout.setRefreshing(isLoading());
         }
 		
     }

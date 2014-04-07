@@ -32,6 +32,7 @@ import android.widget.*;
 import ru.forpda.common.*;
 import android.content.*;
 import android.preference.*;
+import android.app.*;
 
 /**
  * Created by slartus on 12.01.14.
@@ -86,8 +87,11 @@ public abstract class BaseListFragment extends BaseFragment
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
 		final String favorite = prefs.getString("mainFavorite_", "favorites");
 		if (getName().equals(favorite)){
-			getPullToRefreshAttacher(listView);
+		//	getPullToRefreshAttacher(listView);
 			setCurrentFragmentMenu();
+			if(getName().equals(NewsBrick.NAME))
+				getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+			
 		}
 		
     }
@@ -140,7 +144,7 @@ public abstract class BaseListFragment extends BaseFragment
 		showFooter(isRefresh());
 		
 		if(isLoading() && !isDownload() && !isLoadmore())
-			setProgress(true);
+			mSwipeRefreshLayout.setRefreshing(true);
 	}
 
 	@Override
@@ -150,7 +154,7 @@ public abstract class BaseListFragment extends BaseFragment
 			task = new Task();
 			task.execute();
 		}else if(isLoadmore() | isDownload()){
-			setProgress(false);
+			mSwipeRefreshLayout.setRefreshing(false);
 		}
 		super.getData();
 	}
@@ -245,7 +249,7 @@ public abstract class BaseListFragment extends BaseFragment
             }
             setProgressMore(false);
 			if (getActivity() != null)
-				setProgress(false);
+				mSwipeRefreshLayout.setRefreshing(false);
 
 			/*	if(!isLoading() && checkStatus()){
 					setProgress(true);

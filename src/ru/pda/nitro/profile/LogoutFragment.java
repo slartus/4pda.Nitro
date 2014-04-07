@@ -41,7 +41,7 @@ public class LogoutFragment extends BaseFragment
 		
 		BaseState.setMTitle(getTitle());
 		getActivity().getActionBar().setTitle(getTitle());
-		setProgress(false);
+		mSwipeRefreshLayout.setRefreshing(true);
 	}
 	
 	@Override

@@ -20,6 +20,7 @@ public class NewsListAdapter extends BaseListAdapter
 	private Context context;
 	final LayoutInflater inflater;
 	private ImageLoader imageLoader;
+	private boolean list_small = true;
 	
 	public NewsListAdapter(Context context, NewsList newsList, ImageLoader imageLoader){
 		inflater = (LayoutInflater)context.getSystemService(context.LAYOUT_INFLATER_SERVICE);
@@ -58,9 +59,10 @@ public class NewsListAdapter extends BaseListAdapter
 	{
 		final ViewHolder holder;
 		if(view == null){
-			view = inflater.inflate(R.layout.item_news, parent, false);
+			view = inflater.inflate(!list_small ? R.layout.item_news : R.layout.item_news_smal, parent, false);
 			holder = new ViewHolder();
 			holder.mProgressBar = (LinearLayout)view.findViewById(R.id.mProgressBar);
+			holder.linInfo =(LinearLayout)view.findViewById(R.id.linearInfo);
 			holder.textSource = (TextView)view.findViewById(R.id.textSource);
 			holder.textComments = (TextView)view.findViewById(R.id.textComments);
 			holder.textTag =(TextView)view.findViewById(R.id.textTag);
@@ -75,10 +77,8 @@ public class NewsListAdapter extends BaseListAdapter
 		}else{
 			holder = (ViewHolder) view.getTag();
 		}
+		
 		News data = newsList.get(position);
-		holder.textComments.setText(String.valueOf(data.getCommentsCount()));
-		holder.textAutor.setText(data.getAuthor());
-		holder.textDate.setText(data.getNewsDate());
 		holder.textDescription.setText(data.getDescription());
 		holder.textTitle.setText(data.getTitle());
 		if(data.getImgUrl() != null)
@@ -110,7 +110,12 @@ public class NewsListAdapter extends BaseListAdapter
 						// TODO: Implement this method
 					}
 			});
-		
+		if(!list_small){
+			holder.linInfo.setVisibility(View.VISIBLE);
+			holder.textComments.setText(String.valueOf(data.getCommentsCount()));
+			holder.textAutor.setText(data.getAuthor());
+			holder.textDate.setText(data.getNewsDate());
+	
 		if(data.getTagTitle() != null){
 			holder.textTag.setVisibility(View.VISIBLE);
 			holder.textTag.setText(data.getTagTitle());
@@ -118,6 +123,7 @@ public class NewsListAdapter extends BaseListAdapter
 		if(data.getSourceTitle() != null){
 			holder.textSource.setVisibility(View.VISIBLE);
 			holder.textSource.setText("Источник: " + data.getSourceTitle());
+		}
 		}
 	
 		return view;
@@ -133,6 +139,7 @@ public class NewsListAdapter extends BaseListAdapter
 		public TextView textComments;
 		public TextView textSource;
 		public LinearLayout mProgressBar;
+		public LinearLayout linInfo;
 	}
 
 }
